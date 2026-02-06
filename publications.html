@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Publications — Lauriane Mouysset</title>
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  
+  <meta name="description" content="Publications scientifiques de Lauriane Mouysset, Directrice de recherche au CNRS.">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --f-display: 'Syne', sans-serif;
+      --f-body: 'IBM Plex Sans', sans-serif;
+      --noir: #1A1A18;
+      --blanc: #FAF9F7;
+      --fond-alt: #F0EEEA;
+      --texte: #4A4A46;
+      --gris: #7A7A72;
+      --gris-clair: #B8B8B0;
+      --accent: #A65D4C;
+      --vert: #4A6B4A;
+      --rose: #9B4D6A;
+      --border: rgba(26,26,24,0.1);
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--blanc); color: var(--texte); font-family: var(--f-body); }
+
+    .container { max-width: 900px; margin: 0 auto; padding: 0 36px; }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      background: rgba(250,249,247,0.96); backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      max-width: 1140px; margin: 0 auto; padding: 0 36px;
+      height: 56px; display: flex; justify-content: space-between; align-items: center;
+    }
+    .nav-logo {
+      font-family: var(--f-display); font-size: 14px; font-weight: 700;
+      color: var(--noir); letter-spacing: 0.06em; text-transform: uppercase; text-decoration: none;
+    }
+    .nav-links { display: flex; align-items: center; gap: 6px; }
+    .nav-links a {
+      font-family: var(--f-body); font-size: 11px; font-weight: 500;
+      color: var(--gris); text-decoration: none; padding: 4px 10px; transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--noir); }
+    .nav-lang a { color: var(--gris-clair); text-decoration: none; }
+    .nav-lang a:hover, .nav-lang a.active { color: var(--noir); }
+    .nav-lang {
+      font-family: var(--f-body); font-size: 11px; font-weight: 600;
+      color: var(--gris-clair); padding-left: 12px; margin-left: 6px;
+      border-left: 1px solid var(--border);
+    }
+
+    /* PAGE HEADER */
+    .page-header {
+      padding: 100px 0 40px;
+      border-bottom: 2px solid var(--noir);
+    }
+    .page-header-top {
+      display: flex; justify-content: space-between; align-items: flex-end;
+      gap: 24px; flex-wrap: wrap;
+    }
+    .page-header h1 {
+      font-family: var(--f-display);
+      font-size: clamp(32px, 5vw, 48px);
+      font-weight: 800;
+      color: var(--noir);
+      letter-spacing: -0.03em;
+    }
+    .page-header-links {
+      display: flex; gap: 16px; align-items: center;
+    }
+    .page-header-links a {
+      font-family: var(--f-body); font-size: 12px; font-weight: 500;
+      color: var(--gris); text-decoration: none;
+      padding: 8px 14px; border: 1px solid var(--border);
+      transition: all 0.2s;
+    }
+    .page-header-links a:hover {
+      color: var(--noir); border-color: var(--noir);
+    }
+
+    /* SECTIONS */
+    .section {
+      padding: 48px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .section:last-of-type {
+      border-bottom: none;
+    }
+    .section-title {
+      font-family: var(--f-display);
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 28px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .section-title::before {
+      content: ''; width: 20px; height: 2px; background: var(--accent);
+    }
+
+    /* PUBLICATION LIST */
+    .pub-list {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .pub-item {
+      font-family: var(--f-body);
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--texte);
+      display: grid;
+      grid-template-columns: 32px 1fr;
+      gap: 12px;
+    }
+    .pub-num {
+      font-family: var(--f-display);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--gris-clair);
+      text-align: right;
+      padding-top: 2px;
+    }
+    .pub-content {}
+    .pub-item .authors {
+      color: var(--noir);
+    }
+    .pub-item .year {
+      color: var(--noir);
+      font-weight: 600;
+    }
+    .pub-item .title {
+      color: var(--noir);
+    }
+    .pub-item .journal {
+      font-style: italic;
+      color: var(--texte);
+    }
+    .pub-item .details {
+      color: var(--gris);
+    }
+    .pub-item a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .pub-item a:hover {
+      text-decoration: underline;
+    }
+
+    /* Highlight for books */
+    .pub-item.book {
+      padding: 16px;
+      padding-left: 0;
+      background: var(--fond-alt);
+      border-left: 3px solid var(--accent);
+      margin-left: -16px;
+      padding-left: 16px;
+    }
+    .pub-item.book .pub-num {
+      color: var(--accent);
+    }
+    .pub-item.book .title {
+      font-weight: 600;
+    }
+
+    /* BACK LINK */
+    .back-link {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: var(--f-body); font-size: 13px; font-weight: 500;
+      color: var(--gris); text-decoration: none;
+      padding: 40px 0 20px;
+      transition: color 0.2s;
+    }
+    .back-link:hover { color: var(--noir); }
+    .back-link svg { transition: transform 0.2s; }
+    .back-link:hover svg { transform: translateX(-3px); }
+
+    /* FOOTER */
+    footer {
+      padding: 20px 0 32px; border-top: 1px solid var(--border);
+      margin-top: 40px;
+      display: flex; justify-content: space-between;
+    }
+    footer span { font-size: 11px; color: var(--gris-clair); }
+
+    /* RESPONSIVE */
+    @media (max-width: 640px) {
+      .container { padding: 0 24px; }
+      .page-header-top { flex-direction: column; align-items: flex-start; }
+      .page-header-links { flex-wrap: wrap; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">L. Mouysset</a>
+      <div class="nav-links">
+        <a href="https://www.centre-cired.fr/lauriane-mouysset/" target="_blank">CIRED</a>
+        <span class="nav-lang"><a href="publications.html" class="active">FR</a> / <a href="en/publications.html">EN</a></span>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+
+    <a href="index.html" class="back-link">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M10 12L6 8l4-4"/>
+      </svg>
+      Retour
+    </a>
+
+    <header class="page-header">
+      <div class="page-header-top">
+        <h1>Publications</h1>
+      </div>
+    </header>
+
+    <!-- OUVRAGES -->
+    <section class="section">
+      <h2 class="section-title">Ouvrages</h2>
+      <div class="pub-list">
+        <div class="pub-item book">
+          <span class="pub-num">(3)</span>
+          <div class="pub-content">
+            <span class="authors">Mouysset, L.</span> <span class="year">2026.</span> 
+            <span class="title">Essai (titre à venir).</span> 
+            <span class="journal">Éditions de l'Observatoire.</span> 
+            <span class="details">À paraître, septembre 2026.</span>
+          </div>
+        </div>
+        <div class="pub-item book">
+          <span class="pub-num">(2)</span>
+          <div class="pub-content">
+            <span class="authors">Fohlen, E. & Mouysset, L.</span> <span class="year">2023.</span> 
+            <span class="title">Amazonas.</span> 
+            <span class="journal">Éditions des Presses des Ponts.</span>
+          </div>
+        </div>
+        <div class="pub-item book">
+          <span class="pub-num">(1)</span>
+          <div class="pub-content">
+            <span class="authors">Mouysset, L.</span> <span class="year">2015.</span> 
+            <span class="title">Repenser le défi de la biodiversité : l'économie écologique.</span> 
+            <span class="journal">Les Éditions de la Rue d'Ulm.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DIRECTION D'OUVRAGES -->
+    <section class="section">
+      <h2 class="section-title">Direction d'ouvrages</h2>
+      <div class="pub-list">
+        <div class="pub-item">
+          <span class="pub-num">(3)</span>
+          <div class="pub-content">
+            <span class="authors">Magnin, L., Rouméas, R. & Basier, R.</span> <span class="year">2023.</span> 
+            <span class="title">Polices environnementales sous contraintes.</span> 
+            <span class="journal">Les Éditions de la Rue d'Ulm,</span> 
+            <span class="details">Collection Sciences Durables (Eds: Barbier, M., Meyniel, F., Mouysset, L.). Préface : Jean-Baptiste Fressoz.</span>
+          </div>
+        </div>
+        <div class="pub-item">
+          <span class="pub-num">(2)</span>
+          <div class="pub-content">
+            <span class="authors">Cauvet, M. & Perrissin Fabert, B.</span> <span class="year">2019.</span> 
+            <span class="title">Les sciences participatives au secours de la biodiversité : une approche sociologique.</span> 
+            <span class="journal">Les Éditions de la Rue d'Ulm,</span> 
+            <span class="details">Collection Sciences Durables (Eds: Arvanitis, R., Meyniel, F., Mouysset, L.). Préface : Romain Julliard.</span>
+          </div>
+        </div>
+        <div class="pub-item">
+          <span class="pub-num">(1)</span>
+          <div class="pub-content">
+            <span class="authors">Cauvet, M. & Perrissin Fabert, B.</span> <span class="year">2018.</span> 
+            <span class="title">Les monnaies locales : vers un développement responsable.</span> 
+            <span class="journal">Les Éditions de la Rue d'Ulm,</span> 
+            <span class="details">Collection Sciences Durables (Eds: Arvanitis, R., Meyniel, F., Mouysset, L.). Préface : Michel Aglietta.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ARTICLES DE RECHERCHE -->
+    <section class="section">
+      <h2 class="section-title">Articles de recherche</h2>
+      <div class="pub-list">
+        <div class="pub-item">
+          <span class="pub-num">(34)</span>
+          <div class="pub-content">
+            <span class="authors">Cocco, V., Chakir, R. & Mouysset, L.</span> <span class="year">2025.</span> 
+            <span class="title">Guilty or scapegoat? Land consolidation and the hedgerow decline.</span> 
+            <span class="journal">Journal of Environmental Economics and Management,</span> 
+            <span class="details">133, 103196.</span>
+            <a href="https://laurianemouysset.wordpress.com/wp-content/uploads/2025/06/cocco2025.pdf" target="_blank">PDF</a>
+          </div>
+        </div>
+        <div class="pub-item">
+          <span class="pub-num">(33)</span>
+          <div class="pub-content">
+            <span class="authors">Mouysset, L.</span> <span class="year">2025.</span> 
+            <span class="title">L'usage de la photographie dans la collaboration entre scientifiques et photographes : analyse réflexive du projet de médiation scientifique AMAZONAS.</span> 
+            <span class="journal">Revue Française des Méthodes Visuelles,</span> 
+            <span class="details">8.</span>
+            <a href="https://laurianemouysset.wordpress.com/wp-content/uploads/2025/07/rfmv-1533.pdf" target="_blank">PDF</a>
+          </div>
+        </div>
+        <div class="pub-item">
+          <span class="pub-num">(32)</span>
+          <div class="pub-content">
+            <span class="authors">Faure, J., Gaba, S., Perrot, T., Bretagnolle, V. & Mouysset, L.</span> <span class="year">2025.</span> 
+            <span class="title">Economic efficiency of nature-based solutions: theoretical framework and application to semi-natural habitat implementation.</span> 
+            <span class="journal">Journal of Environmental Management,</span> 
+            <span class="details">373, 123793.</span>
+            <a href="https://laurianemouysset.wordpress.com/wp-content/uploads/2024/12/faureetal2024_jema.pdf" target="_blank">PDF</a>
+          </div>
+        </div>
+        <div class="pub-item">
+          <span class="pub-num">(31)</span>
+          <div class="pub-content">
+            <span class="authors">Faure, J. & Mouysset, L.</span> <span class="year">2025.</span> 
+            <span class="title">Natural insurance as a green alternative for farmers? Empirical evidence for semi-natural habitats and methodological bias.</span> 
+            <span class="journal">Ecological Economics,</span> 
+            <span class="details">227, 108415.</span>
+            <a href="https://laurianemouysset.wordpress.com/wp-content/uploads/2024/10/fauremouysset2024.pdf" target="_blank">PDF</a>
+          </div>
+        </div>
+        <div class="pub-item">
+          <span class="pub-num">(30)</span>
+          <div class="pub-content">
+            <span class="authors">Faure, J., Mouysset, L., Decourtye, A., Allier, F. & Gaba, S.</span> <span class="year">2024.</span> 
+            <span class="title">How pollinator dependence may mediate farmer adoption of pollinator supporting practices and perceptions: A case study from western France.</span> 
+            <span class="journal">Environmental Research Communications,</span> 
+            <span class="details">6, 095010.</span>
+            <a href="https://laurianemouysset.wordpress.com/wp-content/uploads/2024/09/faure2024.pdf" target="_blank">PDF</a>
+          </div>
+        </div>
+        <div class="pub-item">
+          <span class="pub-num">(29)</span>
+          <div class="pub-content">
+            <span class="authors">Ferrante, A. & Mouysset, L.</span> <span class="year">2024.</span> 
+            <span class="title">Deforestation fight in the sight of Brazilian Amazonas inhabitants.</span> 
+            <span class="journal">Trees, Forests and People,</span> 
+            <span class="details">16, 100533.</span>
+            <a href="https://laurianemouysset.wordpress.com/wp-content/uploads/2024/03/ferrantemouysset2024.pdf" target="_blank">PDF</a>
+          </div>
+        </div>
+        <div class="pub-item">
+          <span class="pub-num">(28)</span>
+          <div class="pub-content">
+            <span class="authors">Mouysset, L.</span> <span class="year">2024.</span> 
+            <span class="title">Les modèles bioéconomiques : un pont entre l'économie et la nature pour répondre à la crise écologique ?</span> 
+            <span class="journal">Cahiers Philosophiques,</span> 
+            <span class="details">176.</span>
+          </div>
+        </div>
+        <div class="pub-item">
+          <span class="pub-num">(27)</span>
+          <div class="pub-content">
+            <span class="authors">Chhaytle, M., Ouvrard, R., Poinot, T. & Mouysset, L.</span> <span class="year">2023.</span> 
+            <span class="title">Parameter-varying partial differential equation to model the global change impacts on wildlife populations.</span> 
+            <span class="journal">Ecological Modeling,</span> 
+            <span class="details">486, 110516.</span>
+            <a href="https://laurianemouysset.wordpress.com/wp-content/uploads/2023/10/chhaytle2023.pdf" target="_blank">PDF</a>
+          </div>
+        </div>
+        <div class="pub-item">
+          <span class="pub-num">(26)</span>
+          <div class="pub-content">
+            <span class="authors">Cocco, V., Kervinio, Y. & Mouysset, L.</span> <span class="year">2023.</span> 
+            <span class="title">Relaxing the production-conservation trade-off: Biodiversity spillover in the bioeconomic performance of ecological networks.</span> 
+            <span class="journal">Ecological Economics,</span> 
+            <span class="details">214, 107966.</span>
+            <a href="https://laurianemouysset.wordpress.com/wp-content/uploads/2023/08/coccokerviniomouysset2023.pdf" target="_blank">PDF</a>
+          </div>
+        </div>
+        <div class="pub-item">
+          <span class="pub-num">(25)</span>
+          <div class="pub-content">
+            <span class="authors">Faure, J., Gaba, S. & Mouysset, L.</span> <span class="year">2023.</span> 
+            <span class="title">Combining incentives with collective action to provide pollination and a bundle of ecosystem services in farmland.</span> 
+            <span class="journal">Ecosystem Services,</span> 
+            <span class="details">63, 101547.</span>
+            <a href="https://laurianemouysset.wordpress.com/wp-content/uploads/2023/07/fauremouyssetgaba2013.pdf" target="_blank">PDF</a>
+          </div>
+        </div>
+        <div class="pub-item">
+          <span class="pub-num">(24)</span>
+          <div class="pub-content">
+            <span class="authors">Mouysset, L.</span> <span class="year">2023.</span> 
+            <span class="title">On diversity of human-nature relationships in environmental sciences and its implications for ecological crisis management.</span> 
+            <span class="journal">History and Philosophy of Life Sciences,</span> 
+            <span class="details">45:20.</span>
+            <a href="https://laurianemouysset.wordpress.com/wp-content/uploads/2023/05/mouysset2023.pdf" target="_blank">PDF</a>
+          </div>
+        </div>
+        <div class="pub-item">
+          <span class="pub-num">(23)</span>
+          <div class="pub-content">
+            <span class="authors">Brunetti, I., Sabatier, R. & Mouysset, L.</span> <span class="year">2023.</span> 
+            <span class="title">A spatial model for biodiversity offsetting.</span> 
+            <span class="journal">Ecological Modeling,</span>
+            <span class="details">481, 110364.</span>
+            <a href="https://laurianemouysset.wordpress.com/wp-content/uploads/2023/03/brunetti-sabatier-mouysset_2023.pdf" target="_blank">PDF</a>
+          </div>
+        </div>
+        <div class="pub-item">
+          <span class="pub-num">(22)</span>
+          <div class="pub-content">
+            <span class="authors">Parent, B., Mouysset, L., Missemer, A. & Levrel, H.</span> <span class="year">2023.</span> 
+            <span class="title">Building integrated models in environmental and resource economics: The case of Gordon's 1954 fishery model.</span> 
+            <span class="journal">Journal of History of Economic Thought,</span> 
+            <span class="details">pp 1-23.</span>
+            <a href="https://laurianemouysset.wordpress.com/wp-content/uploads/2023/09/parentetal2023.pdf" target="_blank">PDF</a>
+          </div>
+        </div>
+        <div class="pub-item">
+          <span class="pub-num">(21)</span>
+          <div class="pub-content">
+            <span class="authors">Mouysset, L.</span> <span class="year">2023.</span> 
+            <span class="title">Modélisation bioéconomique : le cas de l'agriculture française.</span> 
+            <span class="journal">L'Économie Politique,</span> 
+            <span class="details">100, 49-61.</span>
+          </div>
+        </div>
+        <div class="pub-item">
+          <span class="pub-num">(20)</span>
+          <div class="pub-content">
+            <span class="authors">Guillet, T. & Mouysset, L.</span> <span class="year">2022.</span> 
+            <span class="title">Productive versus environmental objectives of agricultural policies dealing with climate change: a French case study.</span> 
+            <span class="journal">Frontiers in Environmental Sciences,</span> 
+            <span class="details">DOI: 10.3389/fenvs.2022.889506.</span>
+            <a href="https://laurianemouysset.wordpress.com/wp-content/uploads/2022/10/guilletmouysset2022.pdf" target="_blank">PDF</a>
+          </div>
+        </div>
+        <div class="pub-item">
+          <span class="pub-num">(19)</span>
+          <div class="pub-content">
+            <span class="authors">Jean, S. & Mouysset, L.</span> <span class="year">2022.</span> 
+            <span class="title">Bioeconomic models for terrestrial social-ecological system management: a review.</span> 
+            <span class="journal">International Review of Environmental and Resource Economics,</span> 
+            <span class="details">16, 43-92.</span>
+            <a href="https://laurianemouysset.wordpress.com/wp-content/uploads/2022/06/jean_mouysset_2022.pdf" target="_blank">PDF</a>
+          </div>
+        </div>
+        <div class="pub-item">
+          <span class="pub-num">(18)</span>
+          <div class="pub-content">
+            <span class="authors">Elalamy, Y., Doyen, L. & Mouysset, L.</span> <span class="year">2019.</span> 
+            <span class="title">Contribution of the land use allocation model for agroecosystems: the case of Torrecchia Vecchia.</span> 
+            <span class="journal">Journal of Environmental Management,</span> 
+            <span class="details">252, 109607.</span>
+            <a href="https://laurianemouysset.wordpress.com/wp-content/uploads/2021/08/elalamy2019.pdf" target="_blank">PDF</a>
+          </div>
+        </div>
+        <div class="pub-item">
+          <span class="pub-num">(17)</span>
+          <div class="pub-content">
+            <span class="authors">Ouvrard, R., Mercère, G., Poinot, T., Jiguet, F. & Mouysset, L.</span> <span class="year">2019.</span> 
+            <span class="title">Dynamic models for bird population – A parameter-varying partial differential equation identification approach.</span> 
+            <span class="journal">Control Engineering Practice,</span> 
+            <span class="details">91, 104091.</span>
+            <a href="https://laurianemouysset.wordpress.com/wp-content/uploads/2019/08/ouvrard2019-1.pdf" target="_blank">PDF</a>
+          </div>
+        </div>
+        <div class="pub-item">
+          <span class="pub-num">(16)</span>
+          <div class="pub-content">
+            <span class="authors">Mouysset, L., Sabatier, R., Teillard, F., Doyen, L., Jiguet, F., Léger, F. & Tichit, M.</span> <span class="year">2019.</span> 
+            <span class="title">Solutions for a win-win partnership between agriculture and biodiversity.</span> 
+            <span class="journal">Solutions,</span> 
+            <span class="details">10, 46-53.</span>
+          </div>
+        </div>
+        <div class="pub-item">
+          <span class="pub-num">(15)</span>
+          <div class="pub-content">
+            <span class="authors">Mouysset, L., Rais Assa, C., Ay, J.S., Jiguet, F., Lorrilière, R. & Doyen, L.</span> <span class="year">2019.</span> 
+            <span class="title">Bioeconomic impacts of agroforestry policies in France.</span> 
+            <span class="journal">Land Use Policy,</span> 
+            <span class="details">85, 239-248.</span>
+            <a href="https://laurianemouysset.wordpress.com/wp-content/uploads/2019/05/mouysset2019.pdf" target="_blank">PDF</a>
+          </div>
+        </div>
+        <div class="pub-item">
+          <span class="pub-num">(14)</span>
+          <div class="pub-content">
+            <span class="authors">Mouysset, L., Doyen, L., Léger, F., Jiguet, F. & Benton, T.</span> <span class="year">2018.</span> 
+            <span class="title">Operationalizing sustainability as a safe policy space.</span> 
+            <span class="journal">Sustainability,</span> 
+            <span class="details">10, 3682.</span>
+            <a href="https://laurianemouysset.wordpress.com/wp-content/uploads/2018/10/mouysset2018.pdf" target="_blank">PDF</a>
+          </div>
+        </div>
+        <div class="pub-item">
+          <span class="pub-num">(13)</span>
+          <div class="pub-content">
+            <span class="authors">Sabatier, R. & Mouysset, L.</span> <span class="year">2018.</span> 
+            <span class="title">A robustness-based viewpoint on the production-ecology trade-off in agroecosystems.</span> 
+            <span class="journal">Agricultural Systems,</span> 
+            <span class="details">167, 1-9.</span>
+            <a href="https://laurianemouysset.wordpress.com/wp-content/uploads/2021/08/sabatier2018.pdf" target="_blank">PDF</a>
+          </div>
+        </div>
+        <div class="pub-item">
+          <span class="pub-num">(12)</span>
+          <div class="pub-content">
+            <span class="authors">Péreau, J.C., Mouysset, L. & Doyen, L.</span> <span class="year">2017.</span> 
+            <span class="title">Groundwater management in a food security context.</span> 
+            <span class="journal">Environmental and Resource Economics,</span> 
+            <span class="details">71, 319-336.</span>
+            <a href="https://laurianemouysset.wordpress.com/wp-content/uploads/2013/09/pereau2017.pdf" target="_blank">PDF</a>
+          </div>
+        </div>
+        <div class="pub-item">
+          <span class="pub-num">(11)</span>
+          <div class="pub-content">
+            <span class="authors">Mouysset, L.</span> <span class="year">2016.</span> 
+            <span class="title">Reconciling agriculture and biodiversity in public policies: a bio-economic perspective.</span> 
+            <span class="journal">Regional Environmental Change,</span> 
+            <span class="details">17, 1421-1428.</span>
+            <a href="https://laurianemouysset.wordpress.com/wp-content/uploads/2013/09/mouysset2016b.pdf" target="_blank">PDF</a>
+          </div>
+        </div>
+        <div class="pub-item">
+          <span class="pub-num">(10)</span>
+          <div class="pub-content">
+            <span class="authors">Mouysset, L., Miglianico, M., Makowski, D., Jiguet, F. & Doyen, L.</span> <span class="year">2016.</span> 
+            <span class="title">Dynamic models for bird community in farming landscapes.</span> 
+            <span class="journal">Environmental Modeling and Assessment,</span> 
+            <span class="details">21, 407-418.</span>
+            <a href="https://laurianemouysset.wordpress.com/wp-content/uploads/2013/09/mouysset2016a.pdf" target="_blank">PDF</a>
+          </div>
+        </div>
+        <div class="pub-item">
+          <span class="pub-num">(9)</span>
+          <div class="pub-content">
+            <span class="authors">Mouysset, L., Doyen, L., Pereau, J.C. & Jiguet, F.</span> <span class="year">2015.</span> 
+            <span class="title">Costs and benefits of agricultural public policies.</span> 
+            <span class="journal">European Review of Agricultural Economics,</span> 
+            <span class="details">42, 51-76.</span>
+            <a href="https://laurianemouysset.wordpress.com/wp-content/uploads/2013/09/mouysset2014c.pdf" target="_blank">PDF</a>
+          </div>
+        </div>
+        <div class="pub-item">
+          <span class="pub-num">(8)</span>
+          <div class="pub-content">
+            <span class="authors">Mouysset, L.</span> <span class="year">2014.</span> 
+            <span class="title">Agricultural public policy: green or sustainable.</span> 
+            <span class="journal">Ecological Economics,</span> 
+            <span class="details">102, 15-23.</span>
+            <a href="https://laurianemouysset.wordpress.com/wp-content/uploads/2013/09/mouysset2014b.pdf" target="_blank">PDF</a>
+          </div>
+        </div>
+        <div class="pub-item">
+          <span class="pub-num">(7)</span>
+          <div class="pub-content">
+            <span class="authors">Mouysset, L., Doyen, L. & Jiguet, F.</span> <span class="year">2013.</span> 
+            <span class="title">From population viability analysis to co-viability of farmland biodiversity and agriculture.</span> 
+            <span class="journal">Conservation Biology,</span> 
+            <span class="details">28, 187-201.</span>
+            <a href="https://laurianemouysset.wordpress.com/wp-content/uploads/2013/09/mouysset2014.pdf" target="_blank">PDF</a>
+          </div>
+        </div>
+        <div class="pub-item">
+          <span class="pub-num">(6)</span>
+          <div class="pub-content">
+            <span class="authors">Doyen, L., Cissé, A., Gourguet, S., Mouysset, L., Hardy, P.Y., Béné, C., Blanchard, F., Jiguet, F., Pereau, J.C. & Thébaud, O.</span> <span class="year">2013.</span> 
+            <span class="title">Ecological-economic modelling for the sustainable management of biodiversity.</span> 
+            <span class="journal">Computational Management Science,</span> 
+            <span class="details">10, 353-364.</span>
+            <a href="https://laurianemouysset.wordpress.com/wp-content/uploads/2013/09/doyen2013.pdf" target="_blank">PDF</a>
+          </div>
+        </div>
+        <div class="pub-item">
+          <span class="pub-num">(5)</span>
+          <div class="pub-content">
+            <span class="authors">Mouysset, L., Jiguet, F. & Doyen, L.</span> <span class="year">2013.</span> 
+            <span class="title">How do the farmer risk preferences affect the biodiversity?</span> 
+            <span class="journal">Ecological Applications,</span> 
+            <span class="details">23, 96-109.</span>
+            <a href="https://laurianemouysset.wordpress.com/wp-content/uploads/2013/09/mouysset-2013.pdf" target="_blank">PDF</a>
+          </div>
+        </div>
+        <div class="pub-item">
+          <span class="pub-num">(4)</span>
+          <div class="pub-content">
+            <span class="authors">Mouysset, L., Jiguet, F. & Doyen, L.</span> <span class="year">2012.</span> 
+            <span class="title">Different policy scenarios to promote various targets of biodiversity.</span> 
+            <span class="journal">Ecological Indicators,</span> 
+            <span class="details">14, 209-221.</span>
+            <a href="https://laurianemouysset.wordpress.com/wp-content/uploads/2013/09/mouysset_ecol-indic_2012.pdf" target="_blank">PDF</a>
+          </div>
+        </div>
+        <div class="pub-item">
+          <span class="pub-num">(3)</span>
+          <div class="pub-content">
+            <span class="authors">Mouysset, L., Doyen, L., Jiguet, F., Allaire, G. & Leger, F.</span> <span class="year">2011.</span> 
+            <span class="title">Bio-economic modeling for sustainable management of biodiversity and agriculture.</span> 
+            <span class="journal">Ecological Economics,</span> 
+            <span class="details">70, 617-626.</span>
+            <a href="https://laurianemouysset.wordpress.com/wp-content/uploads/2013/09/mouysset-2011.pdf" target="_blank">PDF</a>
+          </div>
+        </div>
+        <div class="pub-item">
+          <span class="pub-num">(2)</span>
+          <div class="pub-content">
+            <span class="authors">Mouysset, L., Doyen, L. & Jiguet, F.</span> <span class="year">2010.</span> 
+            <span class="title">Risk aversion impact on bio-economic performances in an agricultural public policy context: a modeling approach.</span> 
+            <span class="journal">Proceedings ISEE,</span> 
+            <span class="details">Bremen, Germany.</span>
+          </div>
+        </div>
+        <div class="pub-item">
+          <span class="pub-num">(1)</span>
+          <div class="pub-content">
+            <span class="authors">Mouysset, L., Doyen, L. & Jiguet, F.</span> <span class="year">2010.</span> 
+            <span class="title">Innovation rigidity and ecological-economic reconciliation in agriculture.</span> 
+            <span class="journal">Proceedings ISDA,</span> 
+            <span class="details">Montpellier, France.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CHAPITRES D'OUVRAGES -->
+    <section class="section">
+      <h2 class="section-title">Chapitres d'ouvrages scientifiques</h2>
+      <div class="pub-list">
+        <div class="pub-item">
+          <span class="pub-num">(2)</span>
+          <div class="pub-content">
+            <span class="authors">Mouysset, L.</span> <span class="year">2021.</span> 
+            <span class="title">La valeur de la biodiversité dans les débats scientifiques : entre pluralisme et opérationnalité.</span> 
+            <span class="details">Dans <span class="journal">Penser la protection de l'environnement à partir de l'écologie,</span> E. Mermans & A. Dussault (eds). Éditions matériologiques.</span>
+          </div>
+        </div>
+        <div class="pub-item">
+          <span class="pub-num">(1)</span>
+          <div class="pub-content">
+            <span class="authors">Sabatier, R., Mouysset, L. & Tichit, M.</span> <span class="year">2019.</span> 
+            <span class="title">A mathematical approach to agroecosystem co-viability.</span> 
+            <span class="details">Dans <span class="journal">Coviability of Social and Ecological Systems; Reconnecting Mankind to the Biosphere in an Era of Global Change,</span> Springer.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DOCUMENTS DE TRAVAIL -->
+    <section class="section">
+      <h2 class="section-title">Documents de travail</h2>
+      <div class="pub-list">
+        <div class="pub-item">
+          <span class="pub-num">(5)</span>
+          <div class="pub-content">
+            <span class="authors">Faure, J., Gaba, S. & Mouysset, L.</span> 
+            <span class="title">What drives farmers' flower strip adoption? Answers from French farmers.</span> 
+            <span class="details">En révision dans <span class="journal">Ecological Economics.</span></span>
+          </div>
+        </div>
+        <div class="pub-item">
+          <span class="pub-num">(4)</span>
+          <div class="pub-content">
+            <span class="authors">Jean, S. & Mouysset, L.</span> 
+            <span class="title">The wildlands connectivity dilemma: a graph theory computational approach.</span>
+          </div>
+        </div>
+        <div class="pub-item">
+          <span class="pub-num">(3)</span>
+          <div class="pub-content">
+            <span class="authors">Mouysset, L.</span> 
+            <span class="title">Utilitarism and biodiversity crisis: lessons from ecosystem services, ecological compensation and animal welfare approaches.</span>
+          </div>
+        </div>
+        <div class="pub-item">
+          <span class="pub-num">(2)</span>
+          <div class="pub-content">
+            <span class="authors">Mouysset, L.</span> 
+            <span class="title">Les limites planétaires et l'éthique.</span> 
+            <span class="details">Chapitre pour <span class="journal">La bascule écologique</span> (ed. Aliénor Bertrand), Belin, Paris.</span>
+          </div>
+        </div>
+        <div class="pub-item">
+          <span class="pub-num">(1)</span>
+          <div class="pub-content">
+            <span class="authors">Mouysset, L.</span> 
+            <span class="title">Déplacer la frontière sur un sujet artistiquement et scientifiquement saturé : apport d'une collaboration art-science. Le cas de la conférence immersive.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <span>© 2025 Lauriane Mouysset</span>
+      <span>CNRS · CIRED</span>
+    </footer>
+
+  </div>
+
+</body>
+</html>

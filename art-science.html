@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Art & Science — Lauriane Mouysset</title>
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  
+  <meta name="description" content="Projets art-science de Lauriane Mouysset : AMAZONAS, Villa Médicis, expositions, conférences immersives.">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --f-display: 'Syne', sans-serif;
+      --f-body: 'IBM Plex Sans', sans-serif;
+      --noir: #1A1A18;
+      --blanc: #FAF9F7;
+      --fond-alt: #F0EEEA;
+      --texte: #4A4A46;
+      --gris: #7A7A72;
+      --gris-clair: #B8B8B8;
+      --accent: #A65D4C;
+      --vert: #4A6B4A;
+      --rose: #9B4D6A;
+      --border: rgba(26,26,24,0.1);
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--blanc); color: var(--texte); font-family: var(--f-body); }
+
+    .container { max-width: 900px; margin: 0 auto; padding: 0 36px; }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      background: rgba(250,249,247,0.96); backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      max-width: 1140px; margin: 0 auto; padding: 0 36px;
+      height: 56px; display: flex; justify-content: space-between; align-items: center;
+    }
+    .nav-logo {
+      font-family: var(--f-display); font-size: 14px; font-weight: 700;
+      color: var(--noir); letter-spacing: 0.06em; text-transform: uppercase; text-decoration: none;
+    }
+    .nav-links { display: flex; align-items: center; gap: 6px; }
+    .nav-links a {
+      font-family: var(--f-body); font-size: 11px; font-weight: 500;
+      color: var(--gris); text-decoration: none; padding: 4px 10px; transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--noir); }
+    .nav-lang a { color: var(--gris-clair); text-decoration: none; }
+    .nav-lang a:hover, .nav-lang a.active { color: var(--noir); }
+    .nav-lang {
+      font-family: var(--f-body); font-size: 11px; font-weight: 600;
+      color: var(--gris-clair); padding-left: 12px; margin-left: 6px;
+      border-left: 1px solid var(--border);
+    }
+
+    /* PAGE HEADER */
+    .page-header {
+      padding: 100px 0 40px;
+      border-bottom: 2px solid var(--noir);
+    }
+    .page-header h1 {
+      font-family: var(--f-display);
+      font-size: clamp(32px, 5vw, 48px);
+      font-weight: 800;
+      color: var(--noir);
+      letter-spacing: -0.03em;
+      margin-bottom: 24px;
+    }
+    .page-intro {
+      font-size: 17px;
+      line-height: 1.7;
+      color: var(--texte);
+      max-width: 720px;
+    }
+
+    /* SECTION */
+    .section {
+      padding: 48px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .section:last-of-type {
+      border-bottom: none;
+    }
+    .section-title {
+      font-family: var(--f-display);
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 28px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .section-title::before {
+      content: ''; width: 20px; height: 2px; background: var(--accent);
+    }
+
+    /* PROJECT CARD (large) */
+    .project-card {
+      background: var(--fond-alt);
+      padding: 32px;
+      margin-bottom: 24px;
+      border-left: 4px solid var(--accent);
+    }
+    .project-card:last-child {
+      margin-bottom: 0;
+    }
+    .project-label {
+      font-family: var(--f-body);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+    .project-title {
+      font-family: var(--f-display);
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--noir);
+      margin-bottom: 12px;
+    }
+    .project-description {
+      font-size: 15px;
+      line-height: 1.7;
+      color: var(--texte);
+      margin-bottom: 20px;
+    }
+    .project-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .project-meta-item {
+      font-size: 13px;
+      color: var(--gris);
+    }
+    .project-meta-item strong {
+      color: var(--noir);
+      font-weight: 600;
+    }
+    .project-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--accent);
+      text-decoration: none;
+      transition: gap 0.2s;
+    }
+    .project-link:hover {
+      gap: 12px;
+    }
+
+    /* SIMPLE LIST */
+    .simple-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .simple-item {
+      display: grid;
+      grid-template-columns: 100px 1fr;
+      gap: 20px;
+      padding: 14px 0;
+      border-top: 1px solid var(--border);
+    }
+    .simple-item:first-child {
+      border-top: none;
+      padding-top: 0;
+    }
+    .simple-year {
+      font-family: var(--f-display);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--gris);
+    }
+    .simple-content {
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--noir);
+    }
+    .simple-venue {
+      color: var(--gris);
+      font-style: normal;
+    }
+    .simple-duration {
+      font-size: 12px;
+      color: var(--gris-clair);
+    }
+
+    /* BOOK HIGHLIGHT */
+    .book-card {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 28px;
+      background: var(--fond-alt);
+      padding: 28px;
+      border-left: 4px solid var(--vert);
+    }
+    .book-cover {
+      width: 140px;
+      height: 200px;
+      background: var(--gris-clair);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      color: var(--gris);
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .book-cover img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .book-info {}
+    .book-title {
+      font-family: var(--f-display);
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--noir);
+      margin-bottom: 8px;
+    }
+    .book-authors {
+      font-size: 14px;
+      color: var(--gris);
+      margin-bottom: 12px;
+    }
+    .book-description {
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--texte);
+      margin-bottom: 16px;
+    }
+    .book-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .book-link:hover {
+      text-decoration: underline;
+    }
+
+    /* BACK LINK */
+    .back-link {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: var(--f-body); font-size: 13px; font-weight: 500;
+      color: var(--gris); text-decoration: none;
+      padding: 40px 0 20px;
+      transition: color 0.2s;
+    }
+    .back-link:hover { color: var(--noir); }
+    .back-link svg { transition: transform 0.2s; }
+    .back-link:hover svg { transform: translateX(-3px); }
+
+    /* FOOTER */
+    footer {
+      padding: 20px 0 32px; border-top: 1px solid var(--border);
+      margin-top: 40px;
+      display: flex; justify-content: space-between;
+    }
+    footer span { font-size: 11px; color: var(--gris-clair); }
+
+    /* RESPONSIVE */
+    @media (max-width: 700px) {
+      .container { padding: 0 24px; }
+      .book-card {
+        grid-template-columns: 1fr;
+      }
+      .book-cover {
+        width: 100px;
+        height: 130px;
+      }
+      .simple-item {
+        grid-template-columns: 1fr;
+        gap: 4px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">L. Mouysset</a>
+      <div class="nav-links">
+        <a href="https://www.centre-cired.fr/lauriane-mouysset/" target="_blank">CIRED</a>
+        <span class="nav-lang"><a href="art-science.html" class="active">FR</a> / <a href="en/art-science.html">EN</a></span>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+
+    <a href="index.html" class="back-link">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M10 12L6 8l4-4"/>
+      </svg>
+      Retour
+    </a>
+
+    <header class="page-header">
+      <h1>Art & Science</h1>
+      <p class="page-intro">
+        Quand la recherche rencontre la création. Collaborations avec des photographes, des écrivains, des artistes — pour explorer autrement la crise écologique et toucher d'autres publics.
+      </p>
+    </header>
+
+    <!-- PROJETS -->
+    <section class="section">
+      <h2 class="section-title">Projets</h2>
+      
+      <div class="project-card">
+        <div class="project-label">2024 — 2025</div>
+        <h3 class="project-title">RECIT — Villa Médicis</h3>
+        <p class="project-description">
+          Résidence art-recherche à l'Académie de France à Rome. Un projet à l'intersection de la littérature et de la science, explorant le récit écologique comme forme de médiation.
+        </p>
+        <div class="project-meta">
+          <div class="project-meta-item"><strong>Lieu</strong> Villa Médicis, Rome</div>
+          <div class="project-meta-item"><strong>Durée</strong> 3 mois</div>
+          <div class="project-meta-item"><strong>Rôle</strong> Cheffe de projet</div>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-label">2021 — 2023</div>
+        <h3 class="project-title">AMAZONAS</h3>
+        <p class="project-description">
+          Projet art-science sur la perception de la déforestation par les habitants du bassin amazonien. En collaboration avec le photographe documentaire Emeric Fohlen. Le projet a donné lieu à un beau-livre, des expositions et des conférences immersives.
+        </p>
+        <div class="project-meta">
+          <div class="project-meta-item"><strong>Financement</strong> CNRS / Paris-Saclay</div>
+          <div class="project-meta-item"><strong>Partenaire</strong> Emeric Fohlen (photographe)</div>
+          <div class="project-meta-item"><strong>Rôle</strong> Cheffe de projet</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BEAU-LIVRE -->
+    <section class="section">
+      <h2 class="section-title">Beau-livre</h2>
+      <div class="book-card">
+        <div class="book-cover">
+          <img src="amazonas-cover.jpg" alt="Couverture Amazonas">
+        </div>
+        <div class="book-info">
+          <h3 class="book-title">Amazonas</h3>
+          <p class="book-authors">Emeric Fohlen & Lauriane Mouysset</p>
+          <p class="book-description">
+            Un voyage photographique et scientifique au cœur du bassin amazonien. Comment les habitants perçoivent-ils la déforestation ? Que nous apprennent leurs regards sur notre rapport à la nature ?
+          </p>
+          <p class="book-authors">Presses des Ponts, 2023</p>
+          <a href="https://www.eyrolles.com/Audiovisuel/Livre/amazonas-9782859785581/" target="_blank" class="book-link">
+            Commander
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4.5 11.5L11.5 4.5M11.5 4.5H6.5M11.5 4.5v5"/></svg>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- EXPOSITIONS -->
+    <section class="section">
+      <h2 class="section-title">Expositions</h2>
+      <div class="simple-list">
+        <div class="simple-item">
+          <span class="simple-year">Jan. 2025</span>
+          <div class="simple-content">
+            AMAZONAS — <span class="simple-venue">Ministère de la Transition écologique, Paris</span>
+            <div class="simple-duration">6 semaines</div>
+          </div>
+        </div>
+        <div class="simple-item">
+          <span class="simple-year">Déc. 2023</span>
+          <div class="simple-content">
+            AMAZONAS — <span class="simple-venue">Quincave, Paris</span>
+            <div class="simple-duration">8 semaines</div>
+          </div>
+        </div>
+        <div class="simple-item">
+          <span class="simple-year">Mars 2023</span>
+          <div class="simple-content">
+            AMAZONAS — <span class="simple-venue">Salon International du Tourisme, Paris</span>
+            <div class="simple-duration">4 jours</div>
+          </div>
+        </div>
+        <div class="simple-item">
+          <span class="simple-year">Sep. 2022</span>
+          <div class="simple-content">
+            AMAZONAS — <span class="simple-venue">Cité du développement durable, Paris</span>
+            <div class="simple-duration">4 semaines</div>
+          </div>
+        </div>
+        <div class="simple-item">
+          <span class="simple-year">Sep. 2022</span>
+          <div class="simple-content">
+            AMAZONAS — <span class="simple-venue">Festival les Tropikantes, Bois de Vincennes</span>
+            <div class="simple-duration">1 jour</div>
+          </div>
+        </div>
+        <div class="simple-item">
+          <span class="simple-year">Juin 2022</span>
+          <div class="simple-content">
+            AMAZONAS — <span class="simple-venue">Festival la Nuit des forêts, Bois de Vincennes</span>
+            <div class="simple-duration">2 semaines</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONFÉRENCES IMMERSIVES -->
+    <section class="section">
+      <h2 class="section-title">Conférences immersives</h2>
+      <div class="simple-list">
+        <div class="simple-item">
+          <span class="simple-year">Juin 2025</span>
+          <div class="simple-content">
+            Regards Amazoniens — <span class="simple-venue">Villa Médicis, Rome</span>
+          </div>
+        </div>
+        <div class="simple-item">
+          <span class="simple-year">Juin 2025</span>
+          <div class="simple-content">
+            Regards Amazoniens — <span class="simple-venue">Festival Nuit des Forêts, Bois de Vincennes</span>
+          </div>
+        </div>
+        <div class="simple-item">
+          <span class="simple-year">Oct. 2023</span>
+          <div class="simple-content">
+            Conférence immersive CNRS — <span class="simple-venue">Cité des sciences et de l'industrie, Fête de la science</span>
+          </div>
+        </div>
+        <div class="simple-item">
+          <span class="simple-year">Juin 2022</span>
+          <div class="simple-content">
+            Regards croisés sur l'Amazonie — <span class="simple-venue">Bois de Vincennes</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <span>© 2025 Lauriane Mouysset</span>
+      <span>CNRS · CIRED</span>
+    </footer>
+
+  </div>
+
+</body>
+</html>

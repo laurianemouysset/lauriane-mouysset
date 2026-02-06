@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teaching — Lauriane Mouysset</title>
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="icon" type="image/x-icon" href="../favicon.ico">
+  
+  <meta name="description" content="Teaching and PhD supervision of Lauriane Mouysset.">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --f-display: 'Syne', sans-serif;
+      --f-body: 'IBM Plex Sans', sans-serif;
+      --noir: #1A1A18;
+      --blanc: #FAF9F7;
+      --fond-alt: #F0EEEA;
+      --texte: #4A4A46;
+      --gris: #7A7A72;
+      --gris-clair: #B8B8B8;
+      --accent: #A65D4C;
+      --vert: #4A6B4A;
+      --rose: #9B4D6A;
+      --border: rgba(26,26,24,0.1);
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--blanc); color: var(--texte); font-family: var(--f-body); }
+
+    .container { max-width: 900px; margin: 0 auto; padding: 0 36px; }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      background: rgba(250,249,247,0.96); backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      max-width: 1140px; margin: 0 auto; padding: 0 36px;
+      height: 56px; display: flex; justify-content: space-between; align-items: center;
+    }
+    .nav-logo {
+      font-family: var(--f-display); font-size: 14px; font-weight: 700;
+      color: var(--noir); letter-spacing: 0.06em; text-transform: uppercase; text-decoration: none;
+    }
+    .nav-links { display: flex; align-items: center; gap: 6px; }
+    .nav-links a {
+      font-family: var(--f-body); font-size: 11px; font-weight: 500;
+      color: var(--gris); text-decoration: none; padding: 4px 10px; transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--noir); }
+    .nav-lang a { color: var(--gris-clair); text-decoration: none; }
+    .nav-lang a:hover, .nav-lang a.active { color: var(--noir); }
+    .nav-lang {
+      font-family: var(--f-body); font-size: 11px; font-weight: 600;
+      color: var(--gris-clair); padding-left: 12px; margin-left: 6px;
+      border-left: 1px solid var(--border);
+    }
+
+    /* PAGE HEADER */
+    .page-header {
+      padding: 100px 0 40px;
+      border-bottom: 2px solid var(--noir);
+    }
+    .page-header h1 {
+      font-family: var(--f-display);
+      font-size: clamp(32px, 5vw, 48px);
+      font-weight: 800;
+      color: var(--noir);
+      letter-spacing: -0.03em;
+      margin-bottom: 24px;
+    }
+    .page-intro {
+      font-size: 17px;
+      line-height: 1.7;
+      color: var(--texte);
+      max-width: 720px;
+    }
+
+    /* SECTION */
+    .section {
+      padding: 48px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .section:last-of-type {
+      border-bottom: none;
+    }
+    .section-title {
+      font-family: var(--f-display);
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 28px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .section-title::before {
+      content: ''; width: 20px; height: 2px; background: var(--accent);
+    }
+
+    /* SUBSECTION */
+    .subsection-title {
+      font-family: var(--f-body);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--noir);
+      margin-bottom: 16px;
+      margin-top: 32px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    .subsection-title:first-of-type {
+      margin-top: 0;
+    }
+
+    /* TIMELINE */
+    .timeline { display: flex; flex-direction: column; gap: 0; }
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 110px 1fr;
+      gap: 20px;
+      padding: 14px 0;
+      border-top: 1px solid var(--border);
+    }
+    .timeline-item:first-child {
+      border-top: none;
+      padding-top: 0;
+    }
+    .timeline-year {
+      font-family: var(--f-display);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--gris);
+    }
+    .timeline-content {}
+    .timeline-title {
+      font-family: var(--f-body);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--noir);
+      margin-bottom: 2px;
+    }
+    .timeline-org {
+      font-family: var(--f-body);
+      font-size: 13px;
+      color: var(--gris);
+    }
+    .timeline-details {
+      font-family: var(--f-body);
+      font-size: 12px;
+      color: var(--gris-clair);
+      margin-top: 4px;
+    }
+
+    /* SIMPLE LIST */
+    .simple-list { display: flex; flex-direction: column; gap: 0; }
+    .simple-item {
+      display: grid;
+      grid-template-columns: 110px 1fr;
+      gap: 20px;
+      padding: 12px 0;
+      border-top: 1px solid var(--border);
+    }
+    .simple-item:first-child {
+      border-top: none;
+      padding-top: 0;
+    }
+    .simple-year {
+      font-family: var(--f-display);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .simple-text {
+      font-family: var(--f-body);
+      font-size: 14px;
+      color: var(--noir);
+    }
+    .simple-sub {
+      font-family: var(--f-body);
+      font-size: 13px;
+      color: var(--gris);
+    }
+
+    /* BACK LINK */
+    .back-link {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: var(--f-body); font-size: 13px; font-weight: 500;
+      color: var(--gris); text-decoration: none;
+      padding: 40px 0 20px;
+      transition: color 0.2s;
+    }
+    .back-link:hover { color: var(--noir); }
+    .back-link svg { transition: transform 0.2s; }
+    .back-link:hover svg { transform: translateX(-3px); }
+
+    /* FOOTER */
+    footer {
+      padding: 20px 0 32px; border-top: 1px solid var(--border);
+      margin-top: 40px;
+      display: flex; justify-content: space-between;
+    }
+    footer span { font-size: 11px; color: var(--gris-clair); }
+
+    /* RESPONSIVE */
+    @media (max-width: 700px) {
+      .container { padding: 0 24px; }
+      .timeline-item, .simple-item {
+        grid-template-columns: 1fr;
+        gap: 4px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">L. Mouysset</a>
+      <div class="nav-links">
+        <a href="https://www.centre-cired.fr/lauriane-mouysset/" target="_blank">CIRED</a>
+        <span class="nav-lang"><a href="../enseignement.html">FR</a> / <a href="enseignement.html" class="active">EN</a></span>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+
+    <a href="index.html" class="back-link">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M10 12L6 8l4-4"/>
+      </svg>
+      Back
+    </a>
+
+    <header class="page-header">
+      <h1>Teaching</h1>
+      <p class="page-intro">
+        Training the next generation of researchers — in biodiversity economics, ecological economics, and modeling. PhD supervision, courses, seminars and thesis committees.
+      </p>
+    </header>
+
+    <!-- COURSES -->
+    <section class="section">
+      <h2 class="section-title">Courses & Seminars</h2>
+      <div class="timeline">
+        <div class="timeline-item">
+          <span class="timeline-year">2023 — 2025</span>
+          <div class="timeline-content">
+            <div class="timeline-title">Economics of the Living</div>
+            <div class="timeline-org">Court of Auditors</div>
+            <div class="timeline-details">9h/year</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-year">2018 — 2025</span>
+          <div class="timeline-content">
+            <div class="timeline-title">Biodiversity Economics</div>
+            <div class="timeline-org">Paris 1 Panthéon-Sorbonne (M1, M2)</div>
+            <div class="timeline-details">15h/year</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-year">2018 — 2025</span>
+          <div class="timeline-content">
+            <div class="timeline-title">Ecological Economics</div>
+            <div class="timeline-org">AgroParisTech (M2)</div>
+            <div class="timeline-details">15h/year</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-year">2014 — 2017</span>
+          <div class="timeline-content">
+            <div class="timeline-title">Ecological Economics</div>
+            <div class="timeline-org">Sciences Po Paris (M1)</div>
+            <div class="timeline-details">20h/year</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-year">2012 — 2014</span>
+          <div class="timeline-content">
+            <div class="timeline-title">Ecological Economics, Applied Mathematics, Ecology and Applications, CAP (Common Agricultural Policy), Natural Resource Modeling</div>
+            <div class="timeline-org">AgroParisTech (M1, M2)</div>
+            <div class="timeline-details">192h/year</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-year">2010 — 2012</span>
+          <div class="timeline-content">
+            <div class="timeline-title">CAP (Common Agricultural Policy), Ecology and Applications, Natural Resource Modeling</div>
+            <div class="timeline-org">AgroParisTech, PontParisTech, Paris-Dauphine</div>
+            <div class="timeline-details">28h/year</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SUPERVISION -->
+    <section class="section">
+      <h2 class="section-title">Supervision</h2>
+
+      <h3 class="subsection-title">Postdoctoral Researcher</h3>
+      <div class="simple-list">
+        <div class="simple-item">
+          <span class="simple-year">2019 — 2020</span>
+          <div>
+            <div class="simple-text">Ilaria Brunetti</div>
+            <div class="simple-sub">Co-supervisor : Rodolphe Sabatier. ANR funding.</div>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="subsection-title">PhD Students</h3>
+      <div class="simple-list">
+        <div class="simple-item">
+          <span class="simple-year">2024 — 2027</span>
+          <div>
+            <div class="simple-text">Léo Bulckaen</div>
+            <div class="simple-sub">Co-supervisor : Harold Levrel. Univ. Paris-Saclay. IPEF fellowship.</div>
+          </div>
+        </div>
+        <div class="simple-item">
+          <span class="simple-year">2023 — 2026</span>
+          <div>
+            <div class="simple-text">Adrien Fauste-Gay</div>
+            <div class="simple-sub">Co-supervisor : Olivier Vidal. Univ. Grenoble. ENS Paris fellowship.</div>
+          </div>
+        </div>
+        <div class="simple-item">
+          <span class="simple-year">2022 — 2025</span>
+          <div>
+            <div class="simple-text">Bijan Valilou</div>
+            <div class="simple-sub">Co-supervisors : Eric Berr, Antoine Godin. Univ. Bordeaux. ENS Rennes fellowship.</div>
+          </div>
+        </div>
+        <div class="simple-item">
+          <span class="simple-year">2022 — 2025</span>
+          <div>
+            <div class="simple-text">Valentin Cocco</div>
+            <div class="simple-sub">Co-supervisor : Raja Chakir. Univ. Paris-Saclay. IPEF fellowship.</div>
+          </div>
+        </div>
+        <div class="simple-item">
+          <span class="simple-year">2021 — 2024</span>
+          <div>
+            <div class="simple-text">Simon Jean</div>
+            <div class="simple-sub">Co-supervisor : Christopher Costello. Univ. Paris-Saclay. ENS Saclay fellowship.</div>
+          </div>
+        </div>
+        <div class="simple-item">
+          <span class="simple-year">2021 — 2024</span>
+          <div>
+            <div class="simple-text">Baptiste Parent</div>
+            <div class="simple-sub">Co-supervisor : Antoine Missemer. Univ. Paris-Saclay. IPEF fellowship.</div>
+          </div>
+        </div>
+        <div class="simple-item">
+          <span class="simple-year">2019 — 2022</span>
+          <div>
+            <div class="simple-text">Mohamad Chhaytle</div>
+            <div class="simple-sub">Co-supervisor : Régis Ouvrard. Univ. Poitiers. Nouvelle-Aquitaine fellowship.</div>
+          </div>
+        </div>
+        <div class="simple-item">
+          <span class="simple-year">2018 — 2021</span>
+          <div>
+            <div class="simple-text">Jérôme Faure</div>
+            <div class="simple-sub">Co-supervisor : Sabrina Gaba. Univ. Bordeaux. Doctoral school fellowship.</div>
+          </div>
+        </div>
+        <div class="simple-item">
+          <span class="simple-year">2016 — 2019</span>
+          <div>
+            <div class="simple-text">Yanis Elalamy</div>
+            <div class="simple-sub">Co-supervisor : Luc Doyen. Univ. Bordeaux. Cifre fellowship.</div>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="subsection-title">Master's Students</h3>
+      <div class="simple-list">
+        <div class="simple-item">
+          <span class="simple-year">2024</span>
+          <div>
+            <div class="simple-text">Sacha Poultier</div>
+          </div>
+        </div>
+        <div class="simple-item">
+          <span class="simple-year">2023</span>
+          <div>
+            <div class="simple-text">Wiame Zoubdi</div>
+          </div>
+        </div>
+        <div class="simple-item">
+          <span class="simple-year">2021</span>
+          <div>
+            <div class="simple-text">Tuan Nguyen, Baptiste Parent, Théophane Hazoumé, Alessandro Ferrante, Hugo Charoud, Valentin Cocco, Tiphaine Guillet</div>
+          </div>
+        </div>
+        <div class="simple-item">
+          <span class="simple-year">2020</span>
+          <div>
+            <div class="simple-text">Dounia Khamouch</div>
+          </div>
+        </div>
+        <div class="simple-item">
+          <span class="simple-year">2018</span>
+          <div>
+            <div class="simple-text">Jérôme Faure</div>
+          </div>
+        </div>
+        <div class="simple-item">
+          <span class="simple-year">2016</span>
+          <div>
+            <div class="simple-text">Claire Rais Assa, Fidèle Djassou</div>
+          </div>
+        </div>
+        <div class="simple-item">
+          <span class="simple-year">2011</span>
+          <div>
+            <div class="simple-text">Marie Miglianico</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- JURYS -->
+    <section class="section">
+      <h2 class="section-title">Thesis Committees & HDR</h2>
+      
+      <h3 class="subsection-title">HDR</h3>
+      <div class="simple-list">
+        <div class="simple-item">
+          <span class="simple-year">2022</span>
+          <div>
+            <div class="simple-text">Clélia Sirami (INRAE)</div>
+            <div class="simple-sub">Institut Polytechnique de Toulouse</div>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="subsection-title">PhDs</h3>
+      <div class="simple-list">
+        <div class="simple-item">
+          <span class="simple-year">2025</span>
+          <div>
+            <div class="simple-text">Margaux Durand, Alice De Lapparent</div>
+          </div>
+        </div>
+        <div class="simple-item">
+          <span class="simple-year">2021</span>
+          <div>
+            <div class="simple-text">Zafrani Uwingabire, Soukaina Anougmar, Alice Colsaet</div>
+          </div>
+        </div>
+        <div class="simple-item">
+          <span class="simple-year">2020</span>
+          <div>
+            <div class="simple-text">Thibaut France</div>
+          </div>
+        </div>
+        <div class="simple-item">
+          <span class="simple-year">2018</span>
+          <div>
+            <div class="simple-text">François Bareille</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <span>© 2025 Lauriane Mouysset</span>
+      <span>CNRS · CIRED</span>
+    </footer>
+
+  </div>
+
+</body>
+</html>

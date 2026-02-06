@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Médias — Lauriane Mouysset</title>
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  
+  <meta name="description" content="Interventions médiatiques de Lauriane Mouysset : TEDx, tribunes, interviews.">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --f-display: 'Syne', sans-serif;
+      --f-body: 'IBM Plex Sans', sans-serif;
+      --noir: #1A1A18;
+      --blanc: #FAF9F7;
+      --fond-alt: #F0EEEA;
+      --texte: #4A4A46;
+      --gris: #7A7A72;
+      --gris-clair: #B8B8B0;
+      --accent: #A65D4C;
+      --vert: #4A6B4A;
+      --rose: #9B4D6A;
+      --border: rgba(26,26,24,0.1);
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--blanc); color: var(--texte); font-family: var(--f-body); }
+
+    .container { max-width: 900px; margin: 0 auto; padding: 0 36px; }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      background: rgba(250,249,247,0.96); backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      max-width: 1140px; margin: 0 auto; padding: 0 36px;
+      height: 56px; display: flex; justify-content: space-between; align-items: center;
+    }
+    .nav-logo {
+      font-family: var(--f-display); font-size: 14px; font-weight: 700;
+      color: var(--noir); letter-spacing: 0.06em; text-transform: uppercase; text-decoration: none;
+    }
+    .nav-links { display: flex; align-items: center; gap: 6px; }
+    .nav-links a {
+      font-family: var(--f-body); font-size: 11px; font-weight: 500;
+      color: var(--gris); text-decoration: none; padding: 4px 10px; transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--noir); }
+    .nav-lang a { color: var(--gris-clair); text-decoration: none; }
+    .nav-lang a:hover, .nav-lang a.active { color: var(--noir); }
+    .nav-lang {
+      font-family: var(--f-body); font-size: 11px; font-weight: 600;
+      color: var(--gris-clair); padding-left: 12px; margin-left: 6px;
+      border-left: 1px solid var(--border);
+    }
+
+    /* PAGE HEADER */
+    .page-header {
+      padding: 100px 0 40px;
+      border-bottom: 2px solid var(--noir);
+    }
+    .page-header h1 {
+      font-family: var(--f-display);
+      font-size: clamp(32px, 5vw, 48px);
+      font-weight: 800;
+      color: var(--noir);
+      letter-spacing: -0.03em;
+      margin-bottom: 24px;
+    }
+    .page-intro {
+      font-size: 17px;
+      line-height: 1.7;
+      color: var(--texte);
+      max-width: 720px;
+    }
+
+    /* SECTION */
+    .section {
+      padding: 48px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .section:last-of-type {
+      border-bottom: none;
+    }
+    .section-title {
+      font-family: var(--f-display);
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 28px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .section-title::before {
+      content: ''; width: 20px; height: 2px; background: var(--accent);
+    }
+
+    /* HIGHLIGHT CARDS (TEDx) */
+    .highlight-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .highlight-card {
+      padding: 28px;
+      background: var(--fond-alt);
+      border-left: 3px solid var(--accent);
+      transition: transform 0.2s;
+    }
+    .highlight-card:hover {
+      transform: translateY(-2px);
+    }
+    .highlight-year {
+      font-family: var(--f-display);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+    .highlight-title {
+      font-family: var(--f-display);
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--noir);
+      margin-bottom: 8px;
+    }
+    .highlight-venue {
+      font-size: 14px;
+      color: var(--gris);
+      margin-bottom: 16px;
+    }
+    .highlight-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--accent);
+      text-decoration: none;
+      transition: gap 0.2s;
+    }
+    .highlight-link:hover {
+      gap: 10px;
+    }
+
+    /* MEDIA LIST */
+    .media-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .media-item {
+      display: grid;
+      grid-template-columns: 32px 80px 1fr auto;
+      gap: 12px;
+      padding: 16px 0;
+      border-top: 1px solid var(--border);
+      align-items: baseline;
+    }
+    .media-item:first-child {
+      border-top: none;
+      padding-top: 0;
+    }
+    .media-num {
+      font-family: var(--f-display);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--gris-clair);
+      text-align: right;
+    }
+    .media-year {
+      font-family: var(--f-display);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--gris);
+    }
+    .media-content {
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--noir);
+    }
+    .media-source {
+      font-style: italic;
+      color: var(--gris);
+    }
+    .media-link {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--accent);
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .media-link:hover {
+      text-decoration: underline;
+    }
+
+    /* BACK LINK */
+    .back-link {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: var(--f-body); font-size: 13px; font-weight: 500;
+      color: var(--gris); text-decoration: none;
+      padding: 40px 0 20px;
+      transition: color 0.2s;
+    }
+    .back-link:hover { color: var(--noir); }
+    .back-link svg { transition: transform 0.2s; }
+    .back-link:hover svg { transform: translateX(-3px); }
+
+    /* FOOTER */
+    footer {
+      padding: 20px 0 32px; border-top: 1px solid var(--border);
+      margin-top: 40px;
+      display: flex; justify-content: space-between;
+    }
+    footer span { font-size: 11px; color: var(--gris-clair); }
+
+    /* RESPONSIVE */
+    @media (max-width: 700px) {
+      .container { padding: 0 24px; }
+      .highlight-grid { grid-template-columns: 1fr; }
+      .media-item { 
+        grid-template-columns: 1fr;
+        gap: 4px;
+      }
+      .media-link {
+        margin-top: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">L. Mouysset</a>
+      <div class="nav-links">
+        <a href="https://www.centre-cired.fr/lauriane-mouysset/" target="_blank">CIRED</a>
+        <span class="nav-lang"><a href="medias.html" class="active">FR</a> / <a href="en/medias.html">EN</a></span>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+
+    <a href="index.html" class="back-link">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M10 12L6 8l4-4"/>
+      </svg>
+      Retour
+    </a>
+
+    <header class="page-header">
+      <h1>Médias</h1>
+      <p class="page-intro">
+        Porter la science au-delà des murs de l'université — dans la presse, à la radio, sur scène. Expliquer, nuancer, donner à penser.
+      </p>
+    </header>
+
+    <!-- TEDx -->
+    <section class="section">
+      <h2 class="section-title">Conférences TEDx</h2>
+      <div class="highlight-grid">
+        <div class="highlight-card">
+          <div class="highlight-year">2018</div>
+          <div class="highlight-title">TEDx Bordeaux</div>
+          <div class="highlight-venue">Bordeaux</div>
+          <a href="https://www.youtube.com/watch?v=PGYotOKxdso" target="_blank" class="highlight-link">
+            Voir la vidéo
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4.5 11.5L11.5 4.5M11.5 4.5H6.5M11.5 4.5v5"/></svg>
+          </a>
+        </div>
+        <div class="highlight-card">
+          <div class="highlight-year">2015</div>
+          <div class="highlight-title">Les Ernest</div>
+          <div class="highlight-venue">École Normale Supérieure</div>
+          <a href="https://www.dailymotion.com/video/x438xwo_lauriane-mouysset-la-biodiversite-un-colosse-aux-pieds-d-argile_school" target="_blank" class="highlight-link">
+            Voir la vidéo
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4.5 11.5L11.5 4.5M11.5 4.5H6.5M11.5 4.5v5"/></svg>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- TRIBUNES -->
+    <section class="section">
+      <h2 class="section-title">Tribunes</h2>
+      <div class="media-list">
+        <div class="media-item">
+          <span class="media-num">(9)</span>
+          <span class="media-year">Jan. 2026</span>
+          <div class="media-content">Les abeilles sont-elles les nouveaux harengs ? <span class="media-source">Les Échos.</span></div>
+          <a href="https://www.lesechos.fr/idees-debats/editos-analyses/les-abeilles-sont-elles-les-nouveaux-harengs-2210190" target="_blank" class="media-link">Lire →</a>
+        </div>
+        <div class="media-item">
+          <span class="media-num">(8)</span>
+          <span class="media-year">Nov. 2025</span>
+          <div class="media-content">Est-ce bien raisonnable d'avoir plusieurs COP ? <span class="media-source">Les Échos.</span></div>
+          <a href="#" class="media-link">Lire →</a>
+        </div>
+        <div class="media-item">
+          <span class="media-num">(7)</span>
+          <span class="media-year">Oct. 2025</span>
+          <div class="media-content">Le PIB est-il au crépuscule de sa vie ? <span class="media-source">Les Échos.</span></div>
+          <a href="#" class="media-link">Lire →</a>
+        </div>
+        <div class="media-item">
+          <span class="media-num">(6)</span>
+          <span class="media-year">Sep. 2025</span>
+          <div class="media-content">La protection de la biodiversité est-elle une cause ? <span class="media-source">Les Échos.</span></div>
+          <a href="#" class="media-link">Lire →</a>
+        </div>
+        <div class="media-item">
+          <span class="media-num">(5)</span>
+          <span class="media-year">Juin 2025</span>
+          <div class="media-content">Les crédits biodiversité ne sont ni un pacte diabolique ni une baguette magique. <span class="media-source">Les Échos.</span></div>
+          <a href="https://www.lesechos.fr/idees-debats/cercle/les-credits-biodiversite-ne-sont-ni-un-pacte-diabolique-ni-une-baguette-magique-2171934" target="_blank" class="media-link">Lire →</a>
+        </div>
+        <div class="media-item">
+          <span class="media-num">(4)</span>
+          <span class="media-year">Mars 2018</span>
+          <div class="media-content">Réformes Macron : Faire face à la crise écologique appelle une réflexion combinant les hommes et la nature. <span class="media-source">Le Monde.</span></div>
+          <a href="#" class="media-link">Lire →</a>
+        </div>
+        <div class="media-item">
+          <span class="media-num">(3)</span>
+          <span class="media-year">Mars 2017</span>
+          <div class="media-content">Réformer la PAC pour initier une transition agro-écologique. <span class="media-source">Slate.</span></div>
+          <a href="#" class="media-link">Lire →</a>
+        </div>
+        <div class="media-item">
+          <span class="media-num">(2)</span>
+          <span class="media-year">Juin 2015</span>
+          <div class="media-content">Comprendre le défi de la biodiversité. <span class="media-source">Huffington Post.</span></div>
+          <a href="#" class="media-link">Lire →</a>
+        </div>
+        <div class="media-item">
+          <span class="media-num">(1)</span>
+          <span class="media-year">Juil. 2014</span>
+          <div class="media-content">Politiques publiques agricoles : durable n'est pas synonyme de vert. <span class="media-source">Huffington Post.</span></div>
+          <a href="#" class="media-link">Lire →</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- INTERVIEWS -->
+    <section class="section">
+      <h2 class="section-title">Interviews & émissions</h2>
+      <div class="media-list">
+        <div class="media-item">
+          <span class="media-num">(11)</span>
+          <span class="media-year">Juin 2025</span>
+          <div class="media-content">Citation dans un article de Pascal Riché. <span class="media-source">Le Monde.</span></div>
+          <a href="#" class="media-link">Lire →</a>
+        </div>
+        <div class="media-item">
+          <span class="media-num">(10)</span>
+          <span class="media-year">Mai 2025</span>
+          <div class="media-content">Lundi C'est Politique. <span class="media-source">La Chaîne Parlementaire.</span></div>
+          <a href="#" class="media-link">Voir →</a>
+        </div>
+        <div class="media-item">
+          <span class="media-num">(9)</span>
+          <span class="media-year">Mai 2025</span>
+          <div class="media-content">« Traiter de la biodiversité sans l'imbriquer avec l'économie n'est pas possible ». <span class="media-source">Le Monde.</span></div>
+          <a href="https://www.lemonde.fr/economie/article/2025/05/19/lauriane-mouysset-traiter-de-la-biodiversite-sans-l-imbriquer-avec-l-economie-n-est-pas-possible_6607130_3234.html" target="_blank" class="media-link">Lire →</a>
+        </div>
+        <div class="media-item">
+          <span class="media-num">(8)</span>
+          <span class="media-year">2024</span>
+          <div class="media-content">La météo du Climat (3 interventions). <span class="media-source">France 2.</span></div>
+          <a href="https://www.france.tv/france-2/journal-meteo-et-climat/6501272-journal-meteo-climat.html" target="_blank" class="media-link">Voir →</a>
+        </div>
+        <div class="media-item">
+          <span class="media-num">(7)</span>
+          <span class="media-year">Déc. 2024</span>
+          <div class="media-content">Portrait Médaille de Bronze. <span class="media-source">CNRS.</span></div>
+          <a href="#" class="media-link">Voir →</a>
+        </div>
+        <div class="media-item">
+          <span class="media-num">(6)</span>
+          <span class="media-year">Juil. 2024</span>
+          <div class="media-content">Une approche inter- et transdisciplinaire de la crise écologique. <span class="media-source">INEE / CNRS.</span></div>
+          <a href="https://www.inee.cnrs.fr/fr/cnrsinfo/lauriane-mouysset-une-approche-inter-et-transdisciplinaire-de-la-crise-ecologique-0" target="_blank" class="media-link">Lire →</a>
+        </div>
+        <div class="media-item">
+          <span class="media-num">(5)</span>
+          <span class="media-year">Juin 2023</span>
+          <div class="media-content">Déforestation : le dilemme des Amazoniens. <span class="media-source">Le Journal du CNRS.</span></div>
+          <a href="https://lejournal.cnrs.fr/articles/deforestation-le-dilemme-des-amazoniens" target="_blank" class="media-link">Lire →</a>
+        </div>
+        <div class="media-item">
+          <span class="media-num">(4)</span>
+          <span class="media-year">Jan. 2023</span>
+          <div class="media-content">Rencontre avec le photographe Emeric Fohlen et la chercheuse Lauriane Mouysset. <span class="media-source">EHESS.</span></div>
+          <a href="https://www.ehess.fr/fr/portrait/rencontre-avec-photographe-documentaire-emeric-fohlen-et-chercheuse-lauriane-mouysset-cnrs" target="_blank" class="media-link">Lire →</a>
+        </div>
+        <div class="media-item">
+          <span class="media-num">(3)</span>
+          <span class="media-year">2021</span>
+          <div class="media-content">L'écologie à l'IHPST. <span class="media-source">IHPST.</span></div>
+          <a href="https://www.youtube.com/watch?v=z773kpvBaBU" target="_blank" class="media-link">Voir →</a>
+        </div>
+        <div class="media-item">
+          <span class="media-num">(2)</span>
+          <span class="media-year">2021</span>
+          <div class="media-content">Les Femmes en sciences. <span class="media-source">Institut français de Bucarest.</span></div>
+          <a href="https://www.facebook.com/InstitutulFrancez/videos/ziua-interna%C8%9Bional%C4%83-a-femeilor-%C8%99i-fetelor-%C3%AEn-%C8%99tiin%C8%9B%C4%83-interviu-cu-lauriane-mouyss/774378610102410/" target="_blank" class="media-link">Voir →</a>
+        </div>
+        <div class="media-item">
+          <span class="media-num">(1)</span>
+          <span class="media-year">Nov. 2017</span>
+          <div class="media-content">Du grain à moudre : L'agriculture peut-elle se passer de pesticides ? <span class="media-source">France Culture.</span></div>
+          <a href="https://www.franceculture.fr/emissions/du-grain-a-moudre/lagriculture-peut-elle-se-passer-de-pesticides" target="_blank" class="media-link">Écouter →</a>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <span>© 2025 Lauriane Mouysset</span>
+      <span>CNRS · CIRED</span>
+    </footer>
+
+  </div>
+
+</body>
+</html>

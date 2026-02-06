@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lauriane Mouysset — CNRS Research Director</title>
+  <meta name="description" content="Researcher at CIRED, at the intersection of ecology, economics and philosophy.">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="icon" type="image/x-icon" href="../favicon.ico">
+  
+  <!-- OpenGraph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://laurianemouysset.fr/">
+  <meta property="og:title" content="Lauriane Mouysset — CNRS Research Director">
+  <meta property="og:description" content="Researcher at CIRED, at the intersection of ecology, economics and philosophy. Biodiversity, bioeconomic models, environmental ethics.">
+  <meta property="og:image" content="https://laurianemouysset.fr/photo-lauriane.jpg">
+  
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://laurianemouysset.fr/">
+  <meta name="twitter:title" content="Lauriane Mouysset — CNRS Research Director">
+  <meta name="twitter:description" content="Researcher at CIRED, at the intersection of ecology, economics and philosophy.">
+  <meta name="twitter:image" content="https://laurianemouysset.fr/photo-lauriane.jpg">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --f-display: 'Syne', sans-serif;
+      --f-body: 'IBM Plex Sans', sans-serif;
+      --noir: #1A1A18;
+      --blanc: #FAF9F7;
+      --fond-alt: #F0EEEA;
+      --texte: #4A4A46;
+      --gris: #7A7A72;
+      --gris-clair: #B8B8B0;
+      --accent: #A65D4C;
+      --vert: #4A6B4A;
+      --rose: #9B4D6A;
+      --border: rgba(26,26,24,0.1);
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--blanc); color: var(--texte); font-family: var(--f-body); }
+
+    .container { max-width: 1140px; margin: 0 auto; padding: 0 36px; }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      background: rgba(250,249,247,0.96); backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      max-width: 1140px; margin: 0 auto; padding: 0 36px;
+      height: 56px; display: flex; justify-content: space-between; align-items: center;
+    }
+    .nav-logo {
+      font-family: var(--f-display); font-size: 14px; font-weight: 700;
+      color: var(--noir); letter-spacing: 0.06em; text-transform: uppercase; text-decoration: none;
+    }
+    .nav-links { display: flex; align-items: center; gap: 6px; }
+    .nav-links a {
+      font-family: var(--f-body); font-size: 11px; font-weight: 500;
+      color: var(--gris); text-decoration: none; padding: 4px 10px; transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--noir); }
+    .nav-lang a { color: var(--gris-clair); text-decoration: none; }
+    .nav-lang a:hover, .nav-lang a.active { color: var(--noir); }
+    .nav-lang {
+      font-family: var(--f-body); font-size: 11px; font-weight: 600;
+      color: var(--gris-clair); padding-left: 12px; margin-left: 6px;
+      border-left: 1px solid var(--border);
+    }
+
+    /* HEADER */
+    .header-block {
+      display: grid; grid-template-columns: 1fr 280px;
+      gap: 48px; align-items: end;
+      padding: 100px 0 48px; border-bottom: 2px solid var(--noir);
+    }
+    .header-identity {
+      display: flex; flex-direction: column; justify-content: flex-end;
+    }
+    .header-title {
+      margin-bottom: 12px; display: flex; align-items: center; gap: 14px;
+    }
+    .header-title::before {
+      content: ''; width: 32px; height: 2px; background: var(--accent);
+    }
+    .header-title span {
+      font-family: var(--f-display); font-size: 18px; font-weight: 700;
+      color: var(--noir); letter-spacing: 0.04em; text-transform: uppercase;
+    }
+    .header-name {
+      font-family: var(--f-display); font-size: clamp(44px, 6vw, 76px);
+      font-weight: 800; line-height: 0.9; color: var(--noir); letter-spacing: -0.04em;
+    }
+    .header-name span { display: block; }
+    .header-lab {
+      font-family: var(--f-body); font-size: 13px; line-height: 1.5;
+      color: var(--gris); margin-top: 16px;
+    }
+    .header-cv-links {
+      margin-top: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .header-cv-links a {
+      font-family: var(--f-body);
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--accent);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .header-cv-links a:hover {
+      color: var(--noir);
+      text-decoration: underline;
+    }
+    .cv-separator {
+      color: var(--gris-clair);
+      font-size: 12px;
+    }
+
+    .header-photo {
+      width: 280px; height: 350px;
+      position: relative; overflow: visible; background: #C4A08A;
+    }
+    .header-photo img { width: 100%; height: 100%; object-fit: cover; object-position: center 15%; }
+    .header-photo::before {
+      content: ''; position: absolute; top: 0; left: 0;
+      width: 28px; height: 2px; background: var(--accent);
+    }
+    .photo-credit {
+      position: absolute;
+      bottom: -20px;
+      right: 0;
+      font-family: var(--f-body);
+      font-size: 10px;
+      color: var(--gris-clair);
+    }
+    .header-photo::after {
+      content: ''; position: absolute; top: 0; left: 0;
+      width: 2px; height: 28px; background: var(--accent);
+    }
+
+    /* INTRO */
+    .intro-block {
+      padding: 40px 0 0;
+    }
+    .intro-text { 
+      font-size: 16px; line-height: 1.75; color: var(--texte); 
+      margin-bottom: 20px;
+    }
+    .intro-text strong { color: var(--noir); font-weight: 600; }
+
+    .distinctions-inline {
+      display: flex; flex-wrap: wrap; gap: 28px; align-items: center;
+      justify-content: center;
+      padding: 24px 0; margin-top: 20px;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .distinction-item {
+      display: flex; align-items: center; gap: 10px;
+    }
+    .distinction-year { 
+      font-family: var(--f-display); font-size: 14px; font-weight: 700; 
+      color: var(--accent); 
+    }
+    .distinction-text { font-size: 15px; font-weight: 500; color: var(--noir); }
+    .distinction-separator {
+      width: 1px; height: 18px; background: var(--border);
+    }
+
+    /* CARDS */
+    .explore-section { padding: 48px 0 0; }
+    .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+    .card {
+      display: block; background: var(--fond-alt); padding: 32px 28px;
+      text-decoration: none; position: relative; min-height: 150px;
+      transition: background 0.3s, transform 0.3s; 
+      cursor: pointer; border: none; text-align: left; width: 100%;
+    }
+    .card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: var(--card-accent, var(--accent)); transition: background 0.3s;
+    }
+    .card:hover { 
+      background: var(--noir); 
+      transform: translateY(-3px);
+    }
+    .card:hover .card-label { color: var(--blanc); }
+    .card:hover .card-hook { color: rgba(255,255,255,0.55); }
+    .card:hover .card-arrow { opacity: 1; color: var(--accent); }
+    .card:hover::before { background: var(--accent); }
+    .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+    .card-label {
+      font-family: var(--f-display); font-size: 17px; font-weight: 700;
+      color: var(--noir); transition: color 0.3s; line-height: 1.2;
+    }
+    .card-arrow { opacity: 0.25; transition: opacity 0.3s, color 0.3s; }
+    .card-hook { font-size: 13px; line-height: 1.55; color: var(--texte); transition: color 0.3s; }
+    .card[data-accent="noir"] { --card-accent: var(--noir); }
+    .card[data-accent="vert"] { --card-accent: var(--vert); }
+    .card[data-accent="rose"] { --card-accent: var(--rose); }
+
+    /* CONTACT */
+    .contact-band {
+      padding: 32px 0; margin-top: 56px; border-top: 1px solid var(--border);
+      display: grid; grid-template-columns: 1fr 1fr; gap: 40px;
+    }
+    .contact-email {
+      font-size: 16px; font-weight: 500; color: var(--noir);
+    }
+    .contact-address { font-size: 13px; line-height: 1.7; color: var(--gris); margin-top: 10px; }
+    .contact-links { display: flex; gap: 24px; flex-wrap: wrap; justify-content: flex-end; align-items: center; }
+    .contact-links a { font-size: 12px; font-weight: 500; color: var(--gris); text-decoration: none; transition: color 0.2s; }
+    .contact-links a:hover { color: var(--noir); }
+
+    footer {
+      padding: 20px 0 32px; border-top: 1px solid var(--border);
+      display: flex; justify-content: space-between;
+    }
+    footer span { font-size: 11px; color: var(--gris-clair); }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      .header-block { grid-template-columns: 1fr; gap: 32px; }
+      .header-photo { width: 200px; height: 250px; order: -1; }
+      .distinctions-inline { flex-direction: column; align-items: center; gap: 12px; }
+      .distinction-separator { display: none; }
+      .card-grid { grid-template-columns: 1fr 1fr; }
+      .contact-band { grid-template-columns: 1fr; gap: 24px; }
+      .contact-links { justify-content: flex-start; }
+      .nav-links { display: none; }
+    }
+    @media (max-width: 540px) {
+      .container { padding: 0 24px; }
+      .card-grid { grid-template-columns: 1fr; }
+      .header-name { font-size: clamp(38px, 12vw, 48px); }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-inner">
+      <a href="#" class="nav-logo">L. Mouysset</a>
+      <div class="nav-links">
+        <a href="https://www.centre-cired.fr/lauriane-mouysset/" target="_blank">CIRED</a>
+        <span class="nav-lang"><a href="../index.html">FR</a> / <a href="index.html" class="active">EN</a></span>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+
+    <header class="header-block">
+      <div class="header-identity">
+        <div class="header-title">
+          <span>CNRS Research Director</span>
+        </div>
+        <h1 class="header-name">
+          <span>Lauriane</span>
+          <span>Mouysset</span>
+        </h1>
+        <p class="header-lab">
+          CIRED — International Research Center on Environment and Development
+        </p>
+        <div class="header-cv-links">
+          <a href="CV 2 pages Lauriane Mouysset.pdf" target="_blank">CV 2 pages</a>
+          <span class="cv-separator">·</span>
+          <a href="Full CV Lauriane Mouysset.pdf" target="_blank">Full CV</a>
+        </div>
+      </div>
+
+      <div class="header-photo">
+        <img src="../photo-lauriane.jpg" alt="Lauriane Mouysset">
+        <span class="photo-credit">© Corentin Fohlen</span>
+      </div>
+    </header>
+
+    <section class="intro-block">
+      <p class="intro-text">
+        I study <strong>biodiversity</strong> at the intersection of <strong>ecology</strong>, 
+        <strong>economics</strong> and <strong>philosophy</strong>. I develop 
+        bioeconomic models integrating biodiversity into economic decisions without pricing it and explore the concept of viability to frame our choices in the face of its erosion.
+      </p>
+      <div class="distinctions-inline">
+        <div class="distinction-item">
+          <span class="distinction-year">2025</span>
+          <span class="distinction-text">Nominated for the Young Economist Award</span>
+        </div>
+        <div class="distinction-separator"></div>
+        <div class="distinction-item">
+          <span class="distinction-year">2024</span>
+          <span class="distinction-text">CNRS Bronze Medal</span>
+        </div>
+        <div class="distinction-separator"></div>
+        <div class="distinction-item">
+          <span class="distinction-year">2024</span>
+          <span class="distinction-text">Villa Medici Residency</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="explore-section">
+      <div class="card-grid">
+        <!-- Row 1: Academic profile -->
+        <a href="parcours.html" class="card" data-accent="noir">
+          <div class="card-header">
+            <span class="card-label">Career & CV</span>
+            <svg class="card-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4.5 11.5L11.5 4.5M11.5 4.5H6.5M11.5 4.5v5"/></svg>
+          </div>
+          <p class="card-hook">Positions, education, awards and scientific responsibilities.</p>
+        </a>
+        <a href="publications.html" class="card">
+          <div class="card-header">
+            <span class="card-label">Publications</span>
+            <svg class="card-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4.5 11.5L11.5 4.5M11.5 4.5H6.5M11.5 4.5v5"/></svg>
+          </div>
+          <p class="card-hook">Research articles in scientific and philosophical journals. Bioeconomic modeling, agricultural policies, environmental ethics.</p>
+        </a>
+        <a href="recherche.html" class="card" data-accent="vert">
+          <div class="card-header">
+            <span class="card-label">Research</span>
+            <svg class="card-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4.5 11.5L11.5 4.5M11.5 4.5H6.5M11.5 4.5v5"/></svg>
+          </div>
+          <p class="card-hook">Three axes at the intersection of ecology, economics and philosophy to rethink socio-ecosystem management.</p>
+        </a>
+        
+        <!-- Row 2: Engagement -->
+        <a href="medias.html" class="card">
+          <div class="card-header">
+            <span class="card-label">Media</span>
+            <svg class="card-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4.5 11.5L11.5 4.5M11.5 4.5H6.5M11.5 4.5v5"/></svg>
+          </div>
+          <p class="card-hook">TEDx, Le Monde, France Culture — bringing science beyond university walls.</p>
+        </a>
+        <a href="art-science.html" class="card" data-accent="vert">
+          <div class="card-header">
+            <span class="card-label">Art & Science</span>
+            <svg class="card-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4.5 11.5L11.5 4.5M11.5 4.5H6.5M11.5 4.5v5"/></svg>
+          </div>
+          <p class="card-hook">Amazonas book, Villa Medici residency, immersive lectures — when research meets creation.</p>
+        </a>
+        <a href="femmes-sciences.html" class="card" data-accent="rose">
+          <div class="card-header">
+            <span class="card-label">Women & Science</span>
+            <svg class="card-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4.5 11.5L11.5 4.5M11.5 4.5H6.5M11.5 4.5v5"/></svg>
+          </div>
+          <p class="card-hook">Sciences Taille XXElles program — so that science reflects those who make it.</p>
+        </a>
+        
+        <!-- Row 3: Outreach -->
+        <a href="enseignement.html" class="card" data-accent="noir">
+          <div class="card-header">
+            <span class="card-label">Teaching</span>
+            <svg class="card-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4.5 11.5L11.5 4.5M11.5 4.5H6.5M11.5 4.5v5"/></svg>
+          </div>
+          <p class="card-hook">PhD supervision, courses and seminars, thesis committees — training the next generation of researchers.</p>
+        </a>
+        <a href="mediation.html" class="card">
+          <div class="card-header">
+            <span class="card-label">Science Outreach</span>
+            <svg class="card-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4.5 11.5L11.5 4.5M11.5 4.5H6.5M11.5 4.5v5"/></svg>
+          </div>
+          <p class="card-hook">Cross-perspectives on biodiversity — accessible content on Instagram and dedicated website.</p>
+        </a>
+        <a href="contact.html" class="card">
+          <div class="card-header">
+            <span class="card-label">Contact</span>
+            <svg class="card-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4.5 11.5L11.5 4.5M11.5 4.5H6.5M11.5 4.5v5"/></svg>
+          </div>
+          <p class="card-hook">Collaborations, invitations, PhD supervision — get in touch.</p>
+        </a>
+      </div>
+    </section>
+
+    <section class="contact-band">
+      <div>
+        <span class="contact-email">lauriane.mouysset(a)cnrs.fr</span>
+        <p class="contact-address">CIRED — 45 bis av. de la Belle Gabrielle<br>94736 Nogent-sur-Marne</p>
+      </div>
+      <div class="contact-links">
+        <a href="https://www.instagram.com/lauriane_mouysset/" target="_blank">Instagram</a>
+        <a href="https://www.centre-cired.fr/lauriane-mouysset/" target="_blank">CIRED</a>
+      </div>
+    </section>
+
+    <footer>
+      <span>© 2025 Lauriane Mouysset</span>
+      <span>CNRS · CIRED</span>
+    </footer>
+
+  </div>
+
+</body>
+</html>

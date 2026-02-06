@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Page non trouvée — Lauriane Mouysset</title>
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --f-display: 'Syne', sans-serif;
+      --f-body: 'IBM Plex Sans', sans-serif;
+      --noir: #1A1A18;
+      --blanc: #FAF9F7;
+      --texte: #4A4A46;
+      --gris: #7A7A72;
+      --accent: #A65D4C;
+    }
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      background: var(--blanc);
+      color: var(--texte);
+      font-family: var(--f-body);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+      text-align: center;
+    }
+    
+    .error-code {
+      font-family: var(--f-display);
+      font-size: 120px;
+      font-weight: 800;
+      color: var(--noir);
+      line-height: 1;
+      letter-spacing: -0.05em;
+      position: relative;
+    }
+    
+    .error-code::before {
+      content: '';
+      position: absolute;
+      bottom: 15px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 4px;
+      background: var(--accent);
+    }
+    
+    h1 {
+      font-family: var(--f-display);
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--noir);
+      margin-top: 30px;
+      margin-bottom: 15px;
+    }
+    
+    p {
+      font-size: 16px;
+      color: var(--gris);
+      margin-bottom: 30px;
+      max-width: 400px;
+    }
+    
+    .back-home {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--f-body);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--noir);
+      text-decoration: none;
+      padding: 14px 28px;
+      border: 2px solid var(--noir);
+      transition: all 0.25s;
+    }
+    
+    .back-home:hover {
+      background: var(--noir);
+      color: var(--blanc);
+    }
+    
+    .back-home svg {
+      transition: transform 0.25s;
+    }
+    
+    .back-home:hover svg {
+      transform: translateX(-3px);
+    }
+  </style>
+</head>
+<body>
+  <div class="error-code">404</div>
+  <h1>Page non trouvée</h1>
+  <p>La page que vous cherchez n'existe pas ou a été déplacée.</p>
+  <a href="index.html" class="back-home">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M10 12L6 8l4-4"/>
+    </svg>
+    Retour à l'accueil
+  </a>
+</body>
+</html>

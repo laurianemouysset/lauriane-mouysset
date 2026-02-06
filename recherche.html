@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recherche — Lauriane Mouysset</title>
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  
+  <meta name="description" content="Axes de recherche de Lauriane Mouysset : modélisation bioéconomique, éthique environnementale, recherche-création.">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --f-display: 'Syne', sans-serif;
+      --f-body: 'IBM Plex Sans', sans-serif;
+      --noir: #1A1A18;
+      --blanc: #FAF9F7;
+      --fond-alt: #F0EEEA;
+      --texte: #4A4A46;
+      --gris: #7A7A72;
+      --gris-clair: #B8B8B0;
+      --accent: #A65D4C;
+      --vert: #4A6B4A;
+      --rose: #9B4D6A;
+      --border: rgba(26,26,24,0.1);
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--blanc); color: var(--texte); font-family: var(--f-body); }
+
+    .container { max-width: 900px; margin: 0 auto; padding: 0 36px; }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      background: rgba(250,249,247,0.96); backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      max-width: 1140px; margin: 0 auto; padding: 0 36px;
+      height: 56px; display: flex; justify-content: space-between; align-items: center;
+    }
+    .nav-logo {
+      font-family: var(--f-display); font-size: 14px; font-weight: 700;
+      color: var(--noir); letter-spacing: 0.06em; text-transform: uppercase; text-decoration: none;
+    }
+    .nav-links { display: flex; align-items: center; gap: 6px; }
+    .nav-links a {
+      font-family: var(--f-body); font-size: 11px; font-weight: 500;
+      color: var(--gris); text-decoration: none; padding: 4px 10px; transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--noir); }
+    .nav-lang a { color: var(--gris-clair); text-decoration: none; }
+    .nav-lang a:hover, .nav-lang a.active { color: var(--noir); }
+    .nav-lang {
+      font-family: var(--f-body); font-size: 11px; font-weight: 600;
+      color: var(--gris-clair); padding-left: 12px; margin-left: 6px;
+      border-left: 1px solid var(--border);
+    }
+
+    /* PAGE HEADER */
+    .page-header {
+      padding: 100px 0 40px;
+      border-bottom: 2px solid var(--noir);
+    }
+    .page-header h1 {
+      font-family: var(--f-display);
+      font-size: clamp(32px, 5vw, 48px);
+      font-weight: 800;
+      color: var(--noir);
+      letter-spacing: -0.03em;
+      margin-bottom: 24px;
+    }
+    .page-intro {
+      font-size: 17px;
+      line-height: 1.7;
+      color: var(--texte);
+      max-width: 720px;
+    }
+    .page-intro strong {
+      color: var(--noir);
+      font-weight: 600;
+    }
+
+    /* SECTION */
+    .section {
+      padding: 56px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .section:last-of-type {
+      border-bottom: none;
+    }
+    .section-title {
+      font-family: var(--f-display);
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 32px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .section-title::before {
+      content: ''; width: 20px; height: 2px; background: var(--accent);
+    }
+
+    /* AXE CARD */
+    .axe {
+      margin-bottom: 48px;
+    }
+    .axe:last-child {
+      margin-bottom: 0;
+    }
+    .axe-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .axe-number {
+      font-family: var(--f-display);
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--fond-alt);
+      line-height: 1;
+      -webkit-text-stroke: 1.5px var(--accent);
+    }
+    .axe-title {
+      font-family: var(--f-display);
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--noir);
+      line-height: 1.2;
+    }
+    .axe-content {
+      padding-left: 48px;
+    }
+    .axe-description {
+      font-size: 15px;
+      line-height: 1.7;
+      color: var(--texte);
+      margin-bottom: 16px;
+    }
+    .axe-keywords {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    .keyword {
+      font-family: var(--f-body);
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--gris);
+      background: var(--fond-alt);
+      padding: 4px 12px;
+      border-radius: 2px;
+    }
+    .axe-publications {
+      border-left: 2px solid var(--border);
+      padding-left: 16px;
+    }
+    .axe-publications-title {
+      font-family: var(--f-body);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--gris);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .axe-pub {
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--texte);
+      margin-bottom: 6px;
+    }
+    .axe-pub:last-child {
+      margin-bottom: 0;
+    }
+    .axe-pub .journal {
+      font-style: italic;
+    }
+
+    /* PROJETS */
+    .projets-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    .projet-card {
+      padding: 24px;
+      background: var(--fond-alt);
+      border-top: 2px solid var(--accent);
+    }
+    .projet-card[data-status="terminé"] {
+      border-top-color: var(--gris-clair);
+    }
+    .projet-status {
+      font-family: var(--f-body);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+    .projet-card[data-status="terminé"] .projet-status {
+      color: var(--gris);
+    }
+    .projet-title {
+      font-family: var(--f-display);
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--noir);
+      margin-bottom: 4px;
+    }
+    .projet-years {
+      font-family: var(--f-body);
+      font-size: 12px;
+      color: var(--gris);
+      margin-bottom: 12px;
+    }
+    .projet-description {
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--texte);
+    }
+    .projet-role {
+      font-size: 12px;
+      color: var(--gris);
+      margin-top: 12px;
+      font-style: italic;
+    }
+
+    /* Subsection */
+    .subsection-title {
+      font-family: var(--f-body);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--noir);
+      margin-bottom: 20px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    .projets-section {
+      margin-bottom: 40px;
+    }
+    .projets-section:last-child {
+      margin-bottom: 0;
+    }
+
+    /* BACK LINK */
+    .back-link {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: var(--f-body); font-size: 13px; font-weight: 500;
+      color: var(--gris); text-decoration: none;
+      padding: 40px 0 20px;
+      transition: color 0.2s;
+    }
+    .back-link:hover { color: var(--noir); }
+    .back-link svg { transition: transform 0.2s; }
+    .back-link:hover svg { transform: translateX(-3px); }
+
+    /* FOOTER */
+    footer {
+      padding: 20px 0 32px; border-top: 1px solid var(--border);
+      margin-top: 40px;
+      display: flex; justify-content: space-between;
+    }
+    footer span { font-size: 11px; color: var(--gris-clair); }
+
+    /* RESPONSIVE */
+    @media (max-width: 700px) {
+      .container { padding: 0 24px; }
+      .axe-content { padding-left: 0; margin-top: 12px; }
+      .axe-header { flex-direction: column; gap: 8px; }
+      .projets-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">L. Mouysset</a>
+      <div class="nav-links">
+        <a href="https://www.centre-cired.fr/lauriane-mouysset/" target="_blank">CIRED</a>
+        <span class="nav-lang"><a href="recherche.html" class="active">FR</a> / <a href="en/recherche.html">EN</a></span>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+
+    <a href="index.html" class="back-link">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M10 12L6 8l4-4"/>
+      </svg>
+      Retour
+    </a>
+
+    <header class="page-header">
+      <h1>Recherche</h1>
+      <p class="page-intro">
+        Je travaille sur la <strong>crise de la biodiversité</strong> dans les milieux semi-naturels terrestres — et sur la manière dont les <strong>politiques publiques économiques</strong> pourraient mieux la gérer. Mon approche croise <strong>écologie</strong>, <strong>économie</strong> et <strong>philosophie</strong>, avec une exigence : publier dans chaque discipline pour ancrer la validité du travail interdisciplinaire.
+      </p>
+      <p class="page-intro" style="margin-top: 16px;">
+        J'ai créé et j'anime le groupe <strong>BIOECON</strong> au CIRED, qui fédère chercheurs et doctorants autour de la modélisation bioéconomique et de ses enjeux épistémologiques.
+      </p>
+    </header>
+
+    <!-- AXES DE RECHERCHE -->
+    <section class="section">
+      <h2 class="section-title">Axes de recherche</h2>
+
+      <!-- AXE 1 -->
+      <div class="axe">
+        <div class="axe-header">
+          <span class="axe-number">01</span>
+          <h3 class="axe-title">Intégrer la biodiversité sans la monétiser</h3>
+        </div>
+        <div class="axe-content">
+          <p class="axe-description">
+            Je développe un modèle bioéconomique qui couple dynamiques écologiques et décisions économiques — sans passer par une valeur monétaire de la nature. Le couplage se fait par des processus biophysiques. Ce modèle, appliqué à plus de 600 petites régions agricoles françaises, permet d'évaluer les impacts des politiques agricoles sur la biodiversité, et réciproquement.
+          </p>
+          <div class="axe-keywords">
+            <span class="keyword">Modélisation bioéconomique</span>
+            <span class="keyword">Viabilité</span>
+            <span class="keyword">Politiques agricoles</span>
+            <span class="keyword">Biodiversité ordinaire</span>
+            <span class="keyword">France</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- AXE 2 -->
+      <div class="axe">
+        <div class="axe-header">
+          <span class="axe-number">02</span>
+          <h3 class="axe-title">Les présupposés éthiques de nos choix</h3>
+        </div>
+        <div class="axe-content">
+          <p class="axe-description">
+            Derrière tout modèle économique se cachent des choix philosophiques. Je questionne les fondements éthiques de l'interface économie-écologie : que signifie "valoriser" la nature ? Quelles conceptions du rapport humain-nature sous-tendent nos politiques ? Comment le concept de limites planétaires peut-il cadrer nos décisions ?
+          </p>
+          <div class="axe-keywords">
+            <span class="keyword">Éthique environnementale</span>
+            <span class="keyword">Philosophie des sciences</span>
+            <span class="keyword">Limites planétaires</span>
+            <span class="keyword">Utilitarisme</span>
+            <span class="keyword">Valeur de la nature</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- AXE 3 -->
+      <div class="axe">
+        <div class="axe-header">
+          <span class="axe-number">03</span>
+          <h3 class="axe-title">Art & Science : produire et questionner</h3>
+        </div>
+        <div class="axe-content">
+          <p class="axe-description">
+            Comment la science dialogue-t-elle avec la société ? J'explore cette question par la recherche-création : produire un objet de médiation art-science, puis l'analyser. Cette démarche s'incarne dans des collaborations avec des photographes (projet AMAZONAS sur la déforestation amazonienne) et des écrivains (résidence Villa Médicis sur le récit écologique).
+          </p>
+          <div class="axe-keywords">
+            <span class="keyword">Recherche-création</span>
+            <span class="keyword">Médiation scientifique</span>
+            <span class="keyword">Photographie</span>
+            <span class="keyword">Littérature</span>
+            <span class="keyword">Récit écologique</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROJETS DE RECHERCHE -->
+    <section class="section">
+      <h2 class="section-title">Projets de recherche</h2>
+
+      <div class="projets-section">
+        <h3 class="subsection-title">En cours</h3>
+        <div class="projets-grid">
+          <div class="projet-card" data-status="en-cours">
+            <div class="projet-status">En cours</div>
+            <div class="projet-title">PEPR DYNABIOD</div>
+            <div class="projet-years">2025 — 2033</div>
+            <p class="projet-description">Programme et équipement prioritaire de recherche sur la dynamique de la biodiversité.</p>
+            <p class="projet-role">Cheffe de Projet Ciblé</p>
+          </div>
+          <div class="projet-card" data-status="en-cours">
+            <div class="projet-status">En cours</div>
+            <div class="projet-title">CESAB BEYONDS</div>
+            <div class="projet-years">2025 — 2028</div>
+            <p class="projet-description">Centre de synthèse et d'analyse sur la biodiversité.</p>
+            <p class="projet-role">Cheffe de projet</p>
+          </div>
+          <div class="projet-card" data-status="en-cours">
+            <div class="projet-status">En cours</div>
+            <div class="projet-title">Villa Médicis RECIT</div>
+            <div class="projet-years">2024 — 2025</div>
+            <p class="projet-description">Résidence art-recherche à l'Académie de France à Rome.</p>
+            <p class="projet-role">Cheffe de projet</p>
+          </div>
+          <div class="projet-card" data-status="en-cours">
+            <div class="projet-status">En cours</div>
+            <div class="projet-title">BIOECON</div>
+            <div class="projet-years">2021 — …</div>
+            <p class="projet-description">Groupe de recherche interdisciplinaire au CIRED sur la modélisation bioéconomique.</p>
+            <p class="projet-role">Création et animation</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="projets-section">
+        <h3 class="subsection-title">Terminés</h3>
+        <div class="projets-grid">
+          <div class="projet-card" data-status="terminé">
+            <div class="projet-status">Terminé</div>
+            <div class="projet-title">AMAZONAS</div>
+            <div class="projet-years">2021 — 2023</div>
+            <p class="projet-description">Projet art-science CNRS-Paris Saclay sur la perception de la déforestation amazonienne.</p>
+            <p class="projet-role">Cheffe de projet</p>
+          </div>
+          <div class="projet-card" data-status="terminé">
+            <div class="projet-status">Terminé</div>
+            <div class="projet-title">TerCO</div>
+            <div class="projet-years">2021 — 2022</div>
+            <p class="projet-description">Projet INRAE sur les territoires et la compensation carbone.</p>
+            <p class="projet-role">Contributrice scientifique</p>
+          </div>
+          <div class="projet-card" data-status="terminé">
+            <div class="projet-status">Terminé</div>
+            <div class="projet-title">IBIS</div>
+            <div class="projet-years">2019 — 2021</div>
+            <p class="projet-description">Projet région Nouvelle-Aquitaine sur la biodiversité et les services écosystémiques.</p>
+            <p class="projet-role">Coordinatrice CNRS</p>
+          </div>
+          <div class="projet-card" data-status="terminé">
+            <div class="projet-status">Terminé</div>
+            <div class="projet-title">ANR COMPAG</div>
+            <div class="projet-years">2017 — 2020</div>
+            <p class="projet-description">Modélisation des impacts des politiques agricoles sur la biodiversité.</p>
+            <p class="projet-role">Coordinatrice CNRS</p>
+          </div>
+          <div class="projet-card" data-status="terminé">
+            <div class="projet-status">Terminé</div>
+            <div class="projet-title">SENTIER</div>
+            <div class="projet-years">2017 — 2018</div>
+            <p class="projet-description">Projet CNRS sur les sentiers de transition écologique.</p>
+            <p class="projet-role">Cheffe de projet</p>
+          </div>
+          <div class="projet-card" data-status="terminé">
+            <div class="projet-status">Terminé</div>
+            <div class="projet-title">ANR EPIQUE</div>
+            <div class="projet-years">2016 — 2021</div>
+            <p class="projet-description">Évaluation des politiques agricoles et environnementales.</p>
+            <p class="projet-role">Contributrice scientifique</p>
+          </div>
+          <div class="projet-card" data-status="terminé">
+            <div class="projet-status">Terminé</div>
+            <div class="projet-title">GEOSAFE</div>
+            <div class="projet-years">2016 — 2020</div>
+            <p class="projet-description">Projet européen sur la gestion des risques environnementaux.</p>
+            <p class="projet-role">Contributrice scientifique</p>
+          </div>
+          <div class="projet-card" data-status="terminé">
+            <div class="projet-status">Terminé</div>
+            <div class="projet-title">ANR ACroSS</div>
+            <div class="projet-years">2015 — 2018</div>
+            <p class="projet-description">Agriculture et services écosystémiques.</p>
+            <p class="projet-role">Contributrice scientifique</p>
+          </div>
+          <div class="projet-card" data-status="terminé">
+            <div class="projet-status">Terminé</div>
+            <div class="projet-title">LaBex COTE NAVIRE</div>
+            <div class="projet-years">2015 — 2017</div>
+            <p class="projet-description">Projet LaBex sur la modélisation des socio-écosystèmes.</p>
+            <p class="projet-role">Contributrice scientifique</p>
+          </div>
+          <div class="projet-card" data-status="terminé">
+            <div class="projet-status">Terminé</div>
+            <div class="projet-title">Belmont Forum SEAVIEW</div>
+            <div class="projet-years">2015 — 2016</div>
+            <p class="projet-description">Réseau international sur les écosystèmes marins et côtiers.</p>
+            <p class="projet-role">Contributrice scientifique</p>
+          </div>
+          <div class="projet-card" data-status="terminé">
+            <div class="projet-status">Terminé</div>
+            <div class="projet-title">ANR RESUS</div>
+            <div class="projet-years">2015 — 2016</div>
+            <p class="projet-description">Réseau ANR sur la durabilité.</p>
+            <p class="projet-role">Contributrice scientifique</p>
+          </div>
+          <div class="projet-card" data-status="terminé">
+            <div class="projet-status">Terminé</div>
+            <div class="projet-title">FP7 TRUSTEE</div>
+            <div class="projet-years">2013 — 2015</div>
+            <p class="projet-description">Projet européen ERANET RURAGRI sur la gestion durable des territoires ruraux.</p>
+            <p class="projet-role">Contributrice scientifique</p>
+          </div>
+          <div class="projet-card" data-status="terminé">
+            <div class="projet-status">Terminé</div>
+            <div class="projet-title">FRB MOBILIS</div>
+            <div class="projet-years">2011 — 2014</div>
+            <p class="projet-description">Projet Fondation pour la Recherche sur la Biodiversité.</p>
+            <p class="projet-role">Contributrice scientifique</p>
+          </div>
+          <div class="projet-card" data-status="terminé">
+            <div class="projet-status">Terminé</div>
+            <div class="projet-title">ANR FarmBird</div>
+            <div class="projet-years">2009 — 2013</div>
+            <p class="projet-description">Biodiversité aviaire et agriculture : modélisation et scénarios.</p>
+            <p class="projet-role">Contributrice scientifique</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <span>© 2025 Lauriane Mouysset</span>
+      <span>CNRS · CIRED</span>
+    </footer>
+
+  </div>
+
+</body>
+</html>
