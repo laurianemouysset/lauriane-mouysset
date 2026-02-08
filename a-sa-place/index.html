@@ -1,5 +1,658 @@
 <!DOCTYPE html>
-<html>
-<head><title>À sa place</title></head>
-<body><h1>À sa place</h1></body>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>À sa place</title>
+
+<!-- OG / Social sharing -->
+<!-- TODO: remplacer SITE_URL par ton domaine, ex: https://1poids2mesures.fr -->
+<meta property="og:title" content="À sa place">
+<meta property="og:description" content="8 découvertes scientifiques. À chaque fois, un homme et une femme. Je compare deux mesures de reconnaissance : la mémoire collective et l'intérêt réel.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:url" content="SITE_URL">
+<meta property="og:image" content="SITE_URL/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="À sa place">
+<meta name="twitter:description" content="8 découvertes scientifiques. À chaque fois, un homme et une femme. Je compare deux mesures de reconnaissance : la mémoire collective et l'intérêt réel.">
+<meta name="twitter:image" content="SITE_URL/og-image.png">
+<meta name="description" content="Visualisation interactive — la reconnaissance des femmes de science entre mémoire collective et intérêt contemporain. Par Lauriane Mouysset.">
+<meta name="author" content="Lauriane Mouysset">
+<link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAX0lEQVR4nGPk4OD4zzCAgGkgLR91wKgDRh3AwMDAwEINQ25oSBCtVuPGCxT+gIfAqANGHTDgDsCaDW9cOUO0ARo6JhQ5YMBDYNGHTDgDsCaDW9cOUO0ARo6JhQ5YMBDYNQBow4YdcCoA0YdMOAOYBztG454BwAAeOAIcdE+428AAAAASUVORK5CYII=">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="canonical" href="SITE_URL">
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@200;300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
+
+  :root{--bg:#080808;--fg:#e0dcd4;--r:#e03020}
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{background:var(--bg);color:var(--fg);font-family:'IBM Plex Mono',monospace;overflow:hidden;height:100%;width:100%}
+
+  body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:9999}
+
+  /* ─── INTRO ─── */
+  #intro{position:fixed;inset:0;background:var(--bg);z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 1.2s}
+  #intro.hidden{opacity:0;pointer-events:none}
+  #intro h1{font-family:'IBM Plex Mono',monospace;font-weight:300;font-size:clamp(2.4rem,5.8vw,4.5rem);letter-spacing:0.15em;text-transform:uppercase;text-align:center;line-height:1.5;padding:0 1rem;color:var(--r)}
+  #intro .sub{font-size:clamp(0.6rem,1vw,0.8rem);font-weight:300;letter-spacing:0.1em;color:#aaa;margin-top:2rem;text-align:center;line-height:2;max-width:580px;padding:0 2rem}
+  #intro .author{font-size:0.7rem;font-weight:300;letter-spacing:0.12em;text-transform:uppercase;color:#555;margin-top:1rem}
+  .ibtn{margin-top:2.5rem;background:none;border:1px solid #333;color:var(--fg);font-family:'IBM Plex Mono',monospace;font-size:0.6rem;letter-spacing:0.3em;text-transform:uppercase;padding:0.8rem 2.5rem;cursor:pointer;transition:all 0.3s}
+  .ibtn:hover{border-color:var(--fg);background:var(--fg);color:var(--bg)}
+
+  /* info link */
+  .info-link{
+    font-size:0.55rem;font-weight:300;letter-spacing:0.2em;text-transform:uppercase;
+    color:#555;cursor:pointer;transition:color 0.3s;
+    background:none;border:none;font-family:'IBM Plex Mono',monospace;
+  }
+  .info-link:hover{color:var(--fg)}
+  .info-link.intro-info{
+    position:static;margin-top:1rem;
+  }
+
+  /* ─── STAGE ─── */
+  #stage{position:fixed;inset:0;display:flex;flex-direction:column;opacity:0;transition:opacity 0.8s}
+  #stage.visible{opacity:1}
+
+  #topbar{flex-shrink:0;padding:0.5rem 1.5rem 0.2rem;display:flex;justify-content:flex-end;min-height:20px}
+  #source{font-weight:200;font-size:clamp(0.28rem,0.38vw,0.34rem);letter-spacing:0.1em;text-transform:uppercase;color:#1e1e1e;transition:color 0.8s}
+  #source.bright{color:#3a3a3a}
+
+  #chart-wrap{flex:1;display:flex;flex-direction:column;padding:0 0.6rem;overflow:hidden}
+  #chart{flex:1;display:flex;align-items:stretch;gap:0}
+
+  .pair{flex:1;display:flex;flex-direction:column;min-width:20px;border-left:1px solid #0e0e0e}
+  .pair:first-child{border-left:none}
+  .pair-info{flex-shrink:0;width:100%;text-align:center;padding-bottom:2px;display:flex;flex-direction:column;align-items:center}
+  .names{display:flex;gap:2px;justify-content:center}
+  .lbl{
+    font-size:clamp(0.3rem,0.5vw,0.42rem);font-weight:500;
+    letter-spacing:0.04em;text-transform:uppercase;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    writing-mode:vertical-rl;text-orientation:mixed;
+    transform:rotate(180deg);max-height:72px;padding:2px 0;
+  }
+  .lbl.m{color:var(--fg)}
+  .lbl.f{color:var(--r)}
+  .topic{
+    font-size:clamp(0.24rem,0.38vw,0.32rem);font-weight:200;
+    color:#1e1e1e;letter-spacing:0.04em;
+    writing-mode:vertical-rl;text-orientation:mixed;
+    transform:rotate(180deg);max-height:80px;
+    white-space:nowrap;overflow:hidden;margin-top:1px;
+  }
+
+  .bar-zone{flex:1;display:flex;align-items:flex-end;gap:2px;width:100%;justify-content:center;padding:0 4px}
+  .bar-col{flex:1;max-width:32px;position:relative;height:100%;display:flex;align-items:flex-end}
+
+  .bar{
+    width:100%;position:relative;z-index:2;
+    transition:height 1.5s cubic-bezier(0.37, 0, 0.63, 1);
+    height:0px;
+  }
+  .bar.m{background:var(--fg)}
+  .bar.f{background:var(--r)}
+
+  .bar .val{
+    position:absolute;top:-14px;left:50%;transform:translateX(-50%);
+    font-size:clamp(0.28rem,0.42vw,0.36rem);font-weight:400;
+    letter-spacing:0.02em;white-space:nowrap;visibility:hidden;
+  }
+  .bar.m .val{color:#555}
+  .bar.f .val{color:var(--r)}
+  .bar.show-val .val{visibility:visible}
+
+  #axis{flex-shrink:0;height:1px;background:#151515;margin:0 0.6rem}
+
+  #bottom{flex-shrink:0;padding:0.4rem 1.5rem 0.6rem;min-height:28px}
+  #stat{font-size:clamp(0.38rem,0.5vw,0.44rem);font-weight:300;letter-spacing:0.08em;color:#444;text-transform:uppercase;opacity:0;transition:opacity 0.6s}
+  #stat.visible{opacity:1}
+  #stat .rs{color:var(--r);font-weight:500}
+  #stat .ws{color:var(--fg);font-weight:500}
+
+  /* ─── CARDS: two for cross-fade ─── */
+  .card{
+    position:fixed;top:30%;left:50%;transform:translate(-50%,-50%);
+    z-index:70;pointer-events:none;
+    background:var(--bg);
+    padding:0.8rem 1.5rem;
+    opacity:0;transition:opacity 0.7s;
+    max-width:90vw;
+  }
+  .card.visible{opacity:1}
+  .card .txt{
+    font-family:'IBM Plex Mono',monospace;
+    font-weight:400;font-size:clamp(0.55rem,0.9vw,0.72rem);
+    letter-spacing:0.2em;text-transform:uppercase;
+    color:var(--fg);line-height:1.6;
+    text-align:center;
+  }
+  .card .txt.red-text{color:var(--r)}
+
+  @media (max-width: 800px) {
+    .card .txt{
+      font-size:0.5rem;
+      letter-spacing:0.1em;
+      line-height:1.8;
+      white-space:normal;
+    }
+  }
+
+  /* ─── LEGEND ─── */
+  #legend{
+    position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);
+    display:flex;gap:2rem;align-items:center;
+    opacity:0;transition:opacity 1s;z-index:50;
+  }
+  #legend.visible{opacity:1}
+  .leg{
+    display:flex;align-items:center;gap:6px;
+    font-size:clamp(0.36rem,0.48vw,0.42rem);
+    font-weight:300;letter-spacing:0.12em;
+    text-transform:uppercase;color:#555;
+  }
+  .ldot{width:8px;height:8px;flex-shrink:0}
+  .ldot.wh{background:var(--fg)}
+  .ldot.rd{background:var(--r)}
+
+  /* ─── FINAL ─── */
+  #final{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:100;background:rgba(8,8,8,0.96);opacity:0;pointer-events:none;transition:opacity 1s}
+  #final.visible{opacity:1;pointer-events:all}
+  #final .big{
+    font-family:'Playfair Display',serif;font-style:italic;
+    font-size:clamp(1rem,2.2vw,1.8rem);color:var(--fg);
+    margin-bottom:2rem;letter-spacing:0.03em;text-align:center;line-height:1.8;
+    padding:0 2rem;max-width:800px;
+  }
+  #final .body{
+    font-size:clamp(0.7rem,1.1vw,0.95rem);color:#999;font-weight:300;
+    letter-spacing:0.03em;text-align:center;line-height:2.2;padding:0 2rem;
+    max-width:700px;margin-bottom:2rem;
+  }
+  #final .body strong{color:var(--fg);font-weight:500}
+  #final .body .red{color:var(--r)}
+  #final .body .last{display:block;margin-top:1.2rem;margin-bottom:2rem;font-weight:500;color:var(--fg);letter-spacing:0.15em;text-transform:uppercase;font-size:0.85em}
+  .fin-btns{display:flex;gap:1rem;align-items:center;justify-content:center}
+  .metric-btns{display:flex;gap:1.5rem;align-items:center;justify-content:center;margin-top:1rem}
+  .metric-btns .rbtn{min-width:200px}
+  .rbtn{background:none;border:1px solid #333;color:var(--fg);font-family:'IBM Plex Mono',monospace;font-size:0.5rem;letter-spacing:0.25em;text-transform:uppercase;padding:0.6rem 1.5rem;cursor:pointer;transition:all 0.3s}
+  .rbtn:hover{background:var(--fg);color:var(--bg)}
+
+  .share-row{
+    display:flex;align-items:center;gap:0.8rem;margin-top:1.8rem;
+  }
+  .share-label{
+    font-size:0.4rem;font-weight:300;letter-spacing:0.15em;
+    text-transform:uppercase;color:#444;
+  }
+  .share-btn{
+    display:flex;align-items:center;justify-content:center;
+    width:28px;height:28px;
+    border:1px solid #333;background:none;color:#555;
+    font-family:'IBM Plex Mono',monospace;font-size:0.42rem;font-weight:500;
+    text-decoration:none;letter-spacing:0;
+    cursor:pointer;transition:all 0.3s;
+  }
+  .share-btn:hover{border-color:var(--fg);color:var(--fg)}
+  .share-btn.copied{border-color:var(--r);color:var(--r)}
+
+  /* ─── INFO PANEL ─── */
+  #info{
+    position:fixed;inset:0;z-index:300;
+    background:var(--bg);
+    display:flex;flex-direction:column;align-items:center;
+    opacity:0;pointer-events:none;transition:opacity 0.6s;
+    overflow-y:auto;padding:2rem 1rem 3rem;
+  }
+  #info.visible{opacity:1;pointer-events:all}
+  #info-inner{
+    max-width:700px;width:100%;
+    font-size:clamp(0.6rem,1vw,0.8rem);
+    font-weight:300;letter-spacing:0.02em;line-height:2.2;
+    color:#999;
+  }
+  #info-inner h2{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:clamp(0.85rem,1.4vw,1.15rem);font-weight:700;
+    letter-spacing:0.1em;text-transform:uppercase;
+    color:var(--fg);margin-bottom:1rem;margin-top:2rem;
+  }
+  #info-inner h2:first-child{margin-top:0}
+  #info-inner p{margin-bottom:1.2rem}
+  #info-inner strong{color:var(--fg);font-weight:500}
+  #info-inner ul{list-style:none;margin-left:0;margin-bottom:1.2rem}
+  #info-inner li{margin-bottom:0.5rem;padding-left:1em;position:relative}
+  #info-inner li::before{content:'•';position:absolute;left:0;color:var(--r)}
+  #info-inner a{color:var(--r);text-decoration:none;border-bottom:1px solid transparent;transition:border-color 0.3s}
+  #info-inner a:hover{border-bottom-color:var(--r)}
+  .close-info{
+    position:sticky;top:1rem;align-self:flex-end;
+    background:none;border:1px solid #333;color:#555;
+    width:32px;height:32px;font-size:1rem;
+    cursor:pointer;transition:all 0.3s;
+    display:flex;align-items:center;justify-content:center;
+    margin-bottom:1rem;
+  }
+  .close-info:hover{border-color:var(--fg);color:var(--fg)}
+
+  @media (max-width: 800px) {
+    #intro h1{font-size:2rem;font-weight:300;letter-spacing:0.12em}
+    #intro .sub{font-size:0.65rem;max-width:90%;line-height:2.2}
+    .leg{font-size:0.38rem;gap:5px}
+    .ldot{width:6px;height:6px}
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════ -->
+<!-- INTRO -->
+<!-- ══════════════════════════════════════════════ -->
+<div id="intro">
+  <h1>À sa place</h1>
+  <div class="sub">
+    <span style="color:var(--r);font-weight:400">8 découvertes</span> scientifiques majeures.<br>
+    À chaque fois, un homme et une femme ont contribué de manière comparable.<br>
+    <br>
+    Je compare <span style="color:var(--r);font-weight:400">deux mesures</span> de&nbsp;reconnaissance&nbsp;:<br>
+    — celle qu'impose la mémoire collective<br>
+    — celle que révèle l'intérêt réel
+  </div>
+  <button class="ibtn" id="go">Observer</button>
+  <button class="info-link intro-info" id="info-open-intro">Info</button>
+  <div class="author">Lauriane Mouysset</div>
+</div>
+
+<!-- ══════════════════════════════════════════════ -->
+<!-- STAGE -->
+<!-- ══════════════════════════════════════════════ -->
+<div id="stage">
+  <div id="topbar">
+    <div id="source"></div>
+  </div>
+
+  <div id="chart-wrap">
+    <div id="chart"></div>
+  </div>
+
+  <div id="axis"></div>
+
+  <div id="bottom">
+    <div id="stat"></div>
+  </div>
+</div>
+
+<!-- Cross-fade cards -->
+<div class="card" id="cardA"><div class="txt"></div></div>
+<div class="card" id="cardB"><div class="txt"></div></div>
+
+<!-- Legend -->
+<div id="legend">
+  <div class="leg">
+    <div class="ldot wh"></div>
+    <span>Mémoire collective</span>
+  </div>
+  <div class="leg">
+    <div class="ldot rd"></div>
+    <span>Intérêt réel</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════ -->
+<!-- FINAL -->
+<!-- ══════════════════════════════════════════════ -->
+<div id="final">
+  <div class="big" id="fin-big"></div>
+  <div class="body" id="fin-body"></div>
+  <div class="fin-btns">
+    <button class="rbtn" id="replay">Recommencer</button>
+  </div>
+  <div class="metric-btns">
+    <button class="rbtn" id="show-memory">Mémoire collective</button>
+    <button class="rbtn" id="show-interest">Intérêt réel</button>
+  </div>
+  <button class="rbtn" id="info-open-final" style="margin-top:1rem">Info</button>
+  <div class="share-row">
+    <div class="share-label">Partager</div>
+    <a class="share-btn" id="sh-li" target="_blank" rel="noopener">in</a>
+    <a class="share-btn" id="sh-wa" target="_blank" rel="noopener">wa</a>
+    <a class="share-btn" href="https://www.instagram.com/lauriane_mouysset/" target="_blank" rel="noopener">ig</a>
+    <button class="share-btn" id="sh-cp">🔗</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════ -->
+<!-- INFO PANEL -->
+<!-- ══════════════════════════════════════════════ -->
+<div id="info">
+  <button class="close-info" id="info-close">✕</button>
+  <div id="info-inner">
+    <h2>Intention</h2>
+    <p>
+      Nommer, c'est faire exister. Cette visualisation mesure un écart — entre la mémoire institutionnelle et l'attention contemporaine — pour 8 découvertes scientifiques co-signées par un homme et une femme. Les structures encyclopédiques reflètent encore les hiérarchies du passé. Mais le regard collectif est en train de les corriger. Ce projet accompagne ce mouvement.
+    </p>
+
+    <h2>Méthode</h2>
+    <p>
+      <strong>Mémoire collective</strong> — nombre de langues dans lesquelles chaque scientifique dispose d'un article Wikipédia. Source : Wikidata, janvier 2025. Cet indicateur reflète la reconnaissance structurelle : plus un sujet est jugé notable à travers le monde, plus il est traduit.
+    </p>
+    <p>
+      <strong>Intérêt réel</strong> — nombre total de consultations de la page Wikipédia anglophone de chaque scientifique. Source : Wikimedia Pageviews, janvier 2025 – janvier 2026. Cet indicateur reflète l'intérêt réel du public aujourd'hui.
+    </p>
+
+    <p><strong>Couples étudiés</strong></p>
+    <ul>
+      <li>Nettie Stevens & Thomas H. Morgan — chromosomes XY</li>
+      <li>Lise Meitner & Otto Hahn — fission nucléaire</li>
+      <li>Ida Noddack & Walter Noddack — découverte du rhénium</li>
+      <li>Chien-Shiung Wu & Chen-Ning Yang — violation de la parité</li>
+      <li>Jocelyn Bell Burnell & Antony Hewish — pulsars</li>
+      <li>Cecilia Payne & Henry N. Russell — composition stellaire</li>
+      <li>Christiane Nüsslein-Volhard & Eric Wieschaus — gènes du développement</li>
+      <li>Marietta Blau & Cecil Powell — émulsions nucléaires</li>
+    </ul>
+
+    <p>
+      Les couples sont choisis parmi des découvertes majeures où un homme et une femme ont contribué de manière comparable. Chaque paire est normalisée indépendamment : la barre la plus haute représente toujours le maximum de la paire.
+    </p>
+    <p>
+      Ceci n'est pas une investigation sociologique mais un geste de visibilisation.
+    </p>
+
+    <h2>Autrice</h2>
+    <p>
+      <strong>Lauriane Mouysset</strong><br>
+      Directrice de recherche au CNRS.<br>
+      Engagée dans l'association <a href="https://www.femmesetsciences.fr" target="_blank" rel="noopener">Femmes et Sciences</a>.<br>
+      Ambassadrice du programme <a href="https://lauriane-mouysset.fr/femmes-sciences" target="_blank" rel="noopener">Science Taille XX Elles</a>.
+    </p>
+    <p>
+      <a href="https://lauriane-mouysset.fr" target="_blank" rel="noopener">lauriane-mouysset.fr</a><br>
+      <a href="https://www.instagram.com/lauriane_mouysset/" target="_blank" rel="noopener">@lauriane_mouysset</a><br>
+      lauriane.mouysset(a)cnrs.fr
+    </p>
+    <p>
+      © 2025 Lauriane Mouysset · <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a><br>
+      Libre d'usage à condition de citer l'autrice et de ne pas en faire un usage commercial.
+    </p>
+  </div>
+</div>
+
+<script>
+const D = [
+  {t:"Chromosomes XY",          m:{n:"T.H. Morgan",  l:93, v:166424},  f:{n:"N. Stevens",      l:39, v:45856}},
+  {t:"Fission nucl.",           m:{n:"O. Hahn",      l:99, v:203293},  f:{n:"L. Meitner",      l:78, v:196372}},
+  {t:"Découv. rhénium",         m:{n:"W. Noddack",  l:40, v:5324},    f:{n:"I. Noddack",      l:29, v:40711}},
+  {t:"Violation parité",        m:{n:"C.N. Yang",   l:65, v:64394},   f:{n:"C.S. Wu",         l:43, v:119817}},
+  {t:"Pulsars",                 m:{n:"A. Hewish",    l:65, v:38613},   f:{n:"J. Bell Burnell", l:52, v:218482}},
+  {t:"Comp. stellaire",         m:{n:"H.N. Russell",  l:58, v:13863},   f:{n:"C. Payne",        l:46, v:123468}},
+  {t:"Gènes du dev.",      m:{n:"E. Wieschaus", l:46, v:6724},    f:{n:"C. Nüsslein-V.", l:64, v:17791}},
+  {t:"Émulsions nucl.",    m:{n:"C. Powell",     l:70, v:1752},    f:{n:"M. Blau",         l:24, v:10332}},
+];
+
+const chart = document.getElementById('chart');
+D.forEach(p => {
+  const d = document.createElement('div');
+  d.className = 'pair';
+  d.innerHTML = `
+    <div class="pair-info">
+      <div class="names">
+        <div class="lbl m">${p.m.n}</div>
+        <div class="lbl f">${p.f.n}</div>
+      </div>
+      <div class="topic">${p.t}</div>
+    </div>
+    <div class="bar-zone">
+      <div class="bar-col m">
+        <div class="bar m"><div class="val"></div></div>
+      </div>
+      <div class="bar-col f">
+        <div class="bar f"><div class="val"></div></div>
+      </div>
+    </div>`;
+  chart.appendChild(d);
+});
+
+const $ = id => document.getElementById(id);
+const pairEls = document.querySelectorAll('.pair');
+const bars = document.querySelectorAll('.bar');
+const wait = ms => new Promise(r => setTimeout(r, ms));
+
+function maxH() { return Math.max(80, $('chart-wrap').clientHeight - 85); }
+function fmtV(n) {
+  if (n >= 1e6) return (n/1e6).toFixed(1).replace('.0','') + 'M';
+  if (n >= 1e3) return Math.round(n/1e3) + 'K';
+  return n;
+}
+
+const EASE = 'cubic-bezier(0.37, 0, 0.63, 1)';
+
+function setEqual(dur) {
+  const h = maxH() * 0.45;
+  bars.forEach(b => {
+    b.style.transition = `height ${dur}s ${EASE}`;
+    b.style.height = h + 'px';
+    b.classList.remove('show-val');
+  });
+}
+
+function setMetric(key, dur) {
+  const h = maxH();
+  pairEls.forEach((el, i) => {
+    const p = D[i];
+    const mV = p.m[key], fV = p.f[key];
+    const mx = Math.max(mV, fV);
+    const [bm, bf] = el.querySelectorAll('.bar');
+    bm.querySelector('.val').textContent = key === 'l' ? mV : fmtV(mV);
+    bf.querySelector('.val').textContent = key === 'l' ? fV : fmtV(fV);
+    const t = `height ${dur}s ${EASE}`;
+    bm.style.transition = t; bf.style.transition = t;
+    bm.style.height = Math.max(4, (mV/mx) * h) + 'px';
+    bf.style.height = Math.max(4, (fV/mx) * h) + 'px';
+  });
+}
+
+function showVals(on) { bars.forEach(b => on ? b.classList.add('show-val') : b.classList.remove('show-val')); }
+
+// Cross-fade card system
+let activeCard = 'A';
+function crossCard(txt, isRed = false) {
+  const incoming = activeCard === 'A' ? 'cardA' : 'cardB';
+  const outgoing = activeCard === 'A' ? 'cardB' : 'cardA';
+  const txtEl = $(incoming).querySelector('.txt');
+  txtEl.textContent = txt;
+  if (isRed) {
+    txtEl.classList.add('red-text');
+  } else {
+    txtEl.classList.remove('red-text');
+  }
+  $(incoming).classList.add('visible');
+  $(outgoing).classList.remove('visible');
+  activeCard = activeCard === 'A' ? 'B' : 'A';
+}
+function hideCards() {
+  $('cardA').classList.remove('visible');
+  $('cardB').classList.remove('visible');
+}
+
+function statLine(key) {
+  const wM = D.filter(p => p.m[key] > p.f[key]).length;
+  const wF = D.filter(p => p.f[key] > p.m[key]).length;
+  const tie = D.length - wM - wF;
+  let s = `Homme domine <span class="ws">${wM}/${D.length}</span> · Femme <span class="rs">${wF}/${D.length}</span>`;
+  if (tie) s += ` · égalité ${tie}`;
+  return s;
+}
+
+// ══════════════════════════════════════════════
+async function run() {
+  $('final').classList.remove('visible');
+  hideCards();
+  $('source').textContent = ''; $('source').className = '';
+  $('stat').innerHTML = ''; $('stat').classList.remove('visible');
+  showVals(false);
+  bars.forEach(b => { b.style.transition = 'none'; b.style.height = '0px'; });
+  activeCard = 'A';
+  await wait(60);
+
+  $('stage').classList.add('visible');
+  $('legend').classList.add('visible');
+  await wait(200);
+
+  // ── Bars grow to equal ──
+  crossCard("Même science. Même\u00A0découverte.");
+  setEqual(1.3);
+  await wait(1900);
+
+  // ── Card 2, bars deform to languages ──
+  crossCard("Ce sont les hommes qui sont dans la mémoire collective.");
+  $('source').textContent = "Langues Wikipédia · Wikidata 2025";
+  $('source').classList.add('bright');
+  setMetric('l', 1.5);
+  showVals(true);
+  await wait(1900);
+  // NE PAS cacher la card ici, la garder visible avec la stat
+  $('stat').innerHTML = statLine('l');
+  $('stat').classList.add('visible');
+  await wait(500); // Petit temps pour voir le graphique + card + stat ensemble
+
+  // ── Card 3, bars reverse to pageviews ──
+  hideCards(); // Maintenant on cache la card blanche
+  await wait(50);
+  $('stat').classList.remove('visible');
+  crossCard("Ce sont les femmes qui suscitent le plus d'intérêt réel.", true);
+  $('source').textContent = "Pages vues · en.wikipedia · 2025";
+  setMetric('v', 1.5);
+  await wait(1900);
+  // NE PAS cacher la card rouge ici, la garder visible avec la stat
+  $('stat').innerHTML = statLine('v');
+  $('stat').classList.add('visible');
+  await wait(1100);
+  // Maintenant on cache la card rouge avant d'afficher final
+  hideCards();
+
+  showFinal();
+}
+
+function showFinal() {
+  $('fin-big').innerHTML = "La mémoire collective a promu les hommes.<br>Mais les femmes le méritent tout autant.";
+
+  let t = '';
+  t += "La visibilisation des <span class=\"red\">femmes de science</span> fonctionne.<br>";
+  t += "Elle offre un meilleur aperçu de l'histoire.<br>";
+  t += "Et à chaque petite fille, la preuve qu'elle y a sa place.";
+  t += '<span class="last">Continuons.</span>';
+
+  $('fin-body').innerHTML = t;
+  $('final').classList.add('visible');
+}
+
+async function showMemoryOnly() {
+  hideCards();
+  $('source').textContent = '';
+  $('stat').innerHTML = '';
+  $('stat').classList.remove('visible');
+  showVals(false);
+  bars.forEach(b => { b.style.transition = 'none'; b.style.height = '0px'; });
+  await wait(60);
+
+  $('stage').classList.add('visible');
+  $('legend').classList.add('visible');
+  await wait(200);
+
+  crossCard("Ce sont les hommes qui sont dans la mémoire collective.");
+  $('source').textContent = "Langues Wikipédia · Wikidata 2025";
+  $('source').classList.add('bright');
+  setMetric('l', 1.5);
+  showVals(true);
+  await wait(1900);
+  // Ne pas cacher la card, garder le texte visible
+  $('stat').innerHTML = statLine('l');
+  $('stat').classList.add('visible');
+  await wait(1500);
+  // Cacher ensemble card + stat avant d'afficher final
+  hideCards();
+  $('stat').classList.remove('visible');
+  showFinal();
+}
+
+async function showInterestOnly() {
+  hideCards();
+  $('source').textContent = '';
+  $('stat').innerHTML = '';
+  $('stat').classList.remove('visible');
+  showVals(false);
+  bars.forEach(b => { b.style.transition = 'none'; b.style.height = '0px'; });
+  await wait(60);
+
+  $('stage').classList.add('visible');
+  $('legend').classList.add('visible');
+  await wait(200);
+
+  crossCard("Ce sont les femmes qui suscitent le plus d'intérêt réel.", true);
+  $('source').textContent = "Pages vues · en.wikipedia · 2025";
+  $('source').classList.add('bright');
+  setMetric('v', 1.5);
+  showVals(true);
+  await wait(1900);
+  // Ne pas cacher la card, garder le texte rouge visible
+  $('stat').innerHTML = statLine('v');
+  $('stat').classList.add('visible');
+  await wait(1500);
+  // Cacher ensemble card + stat avant d'afficher final
+  hideCards();
+  $('stat').classList.remove('visible');
+  showFinal();
+}
+
+// ── Info panel ──
+function openInfo() { $('info').classList.add('visible'); }
+function closeInfo() { $('info').classList.remove('visible'); }
+
+$('go').onclick = () => {
+  $('intro').classList.add('hidden');
+  setTimeout(run, 800);
+};
+$('replay').onclick = () => {
+  $('final').classList.remove('visible');
+  $('stage').classList.remove('visible');
+  $('legend').classList.remove('visible');
+  $('intro').classList.remove('hidden');
+};
+$('show-memory').onclick = async () => {
+  $('final').classList.remove('visible');
+  await wait(300);
+  await showMemoryOnly();
+};
+$('show-interest').onclick = async () => {
+  $('final').classList.remove('visible');
+  await wait(300);
+  await showInterestOnly();
+};
+$('info-open-intro').onclick = openInfo;
+$('info-open-final').onclick = openInfo;
+$('info-close').onclick = closeInfo;
+
+// ── Share ──
+const SHARE_URL = window.location.href;
+const SHARE_TXT = "À sa place — 8 découvertes scientifiques majeures. À chaque fois, un homme et une femme. Je compare deux mesures de reconnaissance : la mémoire collective et l'intérêt réel.";
+
+$('sh-li').href = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(SHARE_URL)}`;
+$('sh-wa').href = `https://api.whatsapp.com/send?text=${encodeURIComponent(SHARE_TXT + ' ' + SHARE_URL)}`;
+
+$('sh-cp').onclick = async () => {
+  try {
+    await navigator.clipboard.writeText(SHARE_URL);
+    $('sh-cp').classList.add('copied');
+    $('sh-cp').textContent = '✓';
+    setTimeout(() => { $('sh-cp').classList.remove('copied'); $('sh-cp').textContent = '🔗'; }, 2000);
+  } catch(e) {
+    prompt('Copier ce lien :', SHARE_URL);
+  }
+};
+</script>
+</body>
 </html>
