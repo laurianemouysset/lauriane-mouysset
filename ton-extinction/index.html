@@ -1,5 +1,2104 @@
 <!DOCTYPE html>
-<html>
-<head><title>Ton extinction</title></head>
-<body><h1>Ton extinction</h1></body>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quelle espèce a disparu l'année de ta naissance ? | Regards croisés sur la biodiversité</title>
+  
+  <!-- Meta description -->
+  <meta name="description" content="Découvre quelle espèce s'est éteinte l'année de ta naissance. 65 espèces disparues entre 1960 et 2024, vues sous l'angle économique, écologique et philosophique.">
+  
+  <!-- Open Graph (Facebook, LinkedIn, WhatsApp) -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://espece-disparue-ta-naissance.netlify.app/">
+  <meta property="og:title" content="Quelle espèce a disparu l'année de ta naissance ?">
+  <meta property="og:description" content="Découvre quelle espèce s'est éteinte l'année de ta naissance. Regards croisés sur la biodiversité : économie, écologie, philosophie.">
+  <meta property="og:image" content="https://espece-disparue-ta-naissance.netlify.app/images/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:locale" content="fr_FR">
+  <meta property="og:site_name" content="Regards croisés sur la biodiversité">
+  
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Quelle espèce a disparu l'année de ta naissance ?">
+  <meta name="twitter:description" content="Découvre quelle espèce s'est éteinte l'année de ta naissance. Regards croisés sur la biodiversité.">
+  <meta name="twitter:image" content="https://espece-disparue-ta-naissance.netlify.app/images/og-image.png">
+  
+  <!-- Autres meta -->
+  <meta name="author" content="Lauriane Mouysset">
+  <meta name="theme-color" content="#1B2A4E">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Outfit:wght@400;600;800;900&display=swap');
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Space Grotesk', sans-serif; background: #1B2A4E; color: white; }
+    .container { max-width: 500px; margin: 0 auto; }
+    
+    /* Header */
+    .header { background: #1B2A4E; padding: 48px 24px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .header-top-row { display: flex; justify-content: center; align-items: center; position: relative; margin-bottom: 8px; }
+    .header-top-row .header-disciplines { margin: 0; }
+    .info-btn { position: absolute; right: 0; background: transparent; border: 1px solid rgba(255,255,255,0.3); color: rgba(255,255,255,0.5); width: 24px; height: 24px; border-radius: 50%; font-family: 'Georgia', serif; font-size: 14px; font-style: italic; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
+    .info-btn:hover { color: white; border-color: rgba(255,255,255,0.6); }
+    @media (max-width: 500px) { .info-btn { top: -35px; } }
+    .header-disciplines { font-family: 'Space Grotesk', sans-serif; font-size: 12px; color: rgba(255,255,255,0.4); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 8px; }
+    .header-label { font-family: 'Outfit', sans-serif; font-size: 32px; font-weight: 900; letter-spacing: 2px; margin-bottom: 4px; text-transform: uppercase; color: #6b8e6b; }
+    .header-label-sub { font-family: 'Outfit', sans-serif; font-size: 32px; font-weight: 900; letter-spacing: 2px; margin-bottom: 12px; text-transform: uppercase; color: #6b8e6b; }
+    .header-author { font-family: 'Space Grotesk', sans-serif; font-size: 18px; color: rgba(255,255,255,0.6); margin-bottom: 72px; }
+    .header h1 { font-family: 'Outfit', sans-serif; font-size: 42px; font-weight: 900; line-height: 1.15; letter-spacing: 2px; text-transform: uppercase; }
+    .header h1 span { color: #d64545; display: block; }
+    
+    /* Grid Timeline */
+    .grid-section { background: #1B2A4E; padding: 24px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .grid-title { font-family: 'Space Grotesk', sans-serif; font-size: 14px; color: rgba(255,255,255,0.5); text-align: center; margin-bottom: 16px; }
+    .grid { display: grid; grid-template-columns: repeat(13, 1fr); gap: 4px; }
+    @media (max-width: 500px) { .grid { grid-template-columns: repeat(8, 1fr); } }
+    .cell { aspect-ratio: 1; border-radius: 3px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; position: relative; }
+    .cell:hover { transform: scale(1.15); z-index: 10; filter: brightness(1.2); }
+    .cell-year { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 10px; color: white; text-shadow: 0 1px 2px rgba(0,0,0,0.3); }
+    @media (max-width: 500px) { .cell-year { font-size: 9px; } }
+    .c-red { background: #d64545; }
+    .c-orange { background: #e67e22; }
+    .c-green { background: #6b8e6b; }
+    .c-navy { background: #2a3d6b; }
+    .tooltip { position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); background: #0d1528; border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 10px 12px; width: 180px; opacity: 0; visibility: hidden; transition: all 0.2s; pointer-events: none; z-index: 100; box-shadow: 0 8px 30px rgba(0,0,0,0.5); }
+    .cell:hover .tooltip { opacity: 1; visibility: visible; }
+    .tooltip-name { font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 12px; margin-bottom: 8px; line-height: 1.3; }
+    .tooltip-keywords { display: flex; flex-direction: column; gap: 4px; }
+    .tooltip-keyword { display: flex; align-items: center; gap: 6px; font-size: 10px; color: rgba(255,255,255,0.85); }
+    .tooltip-keyword-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+    .dot-eco { background: #d64545; }
+    .dot-ecol { background: #6b8e6b; }
+    .dot-philo { background: #e67e22; }
+    .tooltip-cta { margin-top: 8px; padding-top: 6px; border-top: 1px solid rgba(255,255,255,0.15); font-size: 9px; color: rgba(255,255,255,0.5); text-align: center; }
+    .grid-section { background: #1B2A4E; padding: 0 24px 24px 24px; }
+    .grid-section.hidden { display: none; }
+    
+    /* Modal À propos */
+    .about-modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px; overflow-y: auto; }
+    .about-modal.hidden { display: none; }
+    .about-content { background: #1B2A4E; max-width: 500px; width: 100%; max-height: 90vh; overflow-y: auto; position: relative; }
+    .about-close { position: sticky; top: 0; right: 0; float: right; background: #1B2A4E; border: none; color: rgba(255,255,255,0.6); font-size: 32px; cursor: pointer; padding: 16px 20px; transition: all 0.2s; z-index: 10; }
+    .about-close:hover { color: white; }
+    .about-section { padding: 24px 28px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .about-section:last-child { border-bottom: none; }
+    .about-title { font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; color: #6b8e6b; margin-bottom: 12px; }
+    .about-text { font-family: 'Space Grotesk', sans-serif; font-size: 15px; line-height: 1.7; color: rgba(255,255,255,0.85); margin-bottom: 12px; }
+    .about-text:last-child { margin-bottom: 0; }
+    .about-author { background: #d64545; }
+    .about-author .about-title { color: rgba(255,255,255,0.7); }
+    .about-author .about-text { color: white; }
+    .about-contact { display: flex; flex-direction: column; gap: 8px; }
+    .about-contact a { color: #6b8e6b; text-decoration: none; }
+    .about-contact a:hover { text-decoration: underline; }
+    .about-license { background: rgba(255,255,255,0.05); }
+    .about-text-small { font-family: 'Space Grotesk', sans-serif; font-size: 12px; line-height: 1.6; color: rgba(255,255,255,0.5); text-align: center; }
+    
+    /* Form */
+    .form-section { background: #1B2A4E; padding: 32px 24px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .form-row { display: flex; gap: 12px; }
+    .form-row input { flex: 1; padding: 16px 20px; background: rgba(255,255,255,0.05); border: 2px solid rgba(255,255,255,0.2); border-radius: 0; font-size: 18px; font-family: 'Space Grotesk', sans-serif; color: white; }
+    .form-row input::placeholder { color: rgba(255,255,255,0.4); }
+    .form-row input:focus { outline: none; border-color: #e67e22; }
+    .form-row button { padding: 16px 32px; background: #d64545; color: white; border: none; font-weight: 700; cursor: pointer; font-family: 'Outfit', sans-serif; font-size: 14px; text-transform: uppercase; letter-spacing: 2px; transition: all 0.2s; }
+    .form-row button:hover { background: #ff5252; transform: translateY(-2px); }
+    .form-hint { font-size: 12px; color: rgba(255,255,255,0.35); margin-top: 12px; text-align: center; font-style: italic; }
+    .error { color: #d64545; margin-top: 16px; font-size: 14px; text-align: center; }
+    
+    /* Sections */
+    .section { padding: 40px 24px; }
+    
+    /* Section Title - BIG */
+    .section-title-big { 
+      font-family: 'Outfit', sans-serif; 
+      font-size: 32px; 
+      font-weight: 900; 
+      text-transform: uppercase; 
+      letter-spacing: 2px; 
+      margin-bottom: 32px;
+      line-height: 1;
+    }
+    
+    /* QUI - BLEU MARINE + ROUGE */
+    .section-qui { background: #1B2A4E; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .section-qui .section-title-big { color: #d64545; }
+    .section-qui .species-name { font-family: 'Outfit', sans-serif; font-size: 42px; font-weight: 900; text-transform: uppercase; line-height: 1; margin-bottom: 8px; }
+    .section-qui .species-latin { color: rgba(255,255,255,0.5); font-size: 14px; font-style: italic; margin-bottom: 24px; }
+    .section-qui .species-image { width: 100%; margin-bottom: 24px; }
+    .section-qui .species-image img { width: 100%; height: 250px; object-fit: cover; }
+    .section-qui .species-image-credit { font-size: 11px; color: rgba(255,255,255,0.4); margin-top: 8px; text-align: right; }
+    .section-qui .badges { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+    .section-qui .badge { padding: 8px 16px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.2); }
+    .section-qui .description { font-size: 16px; line-height: 1.8; color: rgba(255,255,255,0.8); margin-bottom: 32px; }
+    .section-qui .cause-box { background: #d64545; padding: 24px; }
+    .section-qui .cause-title { font-family: 'Outfit', sans-serif; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 12px; opacity: 0.8; }
+    .section-qui .cause-text { font-size: 15px; line-height: 1.7; }
+    
+    /* ÉCONOMIE - BLANC + BLEU/ROUGE */
+    .section-econ { background: #f5f5f5; color: #1B2A4E; }
+    .section-econ .section-title-big { color: #d64545; border-bottom: 3px solid #d64545; padding-bottom: 16px; }
+    .section-econ .block { margin-bottom: 28px; }
+    .section-econ .block-title { font-family: 'Outfit', sans-serif; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; color: #888; }
+    .section-econ .block-text { font-size: 16px; line-height: 1.8; color: #333; }
+    .section-econ .impact-box { background: #1B2A4E; color: white; padding: 40px 24px; text-align: center; margin-top: 8px; }
+    .section-econ .impact-number { font-family: 'Outfit', sans-serif; font-size: 80px; font-weight: 900; line-height: 1; margin-bottom: 16px; color: #d64545; }
+    .section-econ .impact-detail { font-size: 14px; color: rgba(255,255,255,0.6); line-height: 1.6; max-width: 280px; margin: 0 auto; }
+    
+    /* ÉCOLOGIE - VERT + BLANC/ROUGE */
+    .section-eco { background: #6b8e6b; color: white; }
+    .section-eco .section-title-big { color: white; border-bottom: 3px solid rgba(255,255,255,0.3); padding-bottom: 16px; }
+    .section-eco .block { margin-bottom: 28px; }
+    .section-eco .block-title { font-family: 'Outfit', sans-serif; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; opacity: 0.7; }
+    .section-eco .block-text { font-size: 16px; line-height: 1.8; }
+    .section-eco .impact-box { background: white; padding: 40px 24px; text-align: center; margin-top: 8px; }
+    .section-eco .impact-word { font-family: 'Outfit', sans-serif; font-size: 48px; font-weight: 900; line-height: 1; margin-bottom: 16px; color: #d64545; text-transform: uppercase; }
+    .section-eco .impact-detail { font-size: 14px; color: #4a6a4a; line-height: 1.6; max-width: 280px; margin: 0 auto; }
+    
+    /* PHILO - ORANGE + BLEU/ROUGE */
+    .section-philo { background: #e67e22; color: white; }
+    .section-philo .section-title-big { color: white; border-bottom: 3px solid rgba(255,255,255,0.3); padding-bottom: 16px; }
+    .section-philo .block { margin-bottom: 28px; }
+    .section-philo .block-title { font-family: 'Outfit', sans-serif; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; opacity: 0.7; }
+    .section-philo .block-text { font-size: 16px; line-height: 1.8; }
+    .section-philo .impact-box { background: #1B2A4E; padding: 40px 24px; text-align: center; margin-top: 8px; }
+    .section-philo .impact-word { font-family: 'Outfit', sans-serif; font-size: 48px; font-weight: 900; line-height: 1; margin-bottom: 16px; color: #d64545; text-transform: uppercase; }
+    .section-philo .impact-detail { font-size: 14px; color: rgba(255,255,255,0.6); line-height: 1.6; max-width: 300px; margin: 0 auto; }
+    
+    /* Footer CTA */
+    .footer { background: linear-gradient(135deg, #1B2A4E 0%, #2a3d6b 100%); border-top: 1px solid rgba(255,255,255,0.1); padding: 32px 24px; text-align: center; }
+    .footer-cta-text { font-family: 'Outfit', sans-serif; font-size: 18px; font-weight: 600; color: white; margin-bottom: 8px; }
+    .footer-cta-subtext { font-family: 'Space Grotesk', sans-serif; font-size: 14px; color: rgba(255,255,255,0.7); margin-bottom: 20px; }
+    .footer-cta-btn { display: inline-flex; align-items: center; gap: 10px; background: #d64545; padding: 14px 28px; border-radius: 30px; text-decoration: none; color: white; font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 16px; transition: all 0.3s; box-shadow: 0 4px 15px rgba(214, 69, 69, 0.3); }
+    .footer-cta-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(214, 69, 69, 0.4); background: #e05555; }
+    .footer-cta-btn svg { width: 22px; height: 22px; }
+    .footer-author { display: flex; align-items: center; justify-content: center; gap: 8px; color: rgba(255,255,255,0.5); font-size: 13px; margin-top: 24px; }
+    .footer-author-name { font-family: 'Space Grotesk', sans-serif; }
+    .footer-about-link { color: rgba(255,255,255,0.5); text-decoration: none; transition: all 0.2s; }
+    .footer-about-link:hover { color: white; }
+    
+    /* Audio player */
+    .audio-box { background: rgba(255,255,255,0.1); padding: 20px; margin-top: 24px; display: flex; align-items: center; gap: 16px; }
+    .audio-box.hidden { display: none; }
+    .audio-play { width: 48px; height: 48px; background: #d64545; border: none; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; text-decoration: none; }
+    .audio-play:hover { background: #ff5252; transform: scale(1.05); }
+    .audio-play svg { width: 20px; height: 20px; fill: white; margin-left: 3px; }
+    .audio-info { flex: 1; }
+    .audio-title { font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+    .audio-credit { font-size: 12px; color: rgba(255,255,255,0.5); }
+    
+    /* Share section */
+    .share-section { background: #1B2A4E; padding: 32px 24px; text-align: center; border-top: 1px solid rgba(255,255,255,0.1); }
+    .share-title { font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 20px; color: rgba(255,255,255,0.6); }
+    .share-buttons { display: flex; justify-content: center; gap: 16px; }
+    .share-btn { width: 48px; height: 48px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.3); background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+    .share-btn:hover { border-color: #d64545; background: rgba(214,69,69,0.2); }
+    .share-btn svg { width: 22px; height: 22px; stroke: rgba(255,255,255,0.8); fill: none; }
+    
+    /* Navigation */
+    .nav-section { background: #1B2A4E; padding: 24px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.1); }
+    .nav-btn { background: transparent; border: 2px solid rgba(255,255,255,0.3); color: rgba(255,255,255,0.8); padding: 12px 24px; font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.2s; }
+    .nav-btn-all { padding: 12px 16px; }
+    .nav-btn:hover { border-color: #d64545; background: rgba(214,69,69,0.2); }
+    .nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+    .nav-btn:disabled:hover { border-color: rgba(255,255,255,0.3); background: transparent; }
+    .nav-btn svg { width: 16px; height: 16px; stroke: currentColor; fill: none; }
+    
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <div class="header-top-row">
+        <p class="header-disciplines">Économie · Écologie · Philosophie</p>
+        <button class="info-btn" onclick="openAbout()" title="À propos">i</button>
+      </div>
+      <p class="header-label">Regards croisés</p>
+      <p class="header-label-sub">sur la biodiversité</p>
+      <p class="header-author">par Lauriane Mouysset</p>
+      <h1>Quelle espèce<br>a disparu<span>l'année de ta naissance ?</span></h1>
+    </div>
+    
+    <!-- Form -->
+    <div class="form-section">
+      <div class="form-row">
+        <input type="number" id="yearInput" placeholder="Année de naissance" value="">
+        <button onclick="showSpecies()">Go</button>
+      </div>
+      <p class="form-hint">Entre 1960 et 2024</p>
+      <p class="error hidden" id="error"></p>
+    </div>
+    
+    <!-- Results -->
+    <div id="results" class="hidden">
+      
+      <!-- 1. QUI - BLEU MARINE + ROUGE -->
+      <div class="section section-qui">
+        <h2 class="section-title-big">Qui ?</h2>
+        <h3 class="species-name" id="speciesName"></h3>
+        <p class="species-latin" id="speciesLatin"></p>
+        <div class="species-image hidden" id="speciesImageBox">
+          <img id="speciesImage" src="" alt="">
+          <p class="species-image-credit" id="speciesImageCredit"></p>
+        </div>
+        <div class="badges">
+          <span class="badge" id="category"></span>
+          <span class="badge" id="year"></span>
+          <span class="badge" id="dateType"></span>
+          <span class="badge" id="location"></span>
+        </div>
+        <p class="description" id="description"></p>
+        <div class="cause-box">
+          <p class="cause-title">Cause d'extinction</p>
+          <p class="cause-text" id="cause"></p>
+        </div>
+        <div class="audio-box hidden" id="audioBox">
+          <a class="audio-play" id="audioLink" href="" target="_blank">
+            <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"></polygon></svg>
+          </a>
+          <div class="audio-info">
+            <p class="audio-title" id="audioTitle"></p>
+            <p class="audio-credit" id="audioCredit"></p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 2. ÉCONOMIE - BLANC + BLEU/ROUGE -->
+      <div class="section section-econ">
+        <h2 class="section-title-big">Regard économique</h2>
+        <div class="block">
+          <p class="block-title">Valeur perdue</p>
+          <p class="block-text" id="valeur"></p>
+        </div>
+        <div class="block">
+          <p class="block-title">Coût de l'extinction</p>
+          <p class="block-text" id="cout"></p>
+        </div>
+        <div class="impact-box">
+          <p class="impact-number" id="chiffre"></p>
+          <p class="impact-detail" id="chiffreDetail"></p>
+        </div>
+      </div>
+      
+      <!-- 3. ÉCOLOGIE - VERT + BLANC/ROUGE -->
+      <div class="section section-eco">
+        <h2 class="section-title-big">Regard écologique</h2>
+        <div class="block">
+          <p class="block-title">Habitat</p>
+          <p class="block-text" id="habitat"></p>
+        </div>
+        <div class="block">
+          <p class="block-title">Rôle dans l'écosystème</p>
+          <p class="block-text" id="role"></p>
+        </div>
+        <div class="impact-box">
+          <p class="impact-word" id="ecoMotCle"></p>
+          <p class="impact-detail" id="cascade"></p>
+        </div>
+      </div>
+      
+      <!-- 4. PHILO - ORANGE + BLEU/ROUGE -->
+      <div class="section section-philo">
+        <h2 class="section-title-big">Regard philosophique</h2>
+        <div class="block">
+          <p class="block-title">Le dilemme</p>
+          <p class="block-text" id="question"></p>
+        </div>
+        <div class="block">
+          <p class="block-title">Ce que ça interroge</p>
+          <p class="block-text" id="reflexion"></p>
+        </div>
+        <div class="impact-box">
+          <p class="impact-word" id="philoMotCle"></p>
+          <p class="impact-detail" id="philoOuverture"></p>
+        </div>
+      </div>
+      
+      <!-- Partage -->
+      <div class="share-section">
+        <p class="share-title">Partager cette découverte</p>
+        <div class="share-buttons">
+          <button class="share-btn" onclick="shareInstagram()" title="Instagram">
+            <svg viewBox="0 0 24 24" stroke-width="2">
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+              <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+              <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+            </svg>
+          </button>
+          <button class="share-btn" onclick="shareTwitter()" title="Twitter/X">
+            <svg viewBox="0 0 24 24"><path d="M4 4l11.7 16h4.3l-11.7-16zM4 20l7-9.3M20 4l-7 9.3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <button class="share-btn" onclick="shareWhatsApp()" title="WhatsApp">
+            <svg viewBox="0 0 24 24" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+          </button>
+          <button class="share-btn" onclick="copyLink()" title="Copier le lien">
+            <svg viewBox="0 0 24 24" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+          </button>
+        </div>
+      </div>
+      
+      <!-- Navigation -->
+      <div class="nav-section">
+        <button class="nav-btn" id="prevBtn" onclick="goToPrev()">
+          <svg viewBox="0 0 24 24" stroke-width="2"><polyline points="15,18 9,12 15,6"/></svg>
+          <span id="prevYear"></span>
+        </button>
+        <button class="nav-btn nav-btn-all" id="allYearsBtn" onclick="toggleGrid()">
+          <span>Tout</span>
+        </button>
+        <button class="nav-btn" id="nextBtn" onclick="goToNext()">
+          <span id="nextYear"></span>
+          <svg viewBox="0 0 24 24" stroke-width="2"><polyline points="9,6 15,12 9,18"/></svg>
+        </button>
+      </div>
+      
+      <!-- Grille toutes les années -->
+      <div class="grid-section hidden" id="gridSection">
+        <div class="grid" id="gridContainer">
+        <div class="cell c-red" onclick="setYear(1960)"><span class="cell-year">60</span><div class="tooltip"><div class="tooltip-name">Bandicoot à pieds de porc</div><div class="tooltip-keywords"><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-eco"></div>0 $ investi</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-ecol"></div>Fouisseur</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-philo"></div>Étrange</div></div><div class="tooltip-cta">Cliquer pour voir →</div></div></div>
+        <div class="cell c-green" onclick="setYear(1961)"><span class="cell-year">61</span><div class="tooltip"><div class="tooltip-name">Moule perlière de l'Avella</div><div class="tooltip-keywords"><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-eco"></div>40 L/jour filtrés</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-ecol"></div>Invisible</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-philo"></div>Laideur</div></div><div class="tooltip-cta">Cliquer pour voir →</div></div></div>
+        <div class="cell c-orange" onclick="setYear(1962)"><span class="cell-year">62</span><div class="tooltip"><div class="tooltip-name">Escargot arboricole de Dole</div><div class="tooltip-keywords"><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-eco"></div>90% disparus</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-ecol"></div>Décomposeur</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-philo"></div>Arrogance</div></div><div class="tooltip-cta">Cliquer pour voir →</div></div></div>
+        <div class="cell c-navy" onclick="setYear(1963)"><span class="cell-year">63</span><div class="tooltip"><div class="tooltip-name">Kākāwahie</div><div class="tooltip-keywords"><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-eco"></div>50 M $/an</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-ecol"></div>Protecteur</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-philo"></div>Maladie</div></div><div class="tooltip-cta">Cliquer pour voir →</div></div></div>
+        <div class="cell c-green" onclick="setYear(1964)"><span class="cell-year">64</span><div class="tooltip"><div class="tooltip-name">Acaena d'Hawaï</div><div class="tooltip-keywords"><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-eco"></div>Chasse vs plante</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-ecol"></div>Stabilisatrice</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-philo"></div>Ancienneté</div></div><div class="tooltip-cta">Cliquer pour voir →</div></div></div>
+        <div class="cell c-red" onclick="setYear(1965)"><span class="cell-year">65</span><div class="tooltip"><div class="tooltip-name">Cyanea de Kauai</div><div class="tooltip-keywords"><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-eco"></div>30 M $ sucre</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-ecol"></div>Partenaire</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-philo"></div>Attente</div></div><div class="tooltip-cta">Cliquer pour voir →</div></div></div>
+        <div class="cell c-navy" onclick="setYear(1966)"><span class="cell-year">66</span><div class="tooltip"><div class="tooltip-name">Schiedea des falaises</div><div class="tooltip-keywords"><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-eco"></div>Molécules perdues</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-ecol"></div>Pionnière</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-philo"></div>Adaptation</div></div><div class="tooltip-cta">Cliquer pour voir →</div></div></div>
+        <div class="cell c-green" onclick="setYear(1967)"><span class="cell-year">67</span><div class="tooltip"><div class="tooltip-name">Lobélie de Maui</div><div class="tooltip-keywords"><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-eco"></div>13 M d'années</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-ecol"></div>Nectar</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-philo"></div>Temps</div></div><div class="tooltip-cta">Cliquer pour voir →</div></div></div>
+        <div class="cell c-red" onclick="setYear(1968)"><span class="cell-year">68</span><div class="tooltip"><div class="tooltip-name">Sabre d'argent vert</div><div class="tooltip-keywords"><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-eco"></div>1,4 Md $ télescopes</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-ecol"></div>Volcan</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-philo"></div>Refuge</div></div><div class="tooltip-cta">Cliquer pour voir →</div></div></div>
+        <div class="cell c-orange" onclick="setYear(1969)"><span class="cell-year">69</span><div class="tooltip"><div class="tooltip-name">Kauaʻi ʻakialoa</div><div class="tooltip-keywords"><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-eco"></div>Bec de 6 cm</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-ecol"></div>Spécialiste</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-philo"></div>Spécialisation</div></div><div class="tooltip-cta">Cliquer pour voir →</div></div></div>
+        <div class="cell c-navy" onclick="setYear(1970)"><span class="cell-year">70</span><div class="tooltip"><div class="tooltip-name">Cyanea à longues feuilles</div><div class="tooltip-keywords"><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-eco"></div>1 M $/maison</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-ecol"></div>Connecteur</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-philo"></div>Ville</div></div><div class="tooltip-cta">Cliquer pour voir →</div></div></div>
+        <div class="cell c-green" onclick="setYear(1971)"><span class="cell-year">71</span><div class="tooltip"><div class="tooltip-name">Melicope du Haleakalā</div><div class="tooltip-keywords"><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-eco"></div>0 étude pharma</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-ecol"></div>Arôme</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-philo"></div>Inconnu</div></div><div class="tooltip-cta">Cliquer pour voir →</div></div></div>
+        <div class="cell c-orange" onclick="setYear(1972)"><span class="cell-year">72</span><div class="tooltip"><div class="tooltip-name">Melicope à grandes feuilles</div><div class="tooltip-keywords"><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-eco"></div>50% médicaments</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-ecol"></div>Rutacée</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-philo"></div>Remède</div></div><div class="tooltip-cta">Cliquer pour voir →</div></div></div>
+        <div class="cell c-red" onclick="setYear(1973)"><span class="cell-year">73</span><div class="tooltip"><div class="tooltip-name">Melicope de Neal</div><div class="tooltip-keywords"><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-eco"></div>5 000 $/m²</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-ecol"></div>Hommage</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-philo"></div>Mémoire</div></div><div class="tooltip-cta">Cliquer pour voir →</div></div></div>
+        <div class="cell c-navy" onclick="setYear(1974)"><span class="cell-year">74</span><div class="tooltip"><div class="tooltip-name">Melicope obovale</div><div class="tooltip-keywords"><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-eco"></div>0 $ investi</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-ecol"></div>Résilience</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-philo"></div>Fragilité</div></div><div class="tooltip-cta">Cliquer pour voir →</div></div></div>
+        <div class="cell c-orange" onclick="setYear(1975)"><span class="cell-year">75</span><div class="tooltip"><div class="tooltip-name">Boa de l'île Ronde</div><div class="tooltip-keywords"><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-eco"></div>151 ha perdus</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-ecol"></div>Îlien</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-philo"></div>Endémisme</div></div><div class="tooltip-cta">Cliquer pour voir →</div></div></div>
+        <div class="cell c-green" onclick="setYear(1976)"><span class="cell-year">76</span><div class="tooltip"><div class="tooltip-name">Cyanea d'Eleele</div><div class="tooltip-keywords"><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-eco"></div>50 $/lb café</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-ecol"></div>Noir</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-philo"></div>Marché</div></div><div class="tooltip-cta">Cliquer pour voir →</div></div></div>
+        <div class="cell c-red" onclick="setYear(1977)"><span class="cell-year">77</span><div class="tooltip"><div class="tooltip-name">Cyanea à feuilles linéaires</div><div class="tooltip-keywords"><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-eco"></div>0 témoin</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-ecol"></div>Crête</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-philo"></div>Banalité</div></div><div class="tooltip-cta">Cliquer pour voir →</div></div></div>
+        <div class="cell c-orange" onclick="setYear(1978)"><span class="cell-year">78</span><div class="tooltip"><div class="tooltip-name">Cyanea de Maui</div><div class="tooltip-keywords"><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-eco"></div>3 M visiteurs/an</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-ecol"></div>Dernière</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-philo"></div>Tourisme</div></div><div class="tooltip-cta">Cliquer pour voir →</div></div></div>
+        <div class="cell c-navy" onclick="setYear(1979)"><span class="cell-year">79</span><div class="tooltip"><div class="tooltip-name">Triton du lac Yunnan</div><div class="tooltip-keywords"><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-eco"></div>1 seul lac</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-ecol"></div>Endémique</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-philo"></div>Oubli</div></div><div class="tooltip-cta">Cliquer pour voir →</div></div></div>
+        <div class="cell c-green" onclick="setYear(1980)"><span class="cell-year">80</span><div class="tooltip"><div class="tooltip-name">Gazelle d'Arabie</div><div class="tooltip-keywords"><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-eco"></div>0 survivant</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-ecol"></div>Désert</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-philo"></div>Modernité</div></div><div class="tooltip-cta">Cliquer pour voir →</div></div></div>
+        <div class="cell c-red" onclick="setYear(1981)"><span class="cell-year">81</span><div class="tooltip"><div class="tooltip-name">Partula de Polynésie</div><div class="tooltip-keywords"><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-eco"></div>60+ espèces</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-ecol"></div>Recycleur</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-philo"></div>Remède</div></div><div class="tooltip-cta">Cliquer pour voir →</div></div></div>
+        <div class="cell c-orange" onclick="setYear(1982)"><span class="cell-year">82</span><div class="tooltip"><div class="tooltip-name">Grèbe roussâtre</div><div class="tooltip-keywords"><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-eco"></div>10% riz malgache</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-ecol"></div>Lac</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-philo"></div>Choix</div></div><div class="tooltip-cta">Cliquer pour voir →</div></div></div>
+        <div class="cell c-navy" onclick="setYear(1983)"><span class="cell-year">83</span><div class="tooltip"><div class="tooltip-name">Kāmaʻo</div><div class="tooltip-keywords"><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-eco"></div>1 dernier chant</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-ecol"></div>Chant</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-philo"></div>Silence</div></div><div class="tooltip-cta">Cliquer pour voir →</div></div></div>
+        <div class="cell c-green" onclick="setYear(1984)"><span class="cell-year">84</span><div class="tooltip"><div class="tooltip-name">Partula orange</div><div class="tooltip-keywords"><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-eco"></div>10 ans extinction</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-ecol"></div>Unique</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-philo"></div>Souvenir</div></div><div class="tooltip-cta">Cliquer pour voir →</div></div></div>
+        <div class="cell c-orange" onclick="setYear(1985)"><span class="cell-year">85</span><div class="tooltip"><div class="tooltip-name">Cyrtandra d'Oahu</div><div class="tooltip-keywords"><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-eco"></div>18 Mds $ tourisme</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-ecol"></div>Nourricier</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-philo"></div>Paradis</div></div><div class="tooltip-cta">Cliquer pour voir →</div></div></div>
+        <div class="cell c-red" onclick="setYear(1986)"><span class="cell-year">86</span><div class="tooltip"><div class="tooltip-name">Partula de Moorea</div><div class="tooltip-keywords"><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-eco"></div>30 ans d'études</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-ecol"></div>Modèle</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-philo"></div>Impuissance</div></div><div class="tooltip-cta">Cliquer pour voir →</div></div></div>
+        <div class="cell c-navy" onclick="setYear(1987)"><span class="cell-year">87</span><div class="tooltip"><div class="tooltip-name">Kauaʻi ʻōʻō</div><div class="tooltip-keywords"><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-eco"></div>1 voix seule</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-ecol"></div>Silence</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-philo"></div>Solitude</div></div><div class="tooltip-cta">Cliquer pour voir →</div></div></div>
+        <div class="cell c-green" onclick="setYear(1988)"><span class="cell-year">88</span><div class="tooltip"><div class="tooltip-name">Bruant maritime sombre</div><div class="tooltip-keywords"><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-eco"></div>6 mâles captifs</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-ecol"></div>Marais</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-philo"></div>Priorité</div></div><div class="tooltip-cta">Cliquer pour voir →</div></div></div>
+        <div class="cell c-red" onclick="setYear(1989)"><span class="cell-year">89</span><div class="tooltip"><div class="tooltip-name">Crapaud doré</div><div class="tooltip-keywords"><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-eco"></div>1500 → 0</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-ecol"></div>Effondrement</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-philo"></div>Trop tard</div></div><div class="tooltip-cta">Cliquer pour voir →</div></div></div>
+        <div class="cell c-orange" onclick="setYear(1990)"><span class="cell-year">90</span><div class="tooltip"><div class="tooltip-name">Robin des Chatham</div><div class="tooltip-keywords"><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-eco"></div>5 → 300</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-ecol"></div>Résilience</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-philo"></div>Espoir</div></div><div class="tooltip-cta">Cliquer pour voir →</div></div></div>
+        <div class="cell c-navy" onclick="setYear(1991)"><span class="cell-year">91</span><div class="tooltip"><div class="tooltip-name">Escargot Achatinella</div><div class="tooltip-keywords"><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-eco"></div>41 espèces</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-ecol"></div>Nettoyeur</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-philo"></div>Petit</div></div><div class="tooltip-cta">Cliquer pour voir →</div></div></div>
+        <div class="cell c-green" onclick="setYear(1992)"><span class="cell-year">92</span><div class="tooltip"><div class="tooltip-name">Aigle pêcheur de Sanford</div><div class="tooltip-keywords"><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-eco"></div>2 M m³ bois/an</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-ecol"></div>Sentinelle</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-philo"></div>Injustice</div></div><div class="tooltip-cta">Cliquer pour voir →</div></div></div>
+        <div class="cell c-red" onclick="setYear(1993)"><span class="cell-year">93</span><div class="tooltip"><div class="tooltip-name">Poisson-chat du Scioto</div><div class="tooltip-keywords"><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-eco"></div>18 observations</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-ecol"></div>Discret</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-philo"></div>Inconnu</div></div><div class="tooltip-cta">Cliquer pour voir →</div></div></div>
+        <div class="cell c-orange" onclick="setYear(1994)"><span class="cell-year">94</span><div class="tooltip"><div class="tooltip-name">Grande marène</div><div class="tooltip-keywords"><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-eco"></div>0 pêcheur</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-ecol"></div>Corridor</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-philo"></div>Avidité</div></div><div class="tooltip-cta">Cliquer pour voir →</div></div></div>
+        <div class="cell c-green" onclick="setYear(1995)"><span class="cell-year">95</span><div class="tooltip"><div class="tooltip-name">Courlis à bec grêle</div><div class="tooltip-keywords"><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-eco"></div>30 ans recherche</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-ecol"></div>Fantôme</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-philo"></div>Mystère</div></div><div class="tooltip-cta">Cliquer pour voir →</div></div></div>
+        <div class="cell c-navy" onclick="setYear(1996)"><span class="cell-year">96</span><div class="tooltip"><div class="tooltip-name">Léopard de Zanzibar</div><div class="tooltip-keywords"><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-eco"></div>0 $ investi</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-ecol"></div>Apex</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-philo"></div>Peur</div></div><div class="tooltip-cta">Cliquer pour voir →</div></div></div>
+        <div class="cell c-red" onclick="setYear(1997)"><span class="cell-year">97</span><div class="tooltip"><div class="tooltip-name">Grenouille torrent</div><div class="tooltip-keywords"><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-eco"></div>80 → 0</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-ecol"></div>Sentinelle</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-philo"></div>Invisible</div></div><div class="tooltip-cta">Cliquer pour voir →</div></div></div>
+        <div class="cell c-orange" onclick="setYear(1998)"><span class="cell-year">98</span><div class="tooltip"><div class="tooltip-name">Scinque de Christmas</div><div class="tooltip-keywords"><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-eco"></div>20 ans extinction</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-ecol"></div>Proie</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-philo"></div>Accident</div></div><div class="tooltip-cta">Cliquer pour voir →</div></div></div>
+        <div class="cell c-navy" onclick="setYear(1999)"><span class="cell-year">99</span><div class="tooltip"><div class="tooltip-name">Oryx algazelle</div><div class="tooltip-keywords"><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-eco"></div>0 → 300</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-ecol"></div>Résilience</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-philo"></div>Captif</div></div><div class="tooltip-cta">Cliquer pour voir →</div></div></div>
+        <div class="cell c-green" onclick="setYear(2000)"><span class="cell-year">00</span><div class="tooltip"><div class="tooltip-name">Bouquetin des Pyrénées</div><div class="tooltip-keywords"><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-eco"></div>7 min de vie</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-ecol"></div>Fermeture</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-philo"></div>Profaner ?</div></div><div class="tooltip-cta">Cliquer pour voir →</div></div></div>
+        <div class="cell c-red" onclick="setYear(2001)"><span class="cell-year">01</span><div class="tooltip"><div class="tooltip-name">Thylacine</div><div class="tooltip-keywords"><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-eco"></div>1 £ par tête</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-ecol"></div>Irremplaçable</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-philo"></div>Résurrection</div></div><div class="tooltip-cta">Cliquer pour voir →</div></div></div>
+        <div class="cell c-orange" onclick="setYear(2002)"><span class="cell-year">02</span><div class="tooltip"><div class="tooltip-name">Baiji</div><div class="tooltip-keywords"><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-eco"></div>20 M d'années</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-ecol"></div>Indicateur</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-philo"></div>Sacrifice</div></div><div class="tooltip-cta">Cliquer pour voir →</div></div></div>
+        <div class="cell c-navy" onclick="setYear(2003)"><span class="cell-year">03</span><div class="tooltip"><div class="tooltip-name">Poisson-spatule chinois</div><div class="tooltip-keywords"><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-eco"></div>0 reproduction</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-ecol"></div>Ancêtre</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-philo"></div>Déni</div></div><div class="tooltip-cta">Cliquer pour voir →</div></div></div>
+        <div class="cell c-green" onclick="setYear(2004)"><span class="cell-year">04</span><div class="tooltip"><div class="tooltip-name">Po'ouli</div><div class="tooltip-keywords"><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-eco"></div>3 → 0</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-ecol"></div>Spécialiste</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-philo"></div>Impuissance</div></div><div class="tooltip-cta">Cliquer pour voir →</div></div></div>
+        <div class="cell c-red" onclick="setYear(2005)"><span class="cell-year">05</span><div class="tooltip"><div class="tooltip-name">Pigeon de Liverpool</div><div class="tooltip-keywords"><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-eco"></div>1 spécimen</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-ecol"></div>Disparu</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-philo"></div>Oubli</div></div><div class="tooltip-cta">Cliquer pour voir →</div></div></div>
+        <div class="cell c-orange" onclick="setYear(2006)"><span class="cell-year">06</span><div class="tooltip"><div class="tooltip-name">Corbeau d'Hawaï</div><div class="tooltip-keywords"><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-eco"></div>~130 captifs</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-ecol"></div>Gardien</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-philo"></div>Captivité</div></div><div class="tooltip-cta">Cliquer pour voir →</div></div></div>
+        <div class="cell c-navy" onclick="setYear(2007)"><span class="cell-year">07</span><div class="tooltip"><div class="tooltip-name">Rhinocéros blanc du Nord</div><div class="tooltip-keywords"><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-eco"></div>2 femelles</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-ecol"></div>Hôte</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-philo"></div>Sursis</div></div><div class="tooltip-cta">Cliquer pour voir →</div></div></div>
+        <div class="cell c-green" onclick="setYear(2008)"><span class="cell-year">08</span><div class="tooltip"><div class="tooltip-name">Phoque moine des Caraïbes</div><div class="tooltip-keywords"><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-eco"></div>Vu en 1494</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-ecol"></div>Régulateur</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-philo"></div>Conquête</div></div><div class="tooltip-cta">Cliquer pour voir →</div></div></div>
+        <div class="cell c-orange" onclick="setYear(2009)"><span class="cell-year">09</span><div class="tooltip"><div class="tooltip-name">Souris de Bramble Cay</div><div class="tooltip-keywords"><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-eco"></div>3 m altitude</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-ecol"></div>Naufragé</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-philo"></div>Climat</div></div><div class="tooltip-cta">Cliquer pour voir →</div></div></div>
+        <div class="cell c-red" onclick="setYear(2010)"><span class="cell-year">10</span><div class="tooltip"><div class="tooltip-name">Grenouille de Rabb</div><div class="tooltip-keywords"><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-eco"></div>5 ans</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-ecol"></div>Pandémie</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-philo"></div>Découverte</div></div><div class="tooltip-cta">Cliquer pour voir →</div></div></div>
+        <div class="cell c-navy" onclick="setYear(2011)"><span class="cell-year">11</span><div class="tooltip"><div class="tooltip-name">Rhinocéros noir d'Afrique</div><div class="tooltip-keywords"><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-eco"></div>0 sauvé</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-ecol"></div>Géant</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-philo"></div>Échec</div></div><div class="tooltip-cta">Cliquer pour voir →</div></div></div>
+        <div class="cell c-orange" onclick="setYear(2012)"><span class="cell-year">12</span><div class="tooltip"><div class="tooltip-name">George le Solitaire</div><div class="tooltip-keywords"><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-eco"></div>100+ ans</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-ecol"></div>Ingénieur</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-philo"></div>Symbole</div></div><div class="tooltip-cta">Cliquer pour voir →</div></div></div>
+        <div class="cell c-green" onclick="setYear(2013)"><span class="cell-year">13</span><div class="tooltip"><div class="tooltip-name">Panthère nébuleuse</div><div class="tooltip-keywords"><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-eco"></div>1 500 caméras</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-ecol"></div>Canopée</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-philo"></div>Invisible</div></div><div class="tooltip-cta">Cliquer pour voir →</div></div></div>
+        <div class="cell c-red" onclick="setYear(2014)"><span class="cell-year">14</span><div class="tooltip"><div class="tooltip-name">Pupfish de Catarina</div><div class="tooltip-keywords"><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-eco"></div>1 source</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-ecol"></div>Endémique</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-philo"></div>Soif</div></div><div class="tooltip-cta">Cliquer pour voir →</div></div></div>
+        <div class="cell c-navy" onclick="setYear(2015)"><span class="cell-year">15</span><div class="tooltip"><div class="tooltip-name">Rhinocéros de Java</div><div class="tooltip-keywords"><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-eco"></div>1 balle</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-ecol"></div>Architecte</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-philo"></div>Croyance</div></div><div class="tooltip-cta">Cliquer pour voir →</div></div></div>
+        <div class="cell c-orange" onclick="setYear(2016)"><span class="cell-year">16</span><div class="tooltip"><div class="tooltip-name">Pipistrelle de Christmas</div><div class="tooltip-keywords"><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-eco"></div>1 filmée</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-ecol"></div>Nocturne</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-philo"></div>Trop tard</div></div><div class="tooltip-cta">Cliquer pour voir →</div></div></div>
+        <div class="cell c-green" onclick="setYear(2017)"><span class="cell-year">17</span><div class="tooltip"><div class="tooltip-name">Philydor de Alagoas</div><div class="tooltip-keywords"><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-eco"></div>7% forêt</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-ecol"></div>Fragment</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-philo"></div>Seuil</div></div><div class="tooltip-cta">Cliquer pour voir →</div></div></div>
+        <div class="cell c-red" onclick="setYear(2018)"><span class="cell-year">18</span><div class="tooltip"><div class="tooltip-name">Ara de Spix</div><div class="tooltip-keywords"><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-eco"></div>200 000 $</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-ecol"></div>Otage</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-philo"></div>Beauté</div></div><div class="tooltip-cta">Cliquer pour voir →</div></div></div>
+        <div class="cell c-navy" onclick="setYear(2019)"><span class="cell-year">19</span><div class="tooltip"><div class="tooltip-name">Poisson-main lisse</div><div class="tooltip-keywords"><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-eco"></div>200+ ans</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-ecol"></div>Marcheur</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-philo"></div>Doute</div></div><div class="tooltip-cta">Cliquer pour voir →</div></div></div>
+        <div class="cell c-orange" onclick="setYear(2020)"><span class="cell-year">20</span><div class="tooltip"><div class="tooltip-name">Grenouille dorée</div><div class="tooltip-keywords"><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-eco"></div>0 dans nature</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-ecol"></div>Sentinelle</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-philo"></div>Emblème</div></div><div class="tooltip-cta">Cliquer pour voir →</div></div></div>
+        <div class="cell c-green" onclick="setYear(2021)"><span class="cell-year">21</span><div class="tooltip"><div class="tooltip-name">Pic à bec ivoire</div><div class="tooltip-keywords"><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-eco"></div>77 ans doute</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-ecol"></div>Architecte</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-philo"></div>Fantôme</div></div><div class="tooltip-cta">Cliquer pour voir →</div></div></div>
+        <div class="cell c-red" onclick="setYear(2022)"><span class="cell-year">22</span><div class="tooltip"><div class="tooltip-name">Escargot d'Oahu</div><div class="tooltip-keywords"><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-eco"></div>14 ans seul</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-ecol"></div>Nettoyeur</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-philo"></div>Fin</div></div><div class="tooltip-cta">Cliquer pour voir →</div></div></div>
+        <div class="cell c-navy" onclick="setYear(2023)"><span class="cell-year">23</span><div class="tooltip"><div class="tooltip-name">Féra du Léman</div><div class="tooltip-keywords"><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-eco"></div>582 km²</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-ecol"></div>Profondeur</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-philo"></div>Mesure</div></div><div class="tooltip-cta">Cliquer pour voir →</div></div></div>
+        <div class="cell c-orange" onclick="setYear(2024)"><span class="cell-year">24</span><div class="tooltip"><div class="tooltip-name">Requin de Pondichéry</div><div class="tooltip-keywords"><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-eco"></div>45 ans</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-ecol"></div>Côtier</div><div class="tooltip-keyword"><div class="tooltip-keyword-dot dot-philo"></div>Indifférence</div></div><div class="tooltip-cta">Cliquer pour voir →</div></div></div>
+        </div>
+      </div>
+      
+    </div>
+    
+    <!-- Footer CTA Instagram -->
+    <div class="footer">
+      <p class="footer-cta-text">Envie d'autres regards croisés sur la biodiversité ?</p>
+      <p class="footer-cta-subtext">Rejoins-moi sur Instagram pour suivre tous les contenus</p>
+      <a href="https://www.instagram.com/lauriane_mouysset/" target="_blank" rel="noopener" class="footer-cta-btn">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+        </svg>
+        Suivre @lauriane_mouysset
+      </a>
+      <div class="footer-author">
+        <span class="footer-author-name">© 2025 Lauriane Mouysset · <a href="#" class="footer-about-link" onclick="openAbout(); return false;">À propos</a></span>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    const data = {
+      1960: {
+        nom: "Bandicoot à pieds de porc",
+        latin: "Chaeropus ecaudatus",
+        categorie: "Mammifère",
+        localisation: "Australie",
+        typeDate: "Déclaration d'extinction",
+        description: "Petit marsupial aux pattes fines comme des sabots de porc, unique en son genre. Il trottinait dans le désert australien comme un miniature cheval. Les colons l'ont trouvé bizarre. Les renards l'ont trouvé délicieux. En 1960, après des décennies sans observation, l'espèce a été officiellement déclarée éteinte.",
+        cause: "Prédation par les renards et chats introduits, destruction de l'habitat par les lapins et le bétail.",
+        habitat: "Zones arides et semi-arides du sud et centre de l'Australie.",
+        role: "Fouisseur nocturne, il retournait le sol en cherchant des insectes et des racines, aérant la terre du désert.",
+        ecoMotCle: "Fouisseur",
+        cascade: "Les bandicoots creusent des milliers de trous par an. Sans eux, le sol du désert devient compact et stérile.",
+        valeur: "L'élevage ovin et bovin qui a détruit son habitat rapportait des millions de livres sterling à l'économie coloniale australienne.",
+        cout: "Aucun programme de conservation n'a été tenté. La laine valait plus que la faune.",
+        chiffre: "0 $",
+        chiffreDetail: "Budget consacré à la protection du bandicoot. L'Australie exportait de la laine, pas des marsupiaux.",
+        question: "Un animal si étrange qu'on ne savait pas comment le classer. Était-il condamné à être ignoré ?",
+        reflexion: "L'étrangeté comme malédiction. Les espèces qui ne ressemblent à rien attirent moins la sympathie.",
+        philoMotCle: "Étrange",
+        philoOuverture: "Protège-t-on moins ce qu'on ne comprend pas ?",
+        imageUrl: "images/bandicoot-pieds-porc.jpg",
+        imageCredit: "Illustration : John Gould (XIXe siècle), domaine public"
+      },
+      1961: {
+        nom: "Moule perlière de l'Avella",
+        latin: "Pleurobema avellanum",
+        categorie: "Mollusque",
+        localisation: "Tennessee, USA",
+        typeDate: "Date approximative",
+        description: "Petite moule d'eau douce des rivières du Tennessee. Discrète, enfouie dans le sable, elle filtrait l'eau pendant des décennies. Personne ne l'a vue disparaître.",
+        cause: "Barrages, pollution agricole et industrielle, envasement des rivières. Les moules d'eau douce sont les animaux les plus menacés d'Amérique du Nord.",
+        habitat: "Rivières claires et sableuses du bassin du Tennessee, sud-est des États-Unis.",
+        role: "Les moules filtrent l'eau, stabilisent les sédiments, et leurs coquilles servent d'habitat à d'autres espèces. Ce sont les reins des rivières.",
+        ecoMotCle: "Invisible",
+        cascade: "Les moules sont les gardiennes invisibles des rivières. Sans elles, l'eau se trouble, les poissons suffoquent, l'écosystème s'effondre.",
+        valeur: "Une seule moule filtre jusqu'à 40 litres d'eau par jour. Gratuitement. Remplacer ce service par des stations d'épuration coûte des milliards.",
+        cout: "Les rivières du Tennessee ont perdu 70% de leurs espèces de moules. Le coût de la dépollution artificielle explose.",
+        chiffre: "40 L/jour",
+        chiffreDetail: "Volume d'eau qu'une seule moule peut filtrer. Des millions de stations d'épuration miniatures, gratuites et silencieuses.",
+        question: "On pleure les pandas, on ignore les moules. Pourtant, sans les moules, les rivières meurent. La beauté détermine-t-elle le droit à exister ?",
+        reflexion: "Notre empathie sélective. On protège ce qui nous ressemble ou ce qui nous émeut. Les moules ne font ni l'un ni l'autre.",
+        philoMotCle: "Laideur",
+        philoOuverture: "Faut-il être beau pour mériter d'être sauvé ?"
+      },
+      1962: {
+        nom: "Escargot arboricole de Dole",
+        latin: "Carelia dolei",
+        categorie: "Mollusque",
+        localisation: "Hawaï",
+        typeDate: "Date approximative",
+        description: "Petit escargot terrestre à la coquille délicate, endémique des forêts de l'île de Kauai. Il faisait partie d'une famille de plus de 200 espèces d'escargots hawaïens, dont la plupart ont aujourd'hui disparu.",
+        cause: "Prédation par des espèces invasives (rats, escargots carnivores introduits pour « contrôler » d'autres escargots), destruction des forêts natives.",
+        habitat: "Forêts humides d'altitude de l'île de Kauai, Hawaï. Vivait sur les feuilles et les troncs des arbres natifs.",
+        role: "Décomposeur essentiel, recyclant la matière organique et participant à la formation des sols forestiers.",
+        ecoMotCle: "Décomposeur",
+        cascade: "Sans les escargots, les feuilles mortes s'accumulent, le sol s'appauvrit, les arbres perdent leurs nutriments. La forêt se nourrit de ses recycleurs invisibles.",
+        valeur: "Les coquilles d'escargots hawaïens étaient autrefois utilisées pour fabriquer des leis (colliers traditionnels) valant des milliers de dollars. Un patrimoine culturel disparu.",
+        cout: "Le programme de conservation des escargots hawaïens coûte des millions par an. Malgré cela, plusieurs espèces s'éteignent chaque année.",
+        chiffre: "90%",
+        chiffreDetail: "Pourcentage des espèces d'escargots endémiques d'Hawaï déjà éteintes ou en voie d'extinction. La plus grande hécatombe silencieuse.",
+        question: "On a introduit un escargot carnivore pour éliminer un autre escargot nuisible. Il a dévoré les escargots natifs à la place. Peut-on réparer la nature sans la détruire davantage ?",
+        reflexion: "L'arrogance de croire qu'on peut contrôler les écosystèmes. Chaque « solution » crée de nouveaux problèmes.",
+        philoMotCle: "Arrogance",
+        philoOuverture: "Quand l'homme joue à Dieu, qui paie les conséquences ?"
+      },
+      1963: {
+        nom: "Kākāwahie",
+        latin: "Paroreomyza flammea",
+        categorie: "Oiseau",
+        localisation: "Molokai, Hawaï",
+        typeDate: "Dernière observation",
+        description: "Petit oiseau rouge vif endémique de l'île de Molokai. Il fouillait l'écorce des arbres à la recherche d'insectes. En 1963, on l'a vu pour la dernière fois. Le rouge s'est éteint.",
+        cause: "Moustiques porteurs de malaria aviaire, destruction de la forêt native, prédation par les rats.",
+        habitat: "Forêts humides de montagne de l'île de Molokai, Hawaï.",
+        role: "Insectivore spécialisé dans les insectes sous l'écorce. Il protégeait les arbres des infestations.",
+        ecoMotCle: "Protecteur",
+        cascade: "Les plumes rouges servaient aux capes royales hawaïennes. Avec l'oiseau, un artisanat sacré a perdu sa matière première.",
+        valeur: "Molokai attire peu de touristes comparé aux autres îles. Ses oiseaux n'ont jamais été rentables.",
+        cout: "Aucun programme de conservation n'a ciblé cette espèce. Le budget allait aux espèces des îles plus touristiques.",
+        chiffre: "50 M $",
+        chiffreDetail: "Revenus touristiques annuels de Molokai, contre 2 milliards pour Maui. L'île pauvre a perdu ses oiseaux sans que personne ne paie.",
+        question: "Molokai est la moins développée des îles hawaïennes. Pourtant ses oiseaux ont disparu. Le développement n'est pas le seul coupable.",
+        reflexion: "Les causes invisibles. Les moustiques tuent plus que les bulldozers.",
+        philoMotCle: "Maladie",
+        philoOuverture: "L'ennemi invisible est-il le plus dangereux ?",
+        imageUrl: "images/kakawahie.jpg",
+        imageCredit: "Illustration : F.W. Frohawk, Aves Hawaiienses (1890-1899), domaine public"
+      },
+      1964: {
+        nom: "Acaena d'Hawaï",
+        latin: "Acaena exigua",
+        categorie: "Plante",
+        localisation: "Hawaï",
+        typeDate: "Extinction confirmée",
+        description: "Petite plante rampante des prairies d'altitude d'Hawaï. Elle était la seule de son genre dans tout le Pacifique, arrivée par le vent il y a des millions d'années.",
+        cause: "Piétinement et broutage par les cochons sauvages et les chèvres, compétition avec les plantes invasives.",
+        habitat: "Prairies d'altitude et zones humides des sommets hawaïens.",
+        role: "Stabilisatrice des sols d'altitude, elle empêchait l'érosion des sommets volcaniques.",
+        ecoMotCle: "Stabilisatrice",
+        cascade: "Les plantes d'altitude retiennent les sols fragiles. Sans elles, l'érosion emporte la montagne vers la mer.",
+        valeur: "Les cochons sauvages génèrent des revenus via la chasse sportive. Protéger la plante aurait signifié réduire cette activité.",
+        cout: "Éradiquer les cochons sauvages coûterait des millions. L'État d'Hawaï a choisi de ne pas payer.",
+        chiffre: "500 000 $",
+        chiffreDetail: "Revenus annuels estimés de la chasse aux cochons sauvages à Hawaï. Une activité qui a coûté des espèces.",
+        question: "Une plante arrivée par le vent il y a des millions d'années, tuée par des cochons arrivés il y a 200 ans.",
+        reflexion: "L'ancienneté ne protège pas. Des millions d'années d'évolution effacées en deux siècles.",
+        philoMotCle: "Ancienneté",
+        philoOuverture: "Le temps investi par l'évolution a-t-il une valeur ?"
+      },
+      1965: {
+        nom: "Cyanea de Kauai",
+        latin: "Cyanea comata",
+        categorie: "Plante",
+        localisation: "Hawaï",
+        typeDate: "Dernière observation",
+        description: "Plante à fleurs courbées, adaptée aux becs des oiseaux pollinisateurs hawaïens. Quand les oiseaux ont disparu, la plante a perdu ses partenaires de reproduction.",
+        cause: "Disparition des oiseaux pollinisateurs, destruction de la forêt, prédation par les limaces invasives.",
+        habitat: "Forêts humides de l'île de Kauai, Hawaï.",
+        role: "Nourricière pour les oiseaux nectarivores. Ses fleurs courbées étaient parfaitement adaptées à leurs becs.",
+        ecoMotCle: "Partenaire",
+        cascade: "La plante et l'oiseau avaient évolué ensemble. L'un ne peut survivre sans l'autre.",
+        valeur: "Les terres forestières de Kauai ont été converties en plantations de canne à sucre rapportant des millions de dollars par an.",
+        cout: "Le sucre hawaïen a généré des fortunes au XIXe siècle. Les forêts de Cyanea ne valaient rien sur le marché.",
+        chiffre: "30 M $",
+        chiffreDetail: "Valeur annuelle des exportations de sucre de Kauai au XIXe siècle. La forêt a été rasée pour l'or blanc.",
+        question: "La plante attendait un oiseau qui ne viendrait plus. Peut-on mourir d'attendre ?",
+        reflexion: "L'interdépendance fatale. Quand un partenaire meurt, l'autre le suit.",
+        philoMotCle: "Attente",
+        philoOuverture: "Combien de temps peut-on attendre ce qui ne reviendra pas ?"
+      },
+      1966: {
+        nom: "Schiedea des falaises",
+        latin: "Schiedea amplexicaulis",
+        categorie: "Plante",
+        localisation: "Hawaï",
+        typeDate: "Extinction confirmée",
+        description: "Plante des falaises côtières d'Oahu, accrochée aux rochers battus par les vagues. Elle avait appris à survivre au sel, au vent, au soleil. Pas aux chèvres.",
+        cause: "Broutage par les chèvres sauvages, compétition avec les plantes invasives, érosion côtière.",
+        habitat: "Falaises côtières et zones rocheuses de l'île d'Oahu, Hawaï.",
+        role: "Pionnière des milieux hostiles, elle colonisait les rochers nus et préparait le sol pour d'autres plantes.",
+        ecoMotCle: "Pionnière",
+        cascade: "Les plantes pionnières sont les premières à s'installer. Sans elles, les milieux dégradés ne se régénèrent pas.",
+        valeur: "Les plantes des falaises hawaïennes contiennent des composés uniques, jamais étudiés avant leur disparition.",
+        cout: "Les chèvres sauvages sont un fléau à Hawaï. On a choisi de ne pas toutes les éliminer.",
+        chiffre: "30+",
+        chiffreDetail: "Espèces de Schiedea à Hawaï. Plus de la moitié sont menacées ou éteintes.",
+        question: "Une plante qui survivait aux tempêtes n'a pas survécu aux chèvres. Quelle ironie.",
+        reflexion: "La résistance mal placée. Être adapté à un danger ne protège pas des autres.",
+        philoMotCle: "Adaptation",
+        philoOuverture: "Peut-on être parfaitement adapté et quand même disparaître ?"
+      },
+      1967: {
+        nom: "Lobélie de Maui",
+        latin: "Cyanea cylindrocalyx",
+        categorie: "Plante",
+        localisation: "Hawaï",
+        typeDate: "Dernière observation",
+        description: "Plante aux fleurs tubulaires violettes de l'île de Maui. Elle faisait partie de la plus grande radiation de plantes à fleurs au monde, toutes issues d'un seul ancêtre arrivé il y a 13 millions d'années.",
+        cause: "Destruction de la forêt native, cochons sauvages, rats mangeant les graines, champignons pathogènes.",
+        habitat: "Forêts humides de l'est de Maui, Hawaï.",
+        role: "Source de nectar pour les oiseaux pollinisateurs. Chaque espèce de Cyanea nourrissait des oiseaux spécifiques.",
+        ecoMotCle: "Nectar",
+        cascade: "Les lobélies hawaïennes produisaient un nectar unique. Les oiseaux qui en dépendaient disparaissent à leur tour.",
+        valeur: "La radiation des lobélies hawaïennes est un cas d'école en biologie évolutive. Chaque extinction est une page arrachée.",
+        cout: "Sauver une espèce de Cyanea coûte environ 100 000 dollars. Il en reste des dizaines à sauver.",
+        chiffre: "13 M d'années",
+        chiffreDetail: "Temps qu'il a fallu pour créer la diversité des lobélies hawaïennes. Détruites en un siècle.",
+        question: "13 millions d'années d'évolution, effacées en 100 ans. Le temps de la nature et le temps de l'homme sont-ils compatibles ?",
+        reflexion: "L'asymétrie temporelle. L'évolution crée lentement, l'homme détruit vite.",
+        philoMotCle: "Temps",
+        philoOuverture: "Peut-on réparer en un siècle ce que la nature a mis des millions d'années à construire ?"
+      },
+      1968: {
+        nom: "Sabre d'argent vert",
+        latin: "Argyroxiphium virescens",
+        categorie: "Plante",
+        localisation: "Hawaï",
+        typeDate: "Dernière observation",
+        description: "Cousin du célèbre sabre d'argent du Haleakalā, mais à feuilles vertes au lieu d'argentées. Il ne poussait que sur le volcan Mauna Kea. Il a fleuri une dernière fois, puis s'est éteint.",
+        cause: "Broutage par les mouflons et les chèvres sauvages, qui adoraient ses feuilles tendres.",
+        habitat: "Pentes du volcan Mauna Kea, au-dessus de 2500 m d'altitude, île d'Hawaï.",
+        role: "Plante pionnière des coulées de lave, elle colonisait les terrains volcaniques stériles.",
+        ecoMotCle: "Volcan",
+        cascade: "Le Mauna Kea abrite des télescopes valant des milliards. On protège les étoiles, pas les plantes qui poussent à leurs pieds.",
+        valeur: "Les mouflons introduits pour la chasse sportive rapportent des milliers de dollars en permis chaque année.",
+        cout: "Le lobby de la chasse a bloqué l'élimination des mouflons. Le profit l'a emporté sur la conservation.",
+        chiffre: "1,4 Md $",
+        chiffreDetail: "Valeur des télescopes installés sur le Mauna Kea. On investit dans les étoiles, pas dans les plantes.",
+        question: "Elle vivait sur un volcan, au-dessus des nuages. Même là, on l'a trouvée.",
+        reflexion: "Nulle part n'est assez loin. L'homme atteint tous les refuges.",
+        philoMotCle: "Refuge",
+        philoOuverture: "Existe-t-il encore des endroits hors de notre portée ?"
+      },
+      1969: {
+        nom: "Kauaʻi ʻakialoa",
+        latin: "Akialoa stejnegeri",
+        categorie: "Oiseau",
+        localisation: "Kauai, Hawaï",
+        typeDate: "Dernière observation",
+        description: "Oiseau au bec incroyablement long et courbé, adapté pour fouiller l'écorce des arbres. Son bec était si spécialisé qu'aucun autre oiseau ne pouvait le remplacer.",
+        cause: "Malaria aviaire transmise par les moustiques, destruction de la forêt native, prédation par les rats.",
+        habitat: "Forêts humides d'altitude de l'île de Kauai, Hawaï.",
+        role: "Extracteur d'insectes inaccessibles. Son bec atteignait des proies qu'aucun autre oiseau ne pouvait atteindre.",
+        ecoMotCle: "Spécialiste",
+        cascade: "Avec son bec unique, il exploitait une niche que personne d'autre n'occupe. Cette niche est maintenant vide.",
+        valeur: "Les oiseaux hawaïens sont des exemples classiques d'évolution adaptative. Chaque extinction est une leçon perdue.",
+        cout: "Kauai a perdu la majorité de ses oiseaux forestiers. Les survivants reculent vers les sommets, fuyant les moustiques.",
+        chiffre: "6 cm",
+        chiffreDetail: "Longueur approximative de son bec. Un outil de précision forgé par des millions d'années d'évolution.",
+        question: "Un bec parfaitement adapté à un seul rôle. La spécialisation est-elle un atout ou un piège ?",
+        reflexion: "Le piège de la perfection. Être trop adapté à un monde, c'est mourir quand ce monde change.",
+        philoMotCle: "Spécialisation",
+        philoOuverture: "La perfection rend-elle vulnérable ?",
+        imageUrl: "images/kauai-akialoa.jpg",
+        imageCredit: "Photo : Spécimen au Bishop Museum, Honolulu, CC BY-SA 3.0"
+      },
+      1970: {
+        nom: "Cyanea à longues feuilles",
+        latin: "Cyanea dolichopoda",
+        categorie: "Plante",
+        localisation: "Hawaï",
+        typeDate: "Dernière observation",
+        description: "Lobélie aux feuilles allongées des forêts d'Oahu. Elle portait des fleurs mauves visitées par des oiseaux aujourd'hui disparus eux aussi.",
+        cause: "Destruction de la forêt pour l'agriculture et l'urbanisation d'Honolulu, espèces invasives.",
+        habitat: "Forêts humides des montagnes d'Oahu, Hawaï.",
+        role: "Source de nectar et de fruits pour la faune forestière. Elle connectait les oiseaux aux insectes.",
+        ecoMotCle: "Connecteur",
+        cascade: "Les lobélies relient les différents niveaux de la chaîne alimentaire. Leur disparition rompt des connexions invisibles.",
+        valeur: "Oahu est l'île la plus urbanisée d'Hawaï. Honolulu s'est construite sur les forêts de lobélies.",
+        cout: "Le prix de l'immobilier à Honolulu dépasse 1 million de dollars pour une maison.",
+        chiffre: "1 M $",
+        chiffreDetail: "Prix moyen d'une maison à Honolulu. La ville a poussé sur les ruines de la forêt.",
+        question: "Une ville a remplacé une forêt. Des millions de personnes y vivent. Qui peut dire que c'était un mauvais choix ?",
+        reflexion: "Le prix de la civilisation. Chaque ville est construite sur des extinctions.",
+        philoMotCle: "Ville",
+        philoOuverture: "Peut-on bâtir sans détruire ?"
+      },
+      1971: {
+        nom: "Melicope du Haleakalā",
+        latin: "Melicope haleakalae",
+        categorie: "Plante",
+        localisation: "Hawaï",
+        typeDate: "Extinction confirmée",
+        description: "Arbuste aromatique des forêts du volcan Haleakalā sur Maui. Ses feuilles dégageaient un parfum unique qu'aucun humain ne sentira plus jamais.",
+        cause: "Broutage par les cerfs axis introduits, destruction de la forêt, champignons pathogènes.",
+        habitat: "Forêts humides des pentes du Haleakalā, île de Maui, Hawaï.",
+        role: "Plante aromatique aux huiles essentielles potentiellement médicinales, jamais étudiées.",
+        ecoMotCle: "Arôme",
+        cascade: "Les plantes aromatiques attirent des insectes pollinisateurs spécifiques. Leur parfum disparu, leurs partenaires errent.",
+        valeur: "Les huiles essentielles hawaïennes sont très prisées. Cette espèce aurait pu valoir des millions.",
+        cout: "Les cerfs axis ont été introduits pour la chasse sportive. Un loisir qui coûte des espèces.",
+        chiffre: "0",
+        chiffreDetail: "Nombre d'études pharmaceutiques réalisées sur cette plante avant son extinction.",
+        question: "Un parfum unique a disparu. Peut-on regretter ce qu'on n'a jamais connu ?",
+        reflexion: "Les trésors inconnus. Combien de remèdes potentiels avons-nous perdus sans le savoir ?",
+        philoMotCle: "Inconnu",
+        philoOuverture: "Peut-on mesurer la valeur de ce qu'on n'a jamais découvert ?"
+      },
+      1972: {
+        nom: "Melicope à grandes feuilles",
+        latin: "Melicope macropus",
+        categorie: "Plante",
+        localisation: "Hawaï",
+        typeDate: "Dernière observation",
+        description: "Arbuste aux larges feuilles des forêts de Kauai. Il appartenait à une famille de plantes médicinales utilisées dans le monde entier, sauf lui, oublié dans sa forêt.",
+        cause: "Destruction de la forêt native, compétition avec les plantes invasives, ouragans.",
+        habitat: "Forêts humides de l'île de Kauai, Hawaï.",
+        role: "Membre de la famille des Rutacées, comme les agrumes. Potentiel pharmacologique jamais exploré.",
+        ecoMotCle: "Rutacée",
+        cascade: "Les Melicope abritaient des insectes endémiques spécifiques. Leurs larves dépendaient de cette plante pour survivre.",
+        valeur: "L'industrie pharmaceutique tire 50% de ses molécules des plantes. Combien valait cette espèce ?",
+        cout: "Développer un médicament coûte 2 milliards de dollars. Protéger cette plante aurait coûté quelques milliers.",
+        chiffre: "50%",
+        chiffreDetail: "Part des médicaments dérivés de substances naturelles. Chaque extinction réduit notre pharmacopée.",
+        question: "Cette plante contenait peut-être un remède contre le cancer. On ne le saura jamais.",
+        reflexion: "L'ironie pharmaceutique. On cherche des molécules miracle tout en détruisant leurs sources.",
+        philoMotCle: "Remède",
+        philoOuverture: "Détruit-on les cures de demain pour les profits d'aujourd'hui ?"
+      },
+      1973: {
+        nom: "Melicope de Neal",
+        latin: "Melicope nealae",
+        categorie: "Plante",
+        localisation: "Hawaï",
+        typeDate: "Extinction confirmée",
+        description: "Nommée en l'honneur de Marie Neal, botaniste qui a consacré sa vie à documenter la flore hawaïenne. Elle n'a pas pu sauver la plante qui portait son nom.",
+        cause: "Destruction de l'habitat, espèces invasives, changement climatique affectant les forêts d'altitude.",
+        habitat: "Forêts humides des montagnes d'Oahu, Hawaï.",
+        role: "Composante de la canopée forestière, elle offrait ombre et nourriture à l'écosystème.",
+        ecoMotCle: "Hommage",
+        cascade: "Marie Neal a décrit des centaines de plantes hawaïennes. Beaucoup sont éteintes, comme des mots dans un dictionnaire mort.",
+        valeur: "Oahu concentre 80% de l'économie hawaïenne. L'urbanisation a rapporté des milliards, les plantes natives rien.",
+        cout: "Le foncier à Oahu vaut des milliers de dollars le mètre carré. La forêt native n'avait aucune chance.",
+        chiffre: "5 000 $/m²",
+        chiffreDetail: "Prix moyen du terrain à Honolulu. À ce prix, chaque mètre carré de forêt native était condamné.",
+        question: "Marie Neal a donné son nom à une plante. Cette plante a disparu. Est-ce un honneur ou une malédiction ?",
+        reflexion: "L'hommage éphémère. Donner son nom à une espèce éteinte, c'est graver son nom sur une tombe.",
+        philoMotCle: "Mémoire",
+        philoOuverture: "Quel sens a un hommage quand l'honoré disparaît ?"
+      },
+      1974: {
+        nom: "Melicope obovale",
+        latin: "Melicope obovata",
+        categorie: "Plante",
+        localisation: "Hawaï",
+        typeDate: "Dernière observation",
+        description: "Arbuste aux feuilles ovales inversées des forêts de Kauai. Observée pour la dernière fois en 1974, elle déclinait déjà face aux espèces invasives et aux cochons sauvages.",
+        cause: "Destruction de la forêt native par les cochons sauvages, compétition avec les plantes invasives, maladies fongiques.",
+        habitat: "Forêts humides de l'île de Kauai, Hawaï.",
+        role: "Élément de la diversité forestière de Kauai, elle contribuait à la résilience de l'écosystème.",
+        ecoMotCle: "Résilience",
+        cascade: "Chaque espèce perdue réduit la résilience de la forêt. Moins il y a d'espèces, plus l'écosystème est fragile.",
+        valeur: "Kauai est surnommée l'île jardin. Son jardin se vide espèce par espèce.",
+        cout: "Aucun budget de conservation n'a été alloué à cette espèce. Elle a disparu sans que personne ne compte.",
+        chiffre: "0 $",
+        chiffreDetail: "Budget consacré à sauver cette plante. Elle valait zéro sur le marché.",
+        question: "Une plante disparaît sans que personne ne s'en aperçoive. Combien d'extinctions passent inaperçues ?",
+        reflexion: "La fragilité accumulée. Les catastrophes naturelles achèvent les espèces déjà affaiblies.",
+        philoMotCle: "Fragilité",
+        philoOuverture: "Sommes-nous responsables quand la nature donne le coup final ?"
+      },
+      1975: {
+        nom: "Boa de l'île Ronde",
+        latin: "Bolyeria multocarinata",
+        categorie: "Reptile",
+        localisation: "Île Maurice",
+        typeDate: "Dernière observation",
+        description: "Petit boa fouisseur de l'île Ronde, près de Maurice. Dernier vu en 1975, il était le seul boa de tout l'océan Indien. Avec lui s'est éteinte une lignée unique.",
+        cause: "Destruction de l'habitat par les lapins et les chèvres, prédation possible par les rats et les musaraignes.",
+        habitat: "Île Ronde, minuscule île volcanique de 151 hectares près de Maurice.",
+        role: "Prédateur de lézards et de petits vertébrés, il régulait les populations de l'île.",
+        ecoMotCle: "Îlien",
+        cascade: "Le seul boa de l'océan Indien a disparu. Une lignée évolutive isolée depuis des millions d'années s'est éteinte.",
+        valeur: "L'île Ronde est maintenant une réserve naturelle protégée. Trop tard pour le boa.",
+        cout: "L'île Ronde fait l'objet de programmes de restauration coûteux. On sauve ce qui reste.",
+        chiffre: "151 ha",
+        chiffreDetail: "Surface de l'île Ronde. Un monde entier disparu sur 1,5 km².",
+        question: "Une île minuscule abritait une espèce qu'on ne trouvait nulle part ailleurs. L'unicité est-elle une condamnation ?",
+        reflexion: "L'endémisme comme piège. Être unique à un endroit, c'est n'avoir nulle part où fuir.",
+        philoMotCle: "Endémisme",
+        philoOuverture: "L'unicité est-elle une force ou une faiblesse ?",
+        imageUrl: "images/boa-ile-ronde.jpg",
+        imageCredit: "Illustration : Wikimedia Commons, domaine public"
+      },
+      1976: {
+        nom: "Cyanea d'Eleele",
+        latin: "Cyanea eleeleensis",
+        categorie: "Plante",
+        localisation: "Hawaï",
+        typeDate: "Dernière observation",
+        description: "Lobélie de la région d'Eleele sur Kauai. Son nom signifie 'noir' en hawaïen, comme la lave sur laquelle elle poussait. Elle est retournée au noir.",
+        cause: "Destruction de la forêt pour l'agriculture, broutage par les cochons sauvages, maladies fongiques.",
+        habitat: "Forêts humides de la côte sud de Kauai, Hawaï.",
+        role: "Source de nectar pour les oiseaux pollinisateurs de Kauai, dont beaucoup sont également menacés.",
+        ecoMotCle: "Noir",
+        cascade: "Son nom signifiait 'noir'. Sa disparition laisse un trou noir dans l'écosystème.",
+        valeur: "La région d'Eleele est maintenant couverte de plantations de café. Le café a remplacé les lobélies.",
+        cout: "Le café de Kauai se vend 50 dollars la livre. Les lobélies ne rapportaient rien.",
+        chiffre: "50 $/lb",
+        chiffreDetail: "Prix du café de Kauai. L'agriculture de luxe a remplacé la forêt native.",
+        question: "Un café de luxe pousse où poussait une fleur unique. Le goût en vaut-il la perte ?",
+        reflexion: "Le choix du marché. On cultive ce qui se vend, pas ce qui est rare.",
+        philoMotCle: "Marché",
+        philoOuverture: "Le marché peut-il donner une valeur à ce qui n'a pas de prix ?"
+      },
+      1977: {
+        nom: "Cyanea à feuilles linéaires",
+        latin: "Cyanea linearifolia",
+        categorie: "Plante",
+        localisation: "Hawaï",
+        typeDate: "Extinction confirmée",
+        description: "Lobélie aux feuilles fines comme des aiguilles, adaptée aux crêtes venteuses des montagnes d'Oahu. Le vent ne l'a pas emportée, ce sont les cochons.",
+        cause: "Cochons sauvages déracinant les plantes, compétition avec les herbes invasives, glissements de terrain.",
+        habitat: "Crêtes montagneuses de la chaîne de Koʻolau, Oahu, Hawaï.",
+        role: "Stabilisatrice des crêtes exposées, elle retenait le sol dans les zones les plus difficiles.",
+        ecoMotCle: "Crête",
+        cascade: "Les plantes des crêtes retiennent les sols fragiles. Sans elles, les montagnes s'effondrent lentement.",
+        valeur: "Les crêtes de Koʻolau dominent Honolulu. Les habitants voient les montagnes se vider sans le savoir.",
+        cout: "Les glissements de terrain coûtent des millions à Oahu. Les plantes les prévenaient gratuitement.",
+        chiffre: "0",
+        chiffreDetail: "Nombre de personnes qui ont remarqué sa disparition.",
+        question: "Elle disparaît et personne ne le remarque. Une extinction compte-t-elle si elle passe inaperçue ?",
+        reflexion: "L'extinction banalisée. Quand les disparitions se multiplient, on cesse de les voir.",
+        philoMotCle: "Banalité",
+        philoOuverture: "À force de disparitions, devient-on aveugle ?"
+      },
+      1978: {
+        nom: "Cyanea de Maui",
+        latin: "Cyanea mauiensis",
+        categorie: "Plante",
+        localisation: "Hawaï",
+        typeDate: "Dernière observation",
+        description: "L'une des dernières lobélies de Maui, elle portait des fleurs blanches visitées par des oiseaux qui n'existent plus. Elle a attendu des pollinisateurs qui ne venaient plus.",
+        cause: "Disparition des oiseaux pollinisateurs, cochons sauvages, rats mangeant les graines.",
+        habitat: "Forêts humides de l'est de Maui, Hawaï.",
+        role: "Dernière source de nectar pour les pollinisateurs survivants de Maui.",
+        ecoMotCle: "Dernière",
+        cascade: "Elle était parmi les dernières lobélies de Maui. Avec elle, c'est tout un groupe qui s'efface.",
+        valeur: "Maui est la deuxième destination touristique d'Hawaï. 3 millions de visiteurs par an ne voient pas ce qui manque.",
+        cout: "Le tourisme rapporte 5 milliards de dollars par an à Maui. Une fraction suffirait à protéger la flore.",
+        chiffre: "3 M",
+        chiffreDetail: "Visiteurs annuels à Maui. Ils viennent pour la beauté, ignorant ce qui a disparu.",
+        question: "Les touristes cherchent la nature à Maui. Ils ne voient pas qu'elle disparaît sous leurs yeux.",
+        reflexion: "Le tourisme aveugle. On vient admirer une nature qu'on contribue à détruire.",
+        philoMotCle: "Tourisme",
+        philoOuverture: "Peut-on aimer la nature et la détruire en même temps ?"
+      },
+      1979: {
+        nom: "Triton du lac Yunnan",
+        latin: "Cynops wolterstorffi",
+        categorie: "Amphibien",
+        localisation: "Chine",
+        typeDate: "Dernière observation",
+        description: "Petit triton noir et orange endémique d'un seul lac près de Kunming, en Chine. Il n'existait nulle part ailleurs sur Terre. Le lac a été vidé, pollué, urbanisé. Le triton a disparu avec lui.",
+        cause: "Destruction de son unique habitat : pollution, introduction de poissons exotiques, prélèvement d'eau, urbanisation autour du lac Kunming.",
+        habitat: "Lac Dian (lac Kunming), province du Yunnan, Chine. Eaux peu profondes et végétation aquatique.",
+        role: "Prédateur d'invertébrés aquatiques, contrôlant les populations de larves de moustiques et autres insectes.",
+        ecoMotCle: "Endémique",
+        cascade: "Quand une espèce n'existe qu'à un seul endroit, détruire cet endroit c'est l'effacer de l'univers.",
+        valeur: "Espèce jamais étudiée pour son potentiel médical. Les tritons produisent des substances antibactériennes et régénèrent leurs membres — des secrets perdus à jamais.",
+        cout: "Le lac Dian (Kunming) était un écosystème unique. Son « développement » a coûté des dizaines d'espèces endémiques, pas seulement le triton.",
+        chiffre: "1 lac",
+        chiffreDetail: "Un seul lac au monde abritait cette espèce. Ce lac existe encore, mais le triton a disparu.",
+        question: "On a choisi le développement économique d'une ville plutôt que la survie d'une espèce unique. Ce choix était-il conscient ?",
+        reflexion: "L'invisibilité des espèces. Personne n'a décidé de tuer le triton. Il a simplement été oublié dans l'équation.",
+        philoMotCle: "Oubli",
+        philoOuverture: "Combien d'espèces disparaissent sans que personne ne le décide ?"
+      },
+      1980: {
+        nom: "Gazelle d'Arabie",
+        latin: "Gazella saudiya",
+        categorie: "Mammifère",
+        localisation: "Péninsule arabique",
+        typeDate: "Dernière observation",
+        description: "Petite gazelle gracieuse des déserts d'Arabie. Elle pouvait survivre sans boire pendant des semaines, tirant son eau des plantes. Elle n'a pas survécu aux fusils des chasseurs motorisés.",
+        cause: "Chasse intensive avec des véhicules tout-terrain. Les chasseurs modernes ont transformé la traque en massacre.",
+        habitat: "Déserts de sable et plaines caillouteuses de la péninsule arabique.",
+        role: "Brouteuse des zones arides, elle maintenait l'équilibre végétal du désert et servait de proie aux grands prédateurs.",
+        ecoMotCle: "Désert",
+        cascade: "Sans gazelles, les prédateurs disparaissent et la végétation du désert se modifie. L'écosystème aride perd son équilibre.",
+        valeur: "Trophée de chasse prisé des riches Saoudiens. La motorisation a rendu la chasse trop efficace.",
+        cout: "Aucun programme de conservation sérieux n'a été mis en place. Le pétrole rendait tout le reste insignifiant.",
+        chiffre: "0",
+        chiffreDetail: "Zéro gazelle d'Arabie dans la nature. Quelques hybrides survivent en captivité.",
+        question: "La technologie a rendu la chasse trop facile. Le progrès est-il toujours un progrès ?",
+        reflexion: "L'efficacité destructrice. Quand la technique dépasse l'éthique, la nature paie le prix.",
+        philoMotCle: "Modernité",
+        philoOuverture: "Le progrès technique rend-il l'homme plus destructeur ?",
+        imageUrl: "images/gazelle-arabie.jpg",
+        imageCredit: "Photo : Wikimedia Commons, CC BY-SA 4.0"
+      },
+      1981: {
+        nom: "Partula de Polynésie",
+        latin: "Partula arguta",
+        categorie: "Mollusque",
+        localisation: "Polynésie française",
+        typeDate: "Extinction en nature",
+        description: "Petit escargot des forêts polynésiennes. Chaque vallée avait son espèce unique, évoluée sur des millénaires d'isolement. Un escargot carnivore introduit les a tous dévorés.",
+        cause: "Introduction de l'escargot carnivore Euglandina rosea pour contrôler un autre escargot invasif. Le remède a été pire que le mal.",
+        habitat: "Forêts tropicales des îles de la Société, Polynésie française.",
+        role: "Recycleur de matière organique, il décomposait les feuilles mortes et enrichissait le sol forestier.",
+        ecoMotCle: "Recycleur",
+        cascade: "Les escargots natifs décomposaient la litière forestière. Sans eux, le cycle des nutriments est perturbé.",
+        valeur: "Un escargot carnivore a été importé pour lutter contre un escargot ravageur. Résultat : deux espèces invasives au lieu d'une.",
+        cout: "Coût de l'introduction de l'Euglandina : quelques centaines de dollars. Coût de la perte : des dizaines d'espèces endémiques.",
+        chiffre: "60+",
+        chiffreDetail: "Espèces d'escargots Partula éteintes à cause d'un seul prédateur introduit.",
+        question: "On a introduit un prédateur pour résoudre un problème. On en a créé un pire. Peut-on contrôler la nature ?",
+        reflexion: "Les solutions qui deviennent problèmes. Chaque intervention crée de nouvelles conséquences.",
+        philoMotCle: "Remède",
+        philoOuverture: "Le remède peut-il être pire que le mal ?"
+      },
+      1982: {
+        nom: "Grèbe roussâtre",
+        latin: "Tachybaptus rufolavatus",
+        categorie: "Oiseau",
+        localisation: "Madagascar",
+        typeDate: "Dernière observation confirmée",
+        description: "Petit oiseau plongeur endémique du lac Alaotra à Madagascar. Il ne pouvait pas voler et passait sa vie sur l'eau. Quand le lac a été envahi, il n'avait nulle part où fuir.",
+        cause: "Introduction de poissons carnivores, filets de pêche, hybridation avec une espèce proche, destruction des roseaux.",
+        habitat: "Lac Alaotra, le plus grand lac de Madagascar, et ses marais de papyrus.",
+        role: "Plongeur chassant les petits poissons et invertébrés, il participait à l'équilibre du lac.",
+        ecoMotCle: "Lac",
+        cascade: "Le grèbe ne pouvait pas voler. Quand son lac est devenu hostile, il n'avait aucune issue de secours.",
+        valeur: "Le lac Alaotra produit 10% du riz de Madagascar. L'agriculture a pris toute la place.",
+        cout: "Aucun programme de conservation dédié. Le grèbe a disparu pendant qu'on se concentrait sur d'autres priorités.",
+        chiffre: "10%",
+        chiffreDetail: "Part du riz malgache produit autour du lac Alaotra. Le grenier à riz a tué son oiseau.",
+        question: "Un lac transformé en rizière nourrit des millions de personnes. Peut-on lui reprocher d'avoir perdu son grèbe ?",
+        reflexion: "Nourrir ou préserver. Parfois, il faut choisir entre les humains et la nature.",
+        philoMotCle: "Choix",
+        philoOuverture: "Quand on doit choisir, qui passe en premier ?",
+        imageUrl: "images/grebe-roussatre.jpg",
+        imageCredit: "Illustration : Citron, CC BY-SA 3.0"
+      },
+      1983: {
+        nom: "Kāmaʻo",
+        latin: "Myadestes myadestinus",
+        categorie: "Oiseau",
+        localisation: "Kauai, Hawaï",
+        typeDate: "Dernière observation",
+        description: "Grive solitaire des forêts de Kauai, au chant mélodieux légendaire. Les Hawaïens l'appelaient l'oiseau qui chante seul. En 1983, son chant s'est tu pour toujours.",
+        cause: "Moustiques porteurs de malaria aviaire, cyclones détruisant la forêt, rats et cochons sauvages.",
+        habitat: "Forêts humides d'altitude de l'île de Kauai, Hawaï.",
+        role: "Disperseur de graines des arbres natifs. Son chant marquait le territoire et structurait la communauté d'oiseaux.",
+        ecoMotCle: "Chant",
+        cascade: "Sans le Kāmaʻo, les graines de certains arbres ne sont plus dispersées. La forêt perd une voix et un jardinier.",
+        valeur: "Son chant était considéré comme le plus beau d'Hawaï. Une beauté qui n'a jamais été monétisée, juste perdue.",
+        cout: "Les cyclones Iwa (1982) et Iniki (1992) ont dévasté son habitat. La nature elle-même a accéléré sa fin.",
+        chiffre: "1",
+        chiffreDetail: "Dernier Kāmaʻo observé en 1989. Mais personne ne l'a entendu chanter depuis 1983.",
+        question: "Un chant d'oiseau a-t-il une valeur ? Si oui, combien vaut le silence ?",
+        reflexion: "La perte de la beauté. Certaines extinctions ne se mesurent pas en dollars, mais en silences.",
+        philoMotCle: "Silence",
+        philoOuverture: "Que perd-on quand un chant s'éteint ?",
+        imageUrl: "images/kamao.jpg",
+        imageCredit: "Illustration : John Gerrard Keulemans (1842-1912), domaine public"
+      },
+      1984: {
+        nom: "Partula orange",
+        latin: "Partula aurantia",
+        categorie: "Mollusque",
+        localisation: "Moorea, Polynésie française",
+        typeDate: "Extinction en nature",
+        description: "Escargot à la coquille orangée des forêts de Moorea. Comme tous les Partula, il était unique à son île. L'escargot carnivore introduit l'a exterminé en moins de 10 ans.",
+        cause: "Prédation par Euglandina rosea, l'escargot loup introduit pour le contrôle biologique.",
+        habitat: "Forêts de montagne de l'île de Moorea, Polynésie française.",
+        role: "Décomposeur de matière végétale, il participait au recyclage des nutriments dans le sol forestier.",
+        ecoMotCle: "Unique",
+        cascade: "Chaque espèce de Partula avait évolué séparément pendant des millénaires. Leur diversité génétique est perdue à jamais.",
+        valeur: "Un programme international a sauvé quelques Partula en zoo. Coût : des centaines de milliers de dollars pour maintenir des escargots en aquarium.",
+        cout: "L'introduction de l'Euglandina a coûté presque rien. Réparer son dégât coûte une fortune.",
+        chiffre: "10 ans",
+        chiffreDetail: "Temps qu'il a fallu à l'escargot prédateur pour exterminer les Partula de Moorea.",
+        question: "On peut garder quelques escargots en zoo. Mais peut-on appeler ça une survie ?",
+        reflexion: "La conservation de l'ombre. Garder une espèce en captivité, c'est conserver un souvenir, pas une vie.",
+        philoMotCle: "Souvenir",
+        philoOuverture: "Préserver en cage, est-ce sauver ou muséifier ?"
+      },
+      1985: {
+        nom: "Cyrtandra d'Oahu",
+        latin: "Cyrtandra olona",
+        categorie: "Plante",
+        localisation: "Hawaï",
+        typeDate: "Extinction confirmée",
+        description: "Petit arbuste à fleurs blanches des forêts humides d'Oahu. Il faisait partie des centaines de plantes uniques d'Hawaï, évoluées en isolation pendant des millions d'années.",
+        cause: "Destruction de la forêt native, cochons sauvages déracinant les plantes, espèces invasives étouffant la végétation.",
+        habitat: "Forêts humides de montagne de l'île d'Oahu, Hawaï.",
+        role: "Plante nourricière pour les insectes pollinisateurs natifs. Sa disparition rompt une chaîne de dépendance.",
+        ecoMotCle: "Nourricier",
+        cascade: "Hawaï a perdu plus de 100 espèces de plantes. Chaque extinction en entraîne d'autres, invisibles.",
+        valeur: "Hawaï est le champion mondial des extinctions de plantes. Le tourisme rapporte 18 milliards par an, mais ne sauve pas la flore.",
+        cout: "Aucun programme de conservation pour cette espèce spécifique. Trop de plantes menacées, pas assez de moyens.",
+        chiffre: "18 Mds $",
+        chiffreDetail: "Revenus touristiques annuels d'Hawaï. Une fraction suffirait à protéger la flore native.",
+        question: "Hawaï vend son image de paradis naturel. Mais que reste-t-il de la nature originelle ?",
+        reflexion: "Le paradis vendu. On commercialise l'image d'une nature qu'on détruit.",
+        philoMotCle: "Paradis",
+        philoOuverture: "Peut-on vendre ce qu'on ne protège pas ?"
+      },
+      1986: {
+        nom: "Partula de Moorea",
+        latin: "Partula suturalis",
+        categorie: "Mollusque",
+        localisation: "Moorea, Polynésie française",
+        typeDate: "Extinction en nature",
+        description: "Escargot des vallées de Moorea, étudié depuis les années 1960 par les biologistes. Espèce modèle pour comprendre l'évolution. Elle a été exterminée pendant qu'on l'étudiait.",
+        cause: "Prédation par l'escargot carnivore Euglandina rosea. L'espèce la plus étudiée de Moorea a disparu sous les yeux des scientifiques.",
+        habitat: "Vallées forestières de Moorea, Polynésie française.",
+        role: "Espèce modèle en biologie évolutive. Son étude a contribué à comprendre comment les espèces se forment.",
+        ecoMotCle: "Modèle",
+        cascade: "La diversité des Partula permettait d'étudier l'évolution en temps réel. Ce laboratoire naturel est détruit.",
+        valeur: "Des décennies de recherche scientifique, des publications majeures, une compréhension de l'évolution, tout basé sur cette espèce.",
+        cout: "Les chercheurs ont vu l'extinction arriver et n'ont pas pu l'arrêter. La science a documenté sa propre impuissance.",
+        chiffre: "30 ans",
+        chiffreDetail: "Durée des études scientifiques sur les Partula avant leur extinction. Savoir n'a pas suffi à sauver.",
+        question: "On étudiait cette espèce depuis 30 ans. On n'a pas pu la sauver. À quoi sert la science ?",
+        reflexion: "Savoir sans pouvoir. La connaissance ne garantit pas la protection.",
+        philoMotCle: "Impuissance",
+        philoOuverture: "À quoi sert de comprendre ce qu'on ne peut pas sauver ?"
+      },
+      1987: {
+        nom: "Kauaʻi ʻōʻō",
+        latin: "Moho braccatus",
+        categorie: "Oiseau",
+        localisation: "Kauai, Hawaï",
+        typeDate: "Dernière observation",
+        description: "Petit oiseau noir aux plumes jaunes, endémique de l'île de Kauai. En 1987, un mâle a été enregistré chantant un duo d'amour. Sa femelle n'a jamais répondu. Il était le dernier de son espèce.",
+        cause: "Destruction des forêts, moustiques porteurs de maladies aviaires, espèces invasives (rats, cochons).",
+        habitat: "Forêts humides d'altitude de l'île de Kauai, Hawaï.",
+        role: "Pollinisateur clé des fleurs indigènes hawaïennes. Son long bec courbé était parfaitement adapté à certaines fleurs.",
+        ecoMotCle: "Silence",
+        cascade: "Sans le ʻōʻō, certaines fleurs hawaïennes perdent leur pollinisateur. La forêt devient muette.",
+        valeur: "Le ʻōʻō possédait des plumes jaunes rares utilisées pour les capes royales hawaïennes. Une seule cape nécessitait 80 000 oiseaux.",
+        cout: "Des millions dépensés en programmes de conservation qui n'ont pas suffi. L'enregistrement de son chant est un document historique inestimable.",
+        chiffre: "1 voix",
+        chiffreDetail: "Un mâle seul, chantant pour une femelle qui n'existait plus. Son chant est sur YouTube.",
+        question: "On a enregistré le dernier chant d'amour d'un oiseau qui appelait une femelle disparue. Écouter ce chant, est-ce un hommage ou du voyeurisme ?",
+        reflexion: "La solitude absolue. Être le dernier de son espèce, c'est chanter sans jamais être entendu par les siens.",
+        philoMotCle: "Solitude",
+        philoOuverture: "Que ressent-on quand on est le dernier ?",
+        audioUrl: "https://www.youtube.com/watch?v=nDRY0CmcYNU",
+        audioTitle: "Écouter son dernier chant",
+        audioCredit: "Enregistrement 1987 – Cornell Lab of Ornithology"
+      },
+      1988: {
+        nom: "Bruant maritime sombre",
+        latin: "Ammodramus maritimus nigrescens",
+        categorie: "Oiseau",
+        localisation: "Floride, États-Unis",
+        typeDate: "Extinction fonctionnelle",
+        description: "Petit oiseau des marais salés de Floride. En 1988, l'espèce a été déclarée fonctionnellement éteinte : le dernier individu, Orange Band, était mort l'année précédente. On savait depuis 1980 que la fin était inévitable.",
+        cause: "Destruction des marais pour le programme spatial de Cap Canaveral, puis épandage de DDT contre les moustiques.",
+        habitat: "Marais salés de la lagune de l'Indian River et de l'île Merritt, Floride.",
+        role: "Insectivore des marais, il contrôlait les populations de moustiques et autres invertébrés des zones humides.",
+        ecoMotCle: "Marais",
+        cascade: "Les marais de Floride ont perdu leur chanteur. L'écosystème appauvri est plus vulnérable aux déséquilibres.",
+        valeur: "Le programme spatial américain valait des milliards. Le bruant valait zéro. Il a été sacrifié pour conquérir l'espace.",
+        cout: "On a dépensé des centaines de milliers de dollars pour tenter de sauver les derniers oiseaux. Trop peu, trop tard.",
+        chiffre: "6",
+        chiffreDetail: "Nombre de bruants capturés pour la reproduction en 1979. Tous mâles. L'espèce était déjà condamnée.",
+        question: "On a asséché des marais pour envoyer des fusées dans l'espace. La conquête vaut-elle l'extinction ?",
+        reflexion: "Les priorités de l'humanité. On a choisi les étoiles plutôt que les oiseaux.",
+        philoMotCle: "Priorité",
+        philoOuverture: "Que sacrifie-t-on au nom du progrès ?",
+        imageUrl: "images/bruant-maritime-sombre.jpg",
+        imageCredit: "Photo : P.W. Sykes, U.S. Fish and Wildlife Service, domaine public"
+      },
+      1989: {
+        nom: "Crapaud doré",
+        latin: "Incilius periglenes",
+        categorie: "Amphibien",
+        localisation: "Costa Rica",
+        typeDate: "Dernière observation",
+        description: "Petit crapaud orange vif, endémique d'une seule forêt de nuages au Costa Rica. En 1987, on comptait 1 500 adultes. En 1988, on en a trouvé 11. En 1989, un seul mâle a été observé. Plus jamais revu.",
+        cause: "Champignon chytride amphibien, aggravé par le changement climatique qui a asséché son habitat de forêt de nuages.",
+        habitat: "Forêt de nuages de Monteverde, Costa Rica. Altitude 1 500-1 800m.",
+        role: "Régulateur d'insectes et maillon clé de la chaîne alimentaire. Les têtards filtraient les algues des mares temporaires.",
+        ecoMotCle: "Effondrement",
+        cascade: "Le crapaud doré est le symbole de l'effondrement mondial des amphibiens. 40% des espèces sont aujourd'hui menacées.",
+        valeur: "Le crapaud doré attirait des chercheurs et écotouristes du monde entier à Monteverde. Sa disparition a marqué le début de la crise mondiale des amphibiens.",
+        cout: "Des millions investis dans la recherche sur le champignon chytride. Aujourd'hui, 40% des espèces d'amphibiens sont menacées.",
+        chiffre: "1500 → 0",
+        chiffreDetail: "En deux ans, une population entière a disparu. Personne n'a compris à temps.",
+        question: "On a découvert pourquoi il a disparu seulement après sa disparition. Peut-on sauver ce qu'on ne comprend pas encore ?",
+        reflexion: "La science arrive parfois trop tard. Comprendre n'est pas protéger.",
+        philoMotCle: "Trop tard",
+        philoOuverture: "Combien d'espèces disparaissent avant qu'on comprenne pourquoi ?",
+        imageUrl: "images/crapaud-dore.jpg",
+        imageCredit: "Photo : Charles H. Smith, U.S. Fish and Wildlife Service – Domaine public"
+      },
+      1990: {
+        nom: "Robin des Chatham",
+        latin: "Petroica traversi",
+        categorie: "Oiseau",
+        localisation: "Îles Chatham, Nouvelle-Zélande",
+        typeDate: "Presque éteint en 1980",
+        description: "Petit oiseau noir endémique des îles Chatham. En 1980, il ne restait que 5 individus, dont une seule femelle fertile : « Old Blue ». Elle est devenue la mère de toute l'espèce actuelle.",
+        cause: "Destruction de l'habitat, prédation par les rats et les chats introduits. L'espèce a frôlé l'extinction totale.",
+        habitat: "Forêts natives des îles Chatham, à 800 km à l'est de la Nouvelle-Zélande.",
+        role: "Insectivore contrôlant les populations d'invertébrés. Disperseur de graines contribuant à la régénération forestière.",
+        ecoMotCle: "Résilience",
+        cascade: "Une seule femelle a porté l'avenir de son espèce. La vie s'accroche là où on ne l'attend plus.",
+        valeur: "Le programme de sauvetage a coûté des millions de dollars sur 40 ans. Aujourd'hui, environ 300 robins existent — tous descendants d'Old Blue.",
+        cout: "Chaque oiseau a coûté l'équivalent de dizaines de milliers de dollars à sauver. Mais peut-on mettre un prix sur une espèce ?",
+        chiffre: "5 → 300",
+        chiffreDetail: "De 5 survivants en 1980 à 300 aujourd'hui. Le sauvetage le plus improbable de l'histoire.",
+        question: "Tous les robins actuels descendent d'une seule femelle. L'espèce est sauvée, mais sa diversité génétique est-elle condamnée ?",
+        reflexion: "Sauver une espèce, est-ce suffisant ? Ou faut-il aussi sauver sa diversité, son potentiel d'évolution ?",
+        philoMotCle: "Espoir",
+        philoOuverture: "Peut-on vraiment sauver ce qui a failli disparaître ?",
+        imageUrl: "images/robin-chatham.jpg",
+        imageCredit: "Photo : Leon Berard, Wikimedia Commons – CC BY-SA 4.0"
+      },
+      1991: {
+        nom: "Escargot Achatinella de Thaanum",
+        latin: "Achatinella thaanumi",
+        categorie: "Mollusque",
+        localisation: "Oahu, Hawaï",
+        typeDate: "Extinction confirmée",
+        description: "Escargot arboricole à la coquille striée, endémique des forêts d'Oahu. Il passait sa vie dans les arbres, broutant les champignons sur les feuilles. Comme ses cousins, il a été dévoré par un prédateur introduit.",
+        cause: "Prédation par l'escargot carnivore Euglandina rosea et par les rats. Destruction de la forêt native.",
+        habitat: "Forêts humides d'altitude de l'île d'Oahu, Hawaï.",
+        role: "Nettoyeur de la canopée, il éliminait les champignons et moisissures des feuilles des arbres natifs.",
+        ecoMotCle: "Nettoyeur",
+        cascade: "Les escargots arboricoles maintenaient la santé des arbres hawaïens. Sans eux, les feuilles se couvrent de champignons.",
+        valeur: "Les coquilles colorées des Achatinella servaient à fabriquer des leis royaux, valant des fortunes.",
+        cout: "Hawaï a tenté de sauver quelques espèces en laboratoire. Coût : des millions de dollars pour quelques escargots.",
+        chiffre: "41",
+        chiffreDetail: "Espèces d'Achatinella connues. Plus des deux tiers sont éteintes ou au bord de l'extinction.",
+        question: "Un escargot semble insignifiant. Mais 41 espèces uniques au monde, est-ce insignifiant ?",
+        reflexion: "La valeur du petit. Les grandes extinctions se font une espèce insignifiante à la fois.",
+        philoMotCle: "Petit",
+        philoOuverture: "Ce qui est petit mérite-t-il moins d'être sauvé ?"
+      },
+      1992: {
+        nom: "Aigle pêcheur de Sanford",
+        latin: "Haliaeetus sanfordi",
+        categorie: "Oiseau",
+        localisation: "Îles Salomon",
+        typeDate: "Déclin majeur",
+        description: "Grand aigle endémique des Îles Salomon, cousin de l'aigle à tête blanche américain. Chasseur de poissons et d'opossums, il régnait sur les forêts côtières. La déforestation l'a privé de son territoire.",
+        cause: "Déforestation massive pour l'exploitation du bois, chasse, et diminution des proies due à la surpêche.",
+        habitat: "Forêts tropicales côtières et mangroves des Îles Salomon, Pacifique Sud.",
+        role: "Superprédateur régulant les populations de poissons et petits mammifères. Sa présence indique un écosystème en bonne santé.",
+        ecoMotCle: "Sentinelle",
+        cascade: "Quand l'aigle disparaît, c'est que la forêt est déjà morte. Les superprédateurs sont les premiers à tomber.",
+        valeur: "Les Îles Salomon exportent 2 millions de m³ de bois par an. L'aigle a payé le prix d'une économie basée sur la destruction de son habitat.",
+        cout: "Aucun programme de conservation significatif. L'espèce décline dans l'indifférence internationale.",
+        chiffre: "2 M m³/an",
+        chiffreDetail: "Volume de bois exporté des Îles Salomon. Les forêts partent, les aigles aussi.",
+        question: "Les habitants des Îles Salomon vivent de l'exploitation forestière. Peut-on leur demander de choisir l'aigle plutôt que leur survie économique ?",
+        reflexion: "L'injustice écologique. Les pays pauvres détruisent leur nature pour nourrir la consommation des pays riches.",
+        philoMotCle: "Injustice",
+        philoOuverture: "Qui doit payer le prix de la conservation ?",
+        imageUrl: "images/aigle-sanford.jpg",
+        imageCredit: "Photo : Katerina Tvardikova, Wikimedia Commons – CC BY-SA 4.0"
+      },
+      1993: {
+        nom: "Poisson-chat du Scioto",
+        latin: "Noturus trautmani",
+        categorie: "Poisson",
+        localisation: "Ohio, USA",
+        typeDate: "Date approximative",
+        description: "Minuscule poisson-chat de 5 cm, nocturne et discret, qui vivait dans un seul ruisseau de l'Ohio. On ne l'a observé que 18 fois en 50 ans. Puis plus jamais.",
+        cause: "Pollution agricole, envasement du ruisseau, urbanisation. Son habitat était si petit qu'une seule ferme polluante a suffi.",
+        habitat: "Big Darby Creek, affluent du Scioto, Ohio. Eaux claires sur fond de gravier.",
+        role: "Prédateur nocturne d'invertébrés aquatiques. Proie pour les plus gros poissons. Un maillon discret mais essentiel.",
+        ecoMotCle: "Discret",
+        cascade: "Les espèces discrètes disparaissent en silence. Quand on s'en aperçoit, il est déjà trop tard.",
+        valeur: "Jamais étudié pour son potentiel. Les poissons-chats produisent des substances antimicrobiennes dans leur peau — des secrets pharmaceutiques engloutis.",
+        cout: "Zéro dollar investi pour le sauver. L'espèce a disparu sans que personne ne lève le petit doigt.",
+        chiffre: "18",
+        chiffreDetail: "Nombre total d'observations en 50 ans. On connaît mieux la surface de Mars que ce poisson qui vivait à côté de nous.",
+        question: "On a observé ce poisson 18 fois, puis on l'a oublié. Faut-il connaître une espèce pour vouloir la sauver ?",
+        reflexion: "L'ignorance comme extinction. On ne peut pas regretter ce qu'on n'a jamais connu.",
+        philoMotCle: "Inconnu",
+        philoOuverture: "Combien d'espèces disparaissent avant même qu'on sache qu'elles existent ?"
+      },
+      1994: {
+        nom: "Grande marène",
+        latin: "Coregonus oxyrinchus",
+        categorie: "Poisson",
+        localisation: "Mer du Nord",
+        typeDate: "Déclaration IUCN",
+        description: "Poisson migrateur argenté qui remontait les fleuves européens pour frayer. Autrefois abondant de la France au Danemark, il a été pêché jusqu'au dernier. En 1994, l'IUCN a officiellement déclaré son extinction.",
+        cause: "Surpêche intensive, pollution des fleuves, barrages bloquant ses migrations. Un siècle d'exploitation sans limites.",
+        habitat: "Mer du Nord et estuaires des fleuves côtiers, de la Bretagne au Danemark.",
+        role: "Poisson migrateur transportant les nutriments de la mer vers les rivières. Proie essentielle pour les phoques et oiseaux marins.",
+        ecoMotCle: "Corridor",
+        cascade: "Les poissons migrateurs connectent les écosystèmes. Quand ils disparaissent, la mer et les rivières deviennent deux mondes séparés.",
+        valeur: "La marène était un poisson de luxe sur les tables européennes. Une industrie entière a disparu avec elle — pêcheurs, fumoirs, marchés.",
+        cout: "Des tentatives de réintroduction ont été menées avec des espèces proches. Résultat : des millions dépensés pour remplacer l'irremplaçable.",
+        chiffre: "0 pêcheur",
+        chiffreDetail: "Une filière économique entière a coulé avec le poisson. Quand l'espèce meurt, le métier meurt aussi.",
+        question: "On savait que les stocks diminuaient. On a continué à pêcher. Pourquoi est-il si difficile d'arrêter avant qu'il soit trop tard ?",
+        reflexion: "La tragédie des communs. Quand la ressource est à tout le monde, personne ne la protège.",
+        philoMotCle: "Avidité",
+        philoOuverture: "Peut-on faire confiance à l'humanité pour se fixer des limites ?"
+      },
+      1995: {
+        nom: "Courlis à bec grêle",
+        latin: "Numenius tenuirostris",
+        categorie: "Oiseau",
+        localisation: "Maroc",
+        typeDate: "Dernière observation",
+        description: "Petit échassier migrateur au long bec fin. Il nichait en Sibérie et hivernait en Méditerranée. On l'a cherché pendant 30 ans. Personne ne l'a retrouvé.",
+        cause: "Mystère. Probablement la chasse sur ses zones d'hivernage, la destruction des zones humides, et le drainage des marais méditerranéens.",
+        habitat: "Zones humides méditerranéennes en hiver, tourbières sibériennes en été. Un voyageur entre deux mondes.",
+        role: "Sondeur de vase, il aérait les sédiments et régulait les populations d'invertébrés des zones humides.",
+        ecoMotCle: "Fantôme",
+        cascade: "Les migrateurs sont les plus vulnérables : il suffit de détruire une étape pour qu'ils disparaissent.",
+        valeur: "Les courlis étaient chassés comme gibier d'eau. On a tiré sur une espèce rare sans même savoir qu'elle l'était.",
+        cout: "Des expéditions internationales ont été lancées pour le retrouver — Maroc, Irak, Iran, Italie. Des centaines de milliers d'euros pour chercher un fantôme.",
+        chiffre: "30 ans",
+        chiffreDetail: "Durée des recherches infructueuses. L'oiseau le plus recherché d'Europe n'a jamais été retrouvé.",
+        question: "On ne sait même pas pourquoi il a disparu. Comment protéger ce qu'on ne comprend pas ?",
+        reflexion: "Le mystère de l'extinction. Parfois, la nature ne nous laisse aucune explication.",
+        philoMotCle: "Mystère",
+        philoOuverture: "Accepterons-nous de ne jamais savoir ?",
+        imageUrl: "images/courlis-bec-grele.jpg",
+        imageCredit: "Illustration : John Gerrard Keulemans, domaine public"
+      },
+      1996: {
+        nom: "Léopard de Zanzibar",
+        latin: "Panthera pardus adersi",
+        categorie: "Mammifère",
+        localisation: "Zanzibar, Tanzanie",
+        typeDate: "Dernière observation fiable",
+        description: "Sous-espèce de léopard endémique de l'île de Zanzibar. Plus petit que ses cousins continentaux, il s'était adapté à la forêt tropicale insulaire. Les habitants le considéraient comme un animal maléfique.",
+        cause: "Persécution intense. Les Zanzibaris croyaient que les léopards étaient envoyés par des sorciers. Une campagne d'extermination a été menée dans les années 1990.",
+        habitat: "Forêts tropicales de l'île d'Unguja (Zanzibar), Tanzanie.",
+        role: "Superprédateur au sommet de la chaîne alimentaire. Il régulait les populations de singes, porcs sauvages et petits mammifères.",
+        ecoMotCle: "Apex",
+        cascade: "Quand le superprédateur disparaît, les proies prolifèrent et déséquilibrent tout l'écosystème. La forêt perd son gardien.",
+        valeur: "Le léopard de Zanzibar aurait pu devenir un atout touristique majeur, comme les gorilles au Rwanda. Au lieu de ça, il a été exterminé.",
+        cout: "Des millions de dollars potentiels en écotourisme perdus. Une campagne de conservation aurait coûté une fraction de cette somme.",
+        chiffre: "0 $",
+        chiffreDetail: "Zéro dollar investi pour le sauver. L'extermination, elle, était gratuite.",
+        question: "Les habitants tuaient le léopard par peur et superstition. Peut-on condamner des croyances qui protégeaient aussi les gens du danger réel ?",
+        reflexion: "La frontière entre peur et haine. On détruit souvent ce qu'on ne comprend pas.",
+        philoMotCle: "Peur",
+        philoOuverture: "Combien d'espèces avons-nous exterminées par ignorance ?",
+        imageUrl: "images/leopard-zanzibar.jpg",
+        imageCredit: "Photo : Wikimedia Commons – domaine public"
+      },
+      1997: {
+        nom: "Grenouille torrent à museau pointu",
+        latin: "Taudactylus acutirostris",
+        categorie: "Amphibien",
+        localisation: "Queensland, Australie",
+        typeDate: "Dernière observation",
+        description: "Petite grenouille diurne de 3 cm, autrefois abondante dans les ruisseaux des forêts tropicales du nord du Queensland. Active de jour, elle émettait un chant caractéristique : 'tink... tink... tink'. Premier cas documenté d'extinction par maladie infectieuse chez un animal sauvage.",
+        cause: "Champignon chytride (Batrachochytrium dendrobatidis), pathogène dévastateur originaire d'Asie. La maladie a déferlé sur 300 km en quelques années, anéantissant les populations une à une.",
+        habitat: "Ruisseaux des forêts tropicales humides d'altitude, du mont Graham au Big Tableland, nord-est du Queensland.",
+        role: "Prédateur d'invertébrés aquatiques. Indicateur de la santé des cours d'eau de montagne.",
+        ecoMotCle: "Sentinelle",
+        cascade: "Le champignon chytride a depuis causé le déclin de plus de 500 espèces d'amphibiens. Cette grenouille était le premier avertissement.",
+        valeur: "Plus de 100 individus collectés pour l'élevage en captivité aux zoos de Melbourne et Taronga. Tous sont morts de la maladie.",
+        cout: "Des millions investis dans la recherche sur le chytride. On a compris la menace, mais trop tard pour cette espèce.",
+        chiffre: "80→0",
+        chiffreDetail: "En 1993, un garde forestier a vu la population passer de 80 individus à zéro en quelques mois sur un seul site.",
+        question: "Même les parcs nationaux n'ont pas pu la protéger. Comment défendre une espèce contre un ennemi invisible ?",
+        reflexion: "L'extinction par la maladie. Un champignon microscopique a accompli ce que des siècles de chasse n'auraient pas fait.",
+        philoMotCle: "Invisible",
+        philoOuverture: "Quand une maladie traverse les continents, même les refuges deviennent des pièges.",
+        imageUrl: "",
+        imageCredit: ""
+      },
+      1998: {
+        nom: "Scinque de l'île Christmas",
+        latin: "Emoia nativitatis",
+        categorie: "Reptile",
+        localisation: "Île Christmas, Océan Indien",
+        typeDate: "Dernière observation",
+        description: "Petit lézard bleu-vert métallique qui peuplait les forêts de l'île Christmas. Autrefois l'un des reptiles les plus communs de l'île, il a disparu en quelques années.",
+        cause: "Invasion de fourmis folles jaunes (Anoplolepis gracilipes). Ces fourmis forment des super-colonies et attaquent les yeux des reptiles, les aveuglant avant de les dévorer.",
+        habitat: "Forêts tropicales humides de l'île Christmas, territoire australien dans l'océan Indien.",
+        role: "Prédateur d'insectes et d'araignées. Proie pour les oiseaux. Un maillon essentiel entre les invertébrés et les vertébrés.",
+        ecoMotCle: "Proie",
+        cascade: "Le scinque nourrissait les oiseaux de l'île. Sans lui, c'est toute la chaîne alimentaire qui perd un maillon.",
+        valeur: "L'île Christmas était un laboratoire naturel unique, isolé depuis des millions d'années. Chaque espèce endémique perdue est une bibliothèque brûlée.",
+        cout: "Des programmes d'éradication des fourmis ont été lancés, mais trop tard pour le scinque. Des millions dépensés pour sauver ce qui reste.",
+        chiffre: "20 ans",
+        chiffreDetail: "Temps qu'il a fallu pour passer d'espèce commune à espèce éteinte. Une disparition plus rapide qu'une carrière humaine.",
+        question: "Les fourmis ont été introduites par accident via le commerce maritime. Qui est responsable : le capitaine du bateau, le système commercial, ou personne ?",
+        reflexion: "La responsabilité diffuse. Quand tout le monde est un peu coupable, personne ne se sent responsable.",
+        philoMotCle: "Accident",
+        philoOuverture: "Les pires catastrophes sont-elles celles que personne n'a voulues ?"
+      },
+      1999: {
+        nom: "Oryx algazelle",
+        latin: "Oryx dammah",
+        categorie: "Mammifère",
+        localisation: "Tchad",
+        typeDate: "Éteint à l'état sauvage",
+        description: "Grande antilope aux cornes en forme de sabre, parfaitement adaptée au désert. Elle pouvait survivre des mois sans boire. Elle parcourait le Sahara par milliers. Le dernier individu sauvage a été vu en 1999.",
+        cause: "Chasse excessive pour ses cornes et sa viande, guerres civiles au Sahel, sécheresses, et perte d'habitat due au surpâturage.",
+        habitat: "Déserts et steppes arides du Sahara et du Sahel, de la Mauritanie au Soudan.",
+        role: "Grand herbivore dispersant les graines et fertilisant le sol. Proie historique des grands prédateurs aujourd'hui disparus.",
+        ecoMotCle: "Résilience",
+        cascade: "L'oryx survivait aux pires sécheresses. Il n'a pas survécu à l'homme.",
+        valeur: "L'oryx était chassé par des riches en 4x4 équipés de mitrailleuses. Un trophée pour millionnaires, payé par l'extinction d'une espèce.",
+        cout: "Des programmes de réintroduction ont été lancés au Tchad depuis 2016. Des millions d'euros pour ramener ce qu'on a détruit.",
+        chiffre: "0 → 300",
+        chiffreDetail: "Zéro oryx sauvage en 1999. Aujourd'hui, 300 réintroduits au Tchad. Une résurrection chère et fragile.",
+        question: "L'oryx survit dans des zoos et des ranchs privés. Est-ce encore la même espèce si elle ne connaît plus le désert ?",
+        reflexion: "L'identité d'une espèce. Un animal né en captivité, qui n'a jamais migré, est-il vraiment un oryx sauvage ?",
+        philoMotCle: "Captif",
+        philoOuverture: "Sauver une espèce en cage, est-ce vraiment la sauver ?",
+        imageUrl: "images/oryx-algazelle.jpg",
+        imageCredit: "Photo : Wikimedia Commons – CC BY-SA"
+      },
+      2000: {
+        nom: "Bouquetin des Pyrénées",
+        latin: "Capra pyrenaica pyrenaica",
+        categorie: "Mammifère",
+        localisation: "Espagne",
+        typeDate: "Dernier individu",
+        description: "Sous-espèce de bouquetin ibérique. La dernière survivante, une femelle nommée Celia, est morte le 6 janvier 2000, écrasée par la chute d'un arbre dans le parc national d'Ordesa.",
+        cause: "Chasse intensive au XIXe siècle, maladies, et population devenue trop petite pour se reproduire.",
+        habitat: "Montagnes des Pyrénées espagnoles, parc national d'Ordesa.",
+        role: "Herbivore de montagne maintenant les prairies alpines ouvertes par son broutage.",
+        ecoMotCle: "Fermeture",
+        cascade: "Sans les bouquetins, la montagne se referme. La végétation envahit les prairies alpines.",
+        valeur: "En 2003, des scientifiques ont cloné Celia à partir de cellules prélevées avant sa mort. Le clone a vécu 7 minutes.",
+        cout: "Coût de la tentative de clonage : 500 000 €. Le clone est mort de malformations pulmonaires.",
+        chiffre: "7 min",
+        chiffreDetail: "Durée de vie du clone de Celia. La plus courte résurrection de l'histoire.",
+        question: "Ressusciter un être sans son consentement, est-ce un hommage ou une violation ?",
+        reflexion: "Profaner, c'est traiter sans respect ce qui est sacré. Un corps mort appartient-il encore à celui qui l'habitait ?",
+        philoMotCle: "Profaner ?",
+        philoOuverture: "Où s'arrête la science, où commence la profanation ?",
+        imageUrl: "images/bouquetin-pyrenees.jpg",
+        imageCredit: "Photo : Joseph Wolf, domaine public"
+      },
+      2001: {
+        nom: "Thylacine (Tigre de Tasmanie)",
+        latin: "Thylacinus cynocephalus",
+        categorie: "Mammifère",
+        localisation: "Tasmanie, Australie",
+        typeDate: "Déclaration IUCN (dernier mort en 1936)",
+        description: "Marsupial carnivore ressemblant à un loup, avec des rayures de tigre sur le dos. Seul représentant de sa famille. Le dernier, nommé Benjamin, est mort de froid dans un zoo de Hobart parce qu'on avait oublié de lui ouvrir son abri.",
+        cause: "Chasse intensive encouragée par des primes gouvernementales. Les fermiers l'accusaient de tuer leurs moutons, souvent à tort.",
+        habitat: "Forêts et prairies de Tasmanie. Autrefois présent sur tout le continent australien.",
+        role: "Superprédateur marsupial au sommet de la chaîne alimentaire. Il régulait les populations de wallabies et de petits mammifères.",
+        ecoMotCle: "Irremplaçable",
+        cascade: "Le thylacine était le seul grand prédateur marsupial moderne. Avec lui, c'est une lignée évolutive unique de 4 millions d'années qui s'est éteinte.",
+        valeur: "Le gouvernement tasmanien offrait 1 livre par tête de thylacine. On a payé pour l'extinction. Aujourd'hui, on paie des millions pour tenter de le ressusciter par clonage.",
+        cout: "Des équipes de chercheurs travaillent sur la « dé-extinction » du thylacine. Budget estimé : 15 millions de dollars. Pour réparer ce qu'une prime d'une livre a détruit.",
+        chiffre: "1 £",
+        chiffreDetail: "Une livre sterling — environ 150 € d'aujourd'hui — pour chaque thylacine tué. Le prix d'une extinction.",
+        question: "Des scientifiques veulent cloner le thylacine à partir d'ADN préservé. Un animal ressuscité en laboratoire serait-il le même que celui qu'on a tué ?",
+        reflexion: "Les limites de la réparation. Peut-on vraiment effacer nos erreurs, ou seulement créer l'illusion de l'avoir fait ?",
+        philoMotCle: "Résurrection",
+        philoOuverture: "Ramener une espèce, est-ce réparer ou se donner bonne conscience ?",
+        imageUrl: "images/thylacine.jpg",
+        imageCredit: "Photo : Benjamin, dernier thylacine, zoo de Hobart 1933, domaine public"
+      },
+      2002: {
+        nom: "Baiji (Dauphin du Yangtsé)",
+        latin: "Lipotes vexillifer",
+        categorie: "Mammifère",
+        localisation: "Chine",
+        typeDate: "Dernière observation confirmée",
+        description: "Dauphin d'eau douce surnommé « déesse du fleuve » par les Chinois. Presque aveugle, il naviguait par écholocation dans les eaux troubles du Yangtsé. Il a survécu 20 millions d'années avant de disparaître en une génération.",
+        cause: "Industrialisation massive du Yangtsé : barrages, trafic fluvial intense, pollution, filets de pêche. Le miracle économique chinois a tué sa déesse.",
+        habitat: "Fleuve Yangtsé, 6 300 km à travers la Chine, de l'Himalaya à la mer de Chine.",
+        role: "Prédateur au sommet de la chaîne alimentaire fluviale. Sa disparition signale l'effondrement de tout l'écosystème du Yangtsé.",
+        ecoMotCle: "Indicateur",
+        cascade: "Le baiji était le canari dans la mine du Yangtsé. Sa mort annonce celle de tout le fleuve.",
+        valeur: "Le Yangtsé génère 20 % du PIB chinois. Le baiji était le prix invisible de ce développement. Personne ne l'a inscrit dans les comptes.",
+        cout: "En 2006, une expédition internationale de 6 semaines a parcouru le fleuve. Pas un seul baiji. Le coût de la recherche : des centaines de milliers de dollars pour confirmer l'échec.",
+        chiffre: "20 M d'années",
+        chiffreDetail: "Durée de l'existence de l'espèce. Effacée en 50 ans d'industrialisation.",
+        question: "La Chine a sorti 800 millions de personnes de la pauvreté. Le Yangtsé a été sacrifié pour cela. Peut-on condamner ce choix ?",
+        reflexion: "Le prix du développement. Chaque miracle économique a son coût caché.",
+        philoMotCle: "Sacrifice",
+        philoOuverture: "Peut-on construire la prospérité sur l'extinction ?",
+        imageUrl: "images/baiji.jpg",
+        imageCredit: "Illustration : Alessio Marrucci, Wikimedia Commons – CC BY-SA 3.0"
+      },
+      2003: {
+        nom: "Poisson-spatule chinois",
+        latin: "Psephurus gladius",
+        categorie: "Poisson",
+        localisation: "Chine",
+        typeDate: "Dernière observation",
+        description: "Géant d'eau douce pouvant atteindre 7 mètres, avec un rostre en forme d'épée. Surnommé « panda du Yangtsé », il existait depuis 200 millions d'années. Il a survécu aux dinosaures, mais pas à nous.",
+        cause: "Barrage des Trois-Gorges bloquant sa migration, surpêche, pollution.",
+        habitat: "Fleuve Yangtsé et ses affluents, de l'estuaire jusqu'aux gorges.",
+        role: "Superprédateur filtrant les eaux et régulant les populations de poissons. Sa migration fertilisait le fleuve sur des milliers de kilomètres.",
+        ecoMotCle: "Ancêtre",
+        cascade: "Il a vu naître et mourir les dinosaures. Avec lui, c'est un témoin de 200 millions d'années d'évolution qui s'éteint.",
+        valeur: "Le poisson-spatule était pêché pour sa chair et ses œufs (caviar). On l'a mangé jusqu'au dernier sans jamais réussir à le reproduire en captivité.",
+        cout: "Le barrage des Trois-Gorges a coûté 25 milliards de dollars. Personne n'a calculé le coût de ce qu'il a détruit.",
+        chiffre: "0",
+        chiffreDetail: "Nombre de poissons-spatules reproduits en captivité. On a tenté pendant 30 ans. Échec total.",
+        question: "On savait qu'il disparaissait. Les scientifiques ont supplié qu'on agisse. Le barrage a été construit quand même.",
+        reflexion: "Savoir ne suffit pas. On peut connaître les conséquences et choisir de les ignorer.",
+        philoMotCle: "Déni",
+        philoOuverture: "Pourquoi refusons-nous de voir ce que nous savons ?",
+        imageUrl: "images/poisson-spatule.jpg",
+        imageCredit: "Photo : U.S. Fish and Wildlife Service, domaine public"
+      },
+      2004: {
+        nom: "Po'ouli",
+        latin: "Melamprosops phaeosoma",
+        categorie: "Oiseau",
+        localisation: "Maui, Hawaï",
+        typeDate: "Mort du dernier individu",
+        description: "Petit oiseau forestier au masque noir distinctif, découvert seulement en 1973. Le dernier mâle connu est mort en captivité le 28 novembre 2004 au zoo de Maui, emportant avec lui tout espoir pour l'espèce.",
+        cause: "Destruction de la forêt native, moustiques porteurs de malaria aviaire, prédation par les rats et mangoustes. Découvert trop tard, sauvé trop lentement.",
+        habitat: "Forêt tropicale humide d'altitude sur le volcan Haleakalā, île de Maui, Hawaï.",
+        role: "Mangeur d'escargots natifs hawaïens. Son bec unique était adapté pour extraire les mollusques de leur coquille.",
+        ecoMotCle: "Spécialiste",
+        cascade: "Un régime trop spécialisé devient un piège. Quand les escargots déclinent, l'oiseau qui en dépend n'a aucune alternative.",
+        valeur: "Des millions de dollars investis dans la captivité et la recherche. Le dernier Po'ouli est mort en captivité, malgré tous les efforts.",
+        cout: "Le programme de sauvetage a coûté des fortunes. Résultat : on a seulement documenté son extinction au lieu de la prévenir.",
+        chiffre: "3→0",
+        chiffreDetail: "En 1997, il restait 3 oiseaux. Un mâle et deux femelles qui ne se sont jamais trouvés dans une forêt de 13 km².",
+        question: "On a capturé le dernier mâle pour tenter de sauver l'espèce. Il est mort en captivité. Aurait-il mieux valu le laisser libre ?",
+        reflexion: "Le droit d'intervenir. Parfois, nos tentatives de sauvetage accélèrent la fin.",
+        philoMotCle: "Impuissance",
+        philoOuverture: "Quand est-il trop tard pour agir ?",
+        imageUrl: "images/poouli.jpg",
+        imageCredit: "Photo : U.S. Geological Survey, domaine public"
+      },
+      2005: {
+        nom: "Pigeon de Liverpool",
+        latin: "Caloenas maculata",
+        categorie: "Oiseau",
+        localisation: "Pacifique Sud",
+        typeDate: "Déclaration IUCN",
+        description: "Pigeon tacheté vert et blanc, connu par un seul spécimen conservé au musée de Liverpool. On ne sait même pas de quelle île il venait. Il a disparu avant qu'on puisse l'étudier.",
+        cause: "Probablement chasse et espèces invasives. Mais personne ne sait vraiment. L'espèce a disparu dans l'anonymat le plus total.",
+        habitat: "Île inconnue du Pacifique Sud. Le mystère reste entier.",
+        role: "Disperseur de graines, pollinisateur probable. Les pigeons tropicaux sont essentiels à la régénération des forêts insulaires.",
+        ecoMotCle: "Disparu",
+        cascade: "Les pigeons dispersent les graines des arbres fruitiers. Sans eux, les forêts insulaires perdent leur capacité à se régénérer.",
+        valeur: "Aucun touriste ne viendra jamais voir le pigeon de Liverpool. Une île a perdu un attrait qu'elle ne connaissait même pas.",
+        cout: "Zéro dollar investi. On ne peut pas financer la conservation d'une espèce qu'on n'a jamais connue.",
+        chiffre: "1",
+        chiffreDetail: "Un seul spécimen connu dans le monde. Une espèce résumée à un cadavre dans un tiroir.",
+        question: "Combien d'espèces ont disparu sans même un spécimen pour témoigner de leur existence ?",
+        reflexion: "L'extinction invisible. Le pire n'est pas de disparaître, c'est de disparaître sans que personne ne le sache.",
+        philoMotCle: "Oubli",
+        philoOuverture: "Peut-on pleurer ce qu'on n'a jamais connu ?",
+        imageUrl: "images/pigeon-liverpool.jpg",
+        imageCredit: "Illustration : Wikimedia Commons, domaine public"
+      },
+      2006: {
+        nom: "Corbeau d'Hawaï",
+        latin: "Corvus hawaiiensis",
+        categorie: "Oiseau",
+        localisation: "Hawaï",
+        typeDate: "Éteint en nature",
+        description: "Corbeau noir endémique d'Hawaï, appelé 'Alalā en hawaïen. Considéré comme un gardien spirituel par les Hawaïens. En 2006, l'IUCN a officiellement déclaré l'espèce éteinte en nature. Elle survit uniquement en captivité.",
+        cause: "Destruction de l'habitat, maladies aviaires transmises par les moustiques, prédation par les mangoustes introduites.",
+        habitat: "Forêts tropicales sèches et humides de l'île d'Hawaï (Big Island).",
+        role: "Disperseur de graines essentiel. Les forêts hawaïennes dépendent de lui pour régénérer certaines espèces d'arbres.",
+        ecoMotCle: "Gardien",
+        cascade: "Sans le corbeau, les graines ne voyagent plus. Les arbres qu'il plantait mourront sans descendance.",
+        valeur: "Programme de reproduction en captivité coûtant des millions. En 2016, on a réintroduit des oiseaux, mais la plupart sont morts.",
+        cout: "Plus de 14 millions de dollars investis sur 20 ans. Les tentatives de réintroduction échouent face aux maladies.",
+        chiffre: "~130",
+        chiffreDetail: "Nombre de corbeaux en captivité. Zéro capable de survivre durablement dans la nature.",
+        question: "Un oiseau né en cage, nourri par l'homme, peut-il redevenir sauvage ?",
+        reflexion: "La captivité comme dernier refuge. Sauver une espèce en l'enfermant, est-ce vraiment la sauver ?",
+        philoMotCle: "Captivité",
+        philoOuverture: "Une espèce peut-elle survivre sans liberté ?",
+        imageUrl: "images/corbeau-hawai.jpg",
+        imageCredit: "Photo : U.S. Fish and Wildlife Service, domaine public"
+      },
+      2007: {
+        nom: "Rhinocéros blanc du Nord",
+        latin: "Ceratotherium simum cottoni",
+        categorie: "Mammifère",
+        localisation: "Afrique centrale",
+        typeDate: "Éteint à l'état sauvage",
+        description: "Sous-espèce du rhinocéros blanc, deuxième plus grand mammifère terrestre. En 2007, les dernières traces (excréments) ont été trouvées au Parc national de la Garamba en RDC. Aucun individu sauvage n'a été revu depuis. Deux femelles survivent sous protection armée au Kenya.",
+        cause: "Braconnage intensif pour la corne (50 000 $/kg sur le marché noir), guerres civiles en Afrique centrale rendant la protection impossible.",
+        habitat: "Savanes et prairies d'Afrique centrale : RDC, Soudan, Ouganda, Tchad, République centrafricaine.",
+        role: "Écosystème ambulant. Le rhinocéros héberge sur et dans son corps des dizaines d'espèces : tiques, pique-bœufs, et la plus grande mouche d'Afrique.",
+        ecoMotCle: "Hôte",
+        cascade: "La mouche botfly géante (Gyrostigma rhinocerontis) pond ses œufs près des narines du rhino. Ses larves vivent dans son estomac. Sans rhinocéros, cette mouche disparaît aussi — une extinction en entraîne une autre.",
+        valeur: "Corne de rhinocéros : médecine traditionnelle asiatique et symbole de statut. Un commerce illégal de plusieurs milliards de dollars.",
+        cout: "Des dizaines de millions investis dans la protection. Le projet BioRescue tente de créer des embryons par FIV : 35 embryons congelés à ce jour.",
+        chiffre: "2",
+        chiffreDetail: "Deux femelles survivantes : Najin et Fatu. Protégées 24h/24 par des gardes armés à Ol Pejeta, Kenya.",
+        question: "Peut-on ressusciter une espèce avec des embryons congelés et des mères porteuses d'une autre sous-espèce ?",
+        reflexion: "L'extinction fonctionnelle. Quand il ne reste que des femelles, la reproduction naturelle devient impossible.",
+        philoMotCle: "Sursis",
+        philoOuverture: "Deux femelles sous les armes. Est-ce la conservation ou l'accompagnement vers la fin ?",
+        imageUrl: "images/rhinoceros-blanc-nord.jpg",
+        imageCredit: "Photo : Ol Pejeta Conservancy, Kenya — Wikimedia Commons, CC BY-SA"
+      },
+      2008: {
+        nom: "Phoque moine des Caraïbes",
+        latin: "Neomonachus tropicalis",
+        categorie: "Mammifère",
+        localisation: "Caraïbes",
+        typeDate: "Déclaration officielle",
+        description: "Premier mammifère du Nouveau Monde décrit par Christophe Colomb en 1494. Chassé pendant 500 ans pour sa graisse. Le colonialisme a commencé par son massacre. En 2008, l'IUCN a officiellement déclaré son extinction.",
+        cause: "Chasse intensive pour l'huile, la viande et la peau. Perturbation des sites de reproduction par le tourisme et la pêche.",
+        habitat: "Plages et récifs des Caraïbes, du Yucatan aux Bahamas.",
+        role: "Prédateur marin régulant les populations de poissons, poulpes et langoustes des récifs coralliens.",
+        ecoMotCle: "Régulateur",
+        cascade: "Sans prédateur au sommet, les populations de poissons explosent puis s'effondrent. Les récifs perdent leur équilibre.",
+        valeur: "La graisse de phoque alimentait les lampes de la colonie. Une espèce transformée en huile pour éclairer la conquête.",
+        cout: "Aucune tentative de conservation. La dernière observation confirmée date de 1952. On l'a cherché pendant 50 ans, en vain.",
+        chiffre: "1494",
+        chiffreDetail: "Année où Colomb l'a décrit. Premier témoin, première victime de la colonisation des Amériques.",
+        question: "Les conquistadors voyaient des ressources, pas des espèces. Ce regard a-t-il vraiment changé ?",
+        reflexion: "L'extinction coloniale. Découvrir un monde, c'était aussi commencer à le détruire.",
+        philoMotCle: "Conquête",
+        philoOuverture: "La découverte est-elle toujours le premier pas vers la destruction ?",
+        imageUrl: "images/phoque-moine-caraibes.jpg",
+        imageCredit: "Photo : New York Zoological Society, domaine public"
+      },
+      2009: {
+        nom: "Souris de Bramble Cay",
+        latin: "Melomys rubicola",
+        categorie: "Mammifère",
+        localisation: "Australie",
+        typeDate: "Extinction confirmée",
+        description: "Petit rongeur vivant sur Bramble Cay, un îlot de 5 hectares au nord de l'Australie. Premier mammifère officiellement déclaré éteint à cause du changement climatique. L'extinction a été datée à 2009 par les scientifiques.",
+        cause: "Montée des eaux et tempêtes de plus en plus violentes. L'île a été submergée à répétition, détruisant végétation et terriers.",
+        habitat: "Bramble Cay, minuscule îlot corallien du détroit de Torres, point culminant : 3 mètres.",
+        role: "Herbivore structurant la végétation de l'îlot. Sans lui, l'écosystème de ce confetti de terre s'est effondré.",
+        ecoMotCle: "Naufragé",
+        cascade: "L'île était trop petite pour fuir. Quand l'eau monte, les espèces insulaires n'ont nulle part où aller.",
+        valeur: "La souris n'avait aucune valeur économique. Mais elle est devenue le symbole d'une ère : celle des extinctions climatiques.",
+        cout: "Zéro dollar investi pour la sauver. On a découvert sa disparition en 2016 lors d'une expédition de recensement.",
+        chiffre: "3 m",
+        chiffreDetail: "Altitude maximale de Bramble Cay. La mer a englouti le seul refuge de la souris.",
+        question: "La souris a payé pour des émissions de CO2 qu'elle n'a jamais produites. Est-ce juste ?",
+        reflexion: "L'injustice climatique. Les premiers à disparaître sont ceux qui ont le moins contribué au problème.",
+        philoMotCle: "Climat",
+        philoOuverture: "Qui paiera pour les extinctions que nous causons à distance ?"
+      },
+      2010: {
+        nom: "Grenouille de Rabb",
+        latin: "Ecnomiohyla rabborum",
+        categorie: "Amphibien",
+        localisation: "Panama",
+        typeDate: "Extinction en nature",
+        description: "Grenouille arboricole aux yeux dorés, découverte en 2005 et déclarée éteinte en nature dès 2010. Le dernier individu, Toughie, a survécu en captivité jusqu'en 2016, chantant chaque nuit pour une femelle qui ne viendrait jamais.",
+        cause: "Champignon chytride (Batrachochytrium dendrobatidis), pandémie mondiale qui décime les amphibiens.",
+        habitat: "Forêts de nuages du centre du Panama, canopée humide entre 900 et 1200 m d'altitude.",
+        role: "Prédateur d'insectes nocturne. Les mâles portaient les têtards sur leur dos — un comportement unique.",
+        ecoMotCle: "Pandémie",
+        cascade: "Le chytride a tué des centaines d'espèces d'amphibiens. La grenouille de Rabb n'est qu'une victime parmi tant d'autres.",
+        valeur: "Toughie est devenu célèbre malgré lui. Son image a fait le tour du monde comme symbole de la crise des amphibiens.",
+        cout: "Le zoo d'Atlanta a tenté de le faire se reproduire pendant 10 ans. Échec : aucune femelle n'a survécu.",
+        chiffre: "5 ans",
+        chiffreDetail: "Temps entre la découverte de l'espèce (2005) et son extinction en nature (2010). Trop courte pour la sauver.",
+        question: "Découverte en 2005, éteinte en 2010. Peut-on sauver une espèce qu'on vient à peine de découvrir ?",
+        reflexion: "La course contre la montre perdue. Parfois, on découvre une espèce juste à temps pour la voir mourir.",
+        philoMotCle: "Découverte",
+        philoOuverture: "Découvrir une espèce, est-ce parfois simplement assister à sa fin ?",
+        imageUrl: "images/grenouille-rabb.jpg",
+        imageCredit: "Photo : Brian Gratwicke, CC BY 2.0"
+      },
+      2011: {
+        nom: "Rhinocéros noir d'Afrique de l'Ouest",
+        latin: "Diceros bicornis longipes",
+        categorie: "Mammifère",
+        localisation: "Afrique de l'Ouest",
+        typeDate: "Déclaration IUCN",
+        description: "Sous-espèce du rhinocéros noir, autrefois répandue du Cameroun au Tchad. Malgré des décennies de programmes de conservation, le dernier a disparu dans l'indifférence.",
+        cause: "Braconnage intensif pour la corne, vendue en Asie pour la médecine traditionnelle. Corruption et instabilité politique ont empêché la protection.",
+        habitat: "Savanes et forêts claires du Cameroun, Tchad, République centrafricaine.",
+        role: "Méga-herbivore façonnant le paysage. Son broutage maintenait les savanes ouvertes et diversifiées.",
+        ecoMotCle: "Géant",
+        cascade: "Sans les rhinocéros, la savane se transforme. Les arbres envahissent les prairies, les espèces changent.",
+        valeur: "La corne se vendait plus cher que l'or au marché noir. Un kilo valait 60 000 dollars.",
+        cout: "Des millions investis en anti-braconnage. Résultat : extinction quand même. L'argent ne suffit pas contre la corruption.",
+        chiffre: "0",
+        chiffreDetail: "Nombre de rhinocéros sauvés malgré les millions investis. L'échec le plus documenté de la conservation.",
+        question: "On savait, on a essayé, on a échoué. La conservation peut-elle gagner contre le profit ?",
+        reflexion: "L'échec annoncé. Parfois, toutes les bonnes intentions du monde ne suffisent pas.",
+        philoMotCle: "Échec",
+        philoOuverture: "Peut-on sauver une espèce quand sa mort vaut plus que sa vie ?",
+        imageUrl: "images/rhinoceros-noir-ouest.jpg",
+        imageCredit: "Photo : Wikimedia Commons, CC BY-SA 4.0"
+      },
+      2012: {
+        nom: "George le Solitaire",
+        latin: "Chelonoidis abingdonii",
+        categorie: "Reptile",
+        localisation: "Galápagos",
+        typeDate: "Mort du dernier individu",
+        description: "Dernière tortue géante de l'île Pinta. Découvert en 1971, George est devenu l'animal le plus rare du monde. Il est mort le 24 juin 2012, célibataire malgré 40 ans de tentatives de reproduction.",
+        cause: "Chasse par les baleiniers au XIXe siècle, destruction de l'habitat par les chèvres introduites.",
+        habitat: "Île Pinta, archipel des Galápagos, Équateur.",
+        role: "Ingénieur écologique. Les tortues géantes façonnent la végétation et créent des sentiers utilisés par d'autres espèces.",
+        ecoMotCle: "Ingénieur",
+        cascade: "Les tortues géantes dispersent les graines sur des kilomètres. Sans elles, les plantes des Galápagos ne peuvent plus migrer.",
+        valeur: "George était une icône mondiale. Sa mort a fait la une des journaux du monde entier.",
+        cout: "40 ans de programme de reproduction. On lui a présenté des femelles d'espèces proches — il les a ignorées.",
+        chiffre: "100+",
+        chiffreDetail: "Âge estimé de George. Il a vécu plus longtemps que les générations qui ont exterminé son espèce.",
+        question: "George a refusé de se reproduire avec des femelles d'autres espèces. Avait-il le droit de laisser mourir son espèce ?",
+        reflexion: "Le droit de ne pas perpétuer. George a peut-être choisi sa fin — ou peut-être était-il simplement seul.",
+        philoMotCle: "Symbole",
+        philoOuverture: "Un individu peut-il porter le poids de toute son espèce ?",
+        imageUrl: "images/george-solitaire.jpg",
+        imageCredit: "Photo : Arturo de Frias Marques, CC BY-SA 3.0"
+      },
+      2013: {
+        nom: "Panthère nébuleuse de Formose",
+        latin: "Neofelis nebulosa brachyura",
+        categorie: "Mammifère",
+        localisation: "Taïwan",
+        typeDate: "Déclaration d'extinction",
+        description: "Sous-espèce de panthère nébuleuse endémique de Taïwan. Félin fantôme des forêts de montagne, si discret qu'on a mis 13 ans à confirmer sa disparition.",
+        cause: "Déforestation massive, chasse pour sa fourrure, fragmentation de l'habitat par les routes.",
+        habitat: "Forêts montagneuses de Taïwan, de 500 à 2000 m d'altitude.",
+        role: "Prédateur arboricole chassant singes, écureuils et oiseaux. Régulateur des populations de la canopée.",
+        ecoMotCle: "Canopée",
+        cascade: "Sans prédateur dans les arbres, les populations de singes et écureuils explosent et dévastent les fruits et graines.",
+        valeur: "Symbole de la faune sauvage de Taïwan. Après sa disparition, le gouvernement a créé de nouvelles réserves, mais trop tard.",
+        cout: "13 ans de recherches avec caméras infrarouges. 1 500 points d'observation. Coût estimé : plusieurs millions de dollars pour ne rien trouver.",
+        chiffre: "1 500",
+        chiffreDetail: "Points d'observation installés dans la forêt. Zéro panthère détectée en 13 ans.",
+        question: "Faut-il voir une espèce pour croire en sa disparition ?",
+        reflexion: "L'extinction invisible. Certaines espèces partent si discrètement qu'on doute de leur absence.",
+        philoMotCle: "Invisible",
+        philoOuverture: "Comment pleurer ce qu'on n'a jamais vu partir ?"
+      },
+      2014: {
+        nom: "Pupfish de Catarina",
+        latin: "Megupsilon aporus",
+        categorie: "Poisson",
+        localisation: "Mexique",
+        typeDate: "Extinction en nature",
+        description: "Minuscule poisson de 3 cm vivant dans une seule source thermale du désert mexicain. L'eau a été pompée pour l'agriculture. Le poisson s'est évaporé avec elle.",
+        cause: "Pompage excessif de la nappe phréatique pour l'irrigation agricole. La source s'est asséchée en quelques décennies.",
+        habitat: "Source thermale de Catarina, État de Nuevo León, désert du nord-est du Mexique.",
+        role: "Contrôleur des algues et invertébrés de la source. Il maintenait l'équilibre de ce micro-écosystème unique.",
+        ecoMotCle: "Endémique",
+        cascade: "Il n'existait nulle part ailleurs dans l'univers. Détruire son unique habitat, c'était l'effacer de l'existence.",
+        valeur: "L'eau de la source valait plus pour les agriculteurs que pour le poisson. Le choix économique a été vite fait.",
+        cout: "On a tenté de maintenir l'espèce en aquarium. Les derniers individus captifs sont morts en 2014.",
+        chiffre: "1",
+        chiffreDetail: "Une seule source au monde. Asséchée pour faire pousser des légumes.",
+        question: "Une source pour un poisson unique, ou de l'eau pour l'agriculture. Qui décide de la priorité ?",
+        reflexion: "Le partage impossible. L'eau ne se divise pas, quelqu'un doit toujours perdre.",
+        philoMotCle: "Soif",
+        philoOuverture: "Quand l'eau manque, qui décide de ce qui mérite de vivre ?"
+      },
+      2015: {
+        nom: "Rhinocéros de Java du Vietnam",
+        latin: "Rhinoceros sondaicus annamiticus",
+        categorie: "Mammifère",
+        localisation: "Vietnam",
+        typeDate: "Confirmation d'extinction",
+        description: "Dernière sous-espèce continentale du rhinocéros de Java. En 2010, le dernier individu a été retrouvé mort, abattu par des braconniers. En 2015, l'IUCN a officiellement confirmé l'extinction de la sous-espèce.",
+        cause: "Braconnage pour sa corne, utilisée dans la médecine traditionnelle asiatique. Corruption et manque de moyens ont empêché la protection.",
+        habitat: "Forêts tropicales denses du parc national de Cat Tien, sud du Vietnam.",
+        role: "Méga-herbivore façonnant la forêt. Son passage créait des clairières et des mares utilisées par des centaines d'autres espèces.",
+        ecoMotCle: "Architecte",
+        cascade: "Les rhinocéros sont des ingénieurs de l'écosystème. Sans eux, les chemins se referment, les mares disparaissent.",
+        valeur: "La corne se vendait 60 000 dollars le kilo au marché noir. Plus chère que l'or, pour de la kératine — la même matière que nos ongles.",
+        cout: "Des millions investis en protection du parc de Cat Tien. Un seul braconnier a suffi à tout anéantir.",
+        chiffre: "1",
+        chiffreDetail: "Un seul rhinocéros restait au Vietnam. Une seule balle a mis fin à une sous-espèce.",
+        question: "On tue un animal pour une corne qui a les mêmes propriétés que nos ongles. Comment une croyance peut-elle condamner une espèce ?",
+        reflexion: "Le prix de la superstition. Des millions d'années d'évolution effacées par une croyance sans fondement.",
+        philoMotCle: "Croyance",
+        philoOuverture: "Que vaut une vie face à une superstition ?",
+        imageUrl: "images/rhinoceros-java.jpg",
+        imageCredit: "Photo : Willem v Strien, Wikimedia Commons – CC BY 2.0"
+      },
+      2016: {
+        nom: "Pipistrelle de l'île Christmas",
+        latin: "Pipistrellus murrayi",
+        categorie: "Mammifère",
+        localisation: "Île Christmas",
+        typeDate: "Extinction confirmée",
+        description: "Petite chauve-souris endémique de l'île Christmas. Le dernier individu connu, une femelle, a été filmé en 2009. Malgré les recherches, l'espèce n'a jamais été revue. En 2016, l'IUCN a confirmé l'extinction.",
+        cause: "Introduction d'espèces invasives (fourmis jaunes, chats, rats), possibles maladies, destruction de l'habitat.",
+        habitat: "Forêts tropicales de l'île Christmas, territoire australien dans l'océan Indien.",
+        role: "Insectivore nocturne, elle contrôlait les populations de moustiques et papillons de nuit.",
+        ecoMotCle: "Nocturne",
+        cascade: "Sans chauves-souris, les insectes nocturnes prolifèrent. L'équilibre de la nuit est rompu.",
+        valeur: "L'île Christmas perd ses espèces une à une. Un patrimoine naturel unique qui s'éteint dans l'indifférence.",
+        cout: "Programme de sauvetage lancé en 2009, mais trop tard. La dernière pipistrelle a refusé de se reproduire en captivité.",
+        chiffre: "1",
+        chiffreDetail: "Une seule chauve-souris filmée en 2009. Elle était déjà la dernière.",
+        question: "Comment sauver une espèce quand il n'en reste qu'un individu ?",
+        reflexion: "Le point de non-retour. Certaines espèces sont condamnées avant qu'on s'en aperçoive.",
+        philoMotCle: "Trop tard",
+        philoOuverture: "À quel moment l'extinction devient-elle inévitable ?"
+      },
+      2017: {
+        nom: "Philydor de Alagoas",
+        latin: "Philydor novaesi",
+        categorie: "Oiseau",
+        localisation: "Brésil",
+        typeDate: "Extinction confirmée",
+        description: "Petit oiseau brun de la forêt atlantique brésilienne. Découvert en 1979, déclaré éteint en 2017. Il n'a existé dans les livres de science que 38 ans.",
+        cause: "Déforestation de la forêt atlantique, réduite à 7% de sa surface originelle. Son habitat a été transformé en plantations de canne à sucre.",
+        habitat: "Forêt atlantique de l'État d'Alagoas, nord-est du Brésil.",
+        role: "Insectivore fouillant l'écorce des arbres. Il participait au contrôle des populations d'insectes ravageurs.",
+        ecoMotCle: "Fragment",
+        cascade: "La forêt atlantique est morcelée en îlots trop petits. Les espèces s'éteignent une à une dans ces prisons vertes.",
+        valeur: "La forêt atlantique a été rasée pour la canne à sucre et l'élevage. Le Brésil exporte pour 8 milliards de dollars de sucre par an.",
+        cout: "Zéro dollar investi dans la protection du philydor. L'oiseau a disparu dans l'indifférence générale.",
+        chiffre: "7%",
+        chiffreDetail: "Surface restante de la forêt atlantique brésilienne. 93% détruite, et avec elle, ses espèces.",
+        question: "Une forêt réduite à 7% peut-elle encore abriter la vie qu'elle contenait ?",
+        reflexion: "Le seuil de non-retour. À partir de quel pourcentage un écosystème est-il condamné ?",
+        philoMotCle: "Seuil",
+        philoOuverture: "Combien peut-on détruire avant que tout s'effondre ?",
+        imageUrl: "images/philydor-alagoas.jpg",
+        imageCredit: "Photo : Ciro Albano, CC BY-SA 4.0"
+      },
+      2018: {
+        nom: "Ara de Spix",
+        latin: "Cyanopsitta spixii",
+        categorie: "Oiseau",
+        localisation: "Brésil",
+        typeDate: "Éteint en nature",
+        description: "Perroquet bleu célèbre grâce au film 'Rio'. En 2018, l'IUCN a officiellement confirmé son extinction en milieu naturel. L'espèce survit uniquement en captivité, otage de collectionneurs et de programmes de reproduction.",
+        cause: "Capture pour le commerce illégal d'oiseaux exotiques, déforestation de la caatinga brésilienne.",
+        habitat: "Forêt de caatinga du nord-est du Brésil, région aride et épineuse.",
+        role: "Disperseur de graines des palmiers caraiba, dont il était le principal propagateur.",
+        ecoMotCle: "Otage",
+        cascade: "Sans l'ara, les palmiers caraiba ne se dispersent plus. L'oiseau et l'arbre étaient liés, les deux déclinent.",
+        valeur: "Un ara de Spix se vendait jusqu'à 200 000 dollars au marché noir. Sa beauté a causé sa perte.",
+        cout: "Programme de reproduction depuis 30 ans. En 2022, quelques oiseaux ont été réintroduits, résultats incertains.",
+        chiffre: "200 000 $",
+        chiffreDetail: "Prix d'un ara de Spix au marché noir. Trop beau pour survivre libre.",
+        question: "L'ara a été volé à la nature par des collectionneurs. La captivité peut-elle réparer ce vol ?",
+        reflexion: "La beauté fatale. Certaines espèces sont condamnées par leur propre splendeur.",
+        philoMotCle: "Beauté",
+        philoOuverture: "La beauté est-elle une malédiction pour ceux qui la portent ?",
+        imageUrl: "images/ara-spix.jpg",
+        imageCredit: "Photo : Wikimedia Commons, CC BY-SA 3.0"
+      },
+      2019: {
+        nom: "Poisson-main lisse",
+        latin: "Sympterichthys unipennis",
+        categorie: "Poisson",
+        localisation: "Tasmanie, Australie",
+        typeDate: "Déclaration IUCN",
+        description: "Petit poisson qui marchait sur le fond marin grâce à ses nageoires en forme de mains. Premier poisson marin moderne déclaré éteint. En 2019, l'IUCN a officialisé sa disparition après plus de 200 ans sans observation.",
+        cause: "Probablement destruction des herbiers marins, pollution côtière, chalutage. Mais personne ne sait vraiment.",
+        habitat: "Eaux côtières peu profondes de Tasmanie, sur fonds sablonneux et herbiers.",
+        role: "Habitant discret des herbiers marins, il faisait partie d'un écosystème aujourd'hui dégradé.",
+        ecoMotCle: "Marcheur",
+        cascade: "Le poisson-main était un indicateur de la santé des herbiers. Sa disparition signale leur déclin silencieux.",
+        valeur: "Aucune valeur économique. Mais une curiosité scientifique : un poisson qui marche au lieu de nager.",
+        cout: "On l'a cherché pendant des années avec des plongeurs. Jamais retrouvé.",
+        chiffre: "200+",
+        chiffreDetail: "Années sans observation. Il a fallu deux siècles pour admettre l'extinction.",
+        question: "Combien de temps faut-il chercher avant d'accepter l'absence ?",
+        reflexion: "Le doute éternel. Sans corps, l'extinction reste une hypothèse qu'on refuse d'accepter.",
+        philoMotCle: "Doute",
+        philoOuverture: "Quand l'absence devient-elle certitude ?"
+      },
+      2020: {
+        nom: "Grenouille dorée de Panama",
+        latin: "Atelopus zeteki",
+        categorie: "Amphibien",
+        localisation: "Panama",
+        typeDate: "Éteinte en nature",
+        description: "Petite grenouille jaune vif, symbole national du Panama. Elle communiquait par gestes, agitant ses pattes pour parler. Décimée par le chytride, elle survit uniquement en captivité.",
+        cause: "Pandémie de champignon chytride, combinée à la destruction de l'habitat et au changement climatique.",
+        habitat: "Forêts de nuages et cours d'eau du centre du Panama.",
+        role: "Indicateur de la qualité de l'eau. Les amphibiens sont les premiers à disparaître quand l'environnement se dégrade.",
+        ecoMotCle: "Sentinelle",
+        cascade: "La grenouille dorée était un baromètre vivant. Son silence annonce une crise plus vaste.",
+        valeur: "Symbole national figurant sur les billets de loterie panaméens. Un pays qui perd son emblème.",
+        cout: "Programmes de conservation en captivité massifs. On élève des grenouilles dans des aquariums stériles en attendant de pouvoir les relâcher.",
+        chiffre: "0",
+        chiffreDetail: "Grenouilles dorées dans la nature. Le symbole du Panama n'existe plus que derrière des vitres.",
+        question: "Un symbole national éteint en nature, vivant en cage. Que représente-t-il encore ?",
+        reflexion: "L'emblème vide. Quand le symbole disparaît, que reste-t-il de ce qu'il représentait ?",
+        philoMotCle: "Emblème",
+        philoOuverture: "Un pays peut-il survivre à la mort de son symbole ?",
+        imageUrl: "images/grenouille-doree-panama.jpg",
+        imageCredit: "Photo : Brian Gratwicke, CC BY 2.5"
+      },
+      2021: {
+        nom: "Pic à bec ivoire",
+        latin: "Campephilus principalis",
+        categorie: "Oiseau",
+        localisation: "États-Unis",
+        typeDate: "Déclaration officielle",
+        description: "Le plus grand pic d'Amérique du Nord, au bec blanc comme l'ivoire. Dernier observé avec certitude en 1944. En 2021, les États-Unis l'ont officiellement déclaré éteint après des décennies de recherches vaines.",
+        cause: "Destruction des forêts anciennes du sud-est américain. Les grands arbres morts dont il dépendait ont été abattus.",
+        habitat: "Forêts de cyprès et de chênes du sud-est des États-Unis, de la Caroline à la Louisiane.",
+        role: "Créateur de cavités dans les grands arbres morts, utilisées ensuite par des dizaines d'autres espèces.",
+        ecoMotCle: "Architecte",
+        cascade: "Les cavités creusées par le pic abritaient des dizaines d'espèces. Sans lui, tout un réseau de logements forestiers disparaît.",
+        valeur: "Des millions de dollars ont été dépensés en expéditions de recherche depuis 2004. Pour traquer un fantôme.",
+        cout: "En 2005, une vidéo floue a relancé l'espoir. Des années de recherche ont suivi. Résultat : rien.",
+        chiffre: "77 ans",
+        chiffreDetail: "Années entre la dernière observation certaine (1944) et la déclaration d'extinction (2021).",
+        question: "On a cherché ce pic pendant 77 ans. À quel moment faut-il accepter l'absence ?",
+        reflexion: "Le deuil impossible. Tant qu'on n'a pas de corps, on refuse de croire à la mort.",
+        philoMotCle: "Fantôme",
+        philoOuverture: "Chercher l'introuvable, est-ce de l'espoir ou du déni ?",
+        imageUrl: "images/pic-bec-ivoire.jpg",
+        imageCredit: "Photo : Jerry A. Payne, USDA ARS, domaine public"
+      },
+      2022: {
+        nom: "Escargot d'Oahu",
+        latin: "Achatinella apexfulva",
+        categorie: "Mollusque",
+        localisation: "Hawaï",
+        typeDate: "Mort du dernier individu",
+        description: "Escargot arboricole à la coquille colorée, premier mollusque hawaïen décrit par la science en 1787. Le dernier individu, nommé George, est mort en captivité le 1er janvier 2019. L'extinction a été confirmée en 2022.",
+        cause: "Prédation par les rats, escargots carnivores et caméléons introduits. Destruction de la forêt native.",
+        habitat: "Forêts d'altitude de l'île d'Oahu, sur les feuilles des arbres natifs.",
+        role: "Les escargots Achatinella broutaient les champignons sur les feuilles, nettoyant la canopée hawaïenne.",
+        ecoMotCle: "Nettoyeur",
+        cascade: "Sans les escargots, les champignons prolifèrent sur les feuilles. La forêt perd ses jardiniers miniatures.",
+        valeur: "Les coquilles d'Achatinella étaient utilisées dans les leis traditionnels hawaïens. Une culture perd ses ornements.",
+        cout: "Programme de reproduction en captivité depuis 30 ans. Malgré les efforts, l'espèce s'est éteinte.",
+        chiffre: "14 ans",
+        chiffreDetail: "Âge de George à sa mort. Le dernier escargot a vécu seul pendant toute sa vie adulte.",
+        question: "George est mort le jour de l'An 2019. Quelle ironie de commencer une année par une extinction.",
+        reflexion: "La fin des commencements. Chaque extinction est un compte à rebours qui atteint zéro.",
+        philoMotCle: "Fin",
+        philoOuverture: "Que signifie être le dernier témoin de son espèce ?",
+        imageUrl: "images/escargot-oahu.jpg",
+        imageCredit: "Photo : David Sischo, DLNR"
+      },
+      2023: {
+        nom: "Féra du Léman",
+        latin: "Coregonus fera",
+        categorie: "Poisson",
+        localisation: "Suisse / France",
+        typeDate: "Déclaration IUCN",
+        description: "Poisson des eaux profondes du lac Léman, autrefois abondant dans les filets des pêcheurs. En 2023, l'IUCN a officiellement déclaré son extinction. Il a disparu dans le lac le plus étudié d'Europe.",
+        cause: "Eutrophisation du lac (excès de nutriments), hybridation avec d'autres corégones introduits, surpêche historique.",
+        habitat: "Eaux profondes et froides du lac Léman, entre Suisse et France.",
+        role: "Poisson de fond filtrant le plancton, il maintenait la clarté et l'équilibre des eaux profondes.",
+        ecoMotCle: "Profondeur",
+        cascade: "Les corégones filtraient le plancton des eaux profondes. Sans eux, l'équilibre du lac se modifie.",
+        valeur: "La pêche sur le Léman rapporte des millions d'euros par an. On vend maintenant des poissons qui ne sont plus vraiment des féras.",
+        cout: "Le lac Léman est surveillé par des dizaines de stations scientifiques. On a documenté l'extinction sans pouvoir l'empêcher.",
+        chiffre: "582 km²",
+        chiffreDetail: "Surface du lac Léman. Un des lacs les plus étudiés au monde, incapable de garder son poisson.",
+        question: "On étudie le lac Léman depuis 150 ans. On n'a pas pu sauver la féra. À quoi sert la science ?",
+        reflexion: "L'aveuglement du savoir. On peut tout mesurer et ne rien protéger.",
+        philoMotCle: "Mesure",
+        philoOuverture: "Mesurer le déclin remplace-t-il le combattre ?"
+      },
+      2024: {
+        nom: "Requin de Pondichéry",
+        latin: "Carcharhinus hemiodon",
+        categorie: "Poisson",
+        localisation: "Océan Indien",
+        typeDate: "Déclaration IUCN",
+        description: "Petit requin côtier des eaux de l'Inde et de l'Asie du Sud-Est. Pas vu depuis 1979, il a été officiellement déclaré éteint en 2024 après des décennies sans observation confirmée.",
+        cause: "Surpêche intensive des côtes indiennes, destruction des habitats côtiers, prises accidentelles dans les filets.",
+        habitat: "Eaux côtières peu profondes de l'Inde, du Pakistan au Sri Lanka.",
+        role: "Prédateur côtier régulant les populations de poissons, il maintenait l'équilibre des écosystèmes littoraux.",
+        ecoMotCle: "Côtier",
+        cascade: "Le requin de Pondichéry vivait près des côtes les plus peuplées du monde. Trop proche des humains pour survivre.",
+        valeur: "La pêche artisanale indienne emploie des millions de personnes. Le requin a été une prise parmi d'autres.",
+        cout: "Aucun programme de conservation n'a jamais existé pour cette espèce. On ne peut pas sauver ce qu'on ignore.",
+        chiffre: "45 ans",
+        chiffreDetail: "Années sans observation confirmée avant la déclaration d'extinction.",
+        question: "Un requin disparaît dans l'indifférence. Les prédateurs méritent-ils moins notre attention ?",
+        reflexion: "L'extinction discrète. Certaines espèces disparaissent sans faire de bruit.",
+        philoMotCle: "Indifférence",
+        philoOuverture: "Pleure-t-on moins les espèces qu'on ne trouve pas mignonnes ?"
+      }
+    };
+    
+    let currentYear = 1987;
+    const availableYears = Object.keys(data).map(Number).sort((a,b) => a-b);
+    
+    function showSpecies() {
+      const year = document.getElementById('yearInput').value;
+      const errorEl = document.getElementById('error');
+      const resultsEl = document.getElementById('results');
+      
+      if (!data[year]) {
+        errorEl.textContent = 'Année non disponible. Essaie 1987 ou 2000.';
+        errorEl.classList.remove('hidden');
+        resultsEl.classList.add('hidden');
+        return;
+      }
+      
+      currentYear = parseInt(year);
+      errorEl.classList.add('hidden');
+      resultsEl.classList.remove('hidden');
+      
+      const s = data[year];
+      document.getElementById('speciesName').textContent = s.nom;
+      document.getElementById('speciesLatin').textContent = s.latin;
+      document.getElementById('category').textContent = s.categorie;
+      document.getElementById('year').textContent = year;
+      document.getElementById('dateType').textContent = s.typeDate;
+      document.getElementById('location').textContent = s.localisation;
+      document.getElementById('description').textContent = s.description;
+      document.getElementById('cause').textContent = s.cause;
+      document.getElementById('habitat').textContent = s.habitat;
+      document.getElementById('role').textContent = s.role;
+      document.getElementById('ecoMotCle').textContent = s.ecoMotCle;
+      document.getElementById('cascade').textContent = s.cascade;
+      document.getElementById('valeur').textContent = s.valeur;
+      document.getElementById('cout').textContent = s.cout;
+      document.getElementById('chiffre').textContent = s.chiffre;
+      document.getElementById('chiffreDetail').textContent = s.chiffreDetail;
+      document.getElementById('question').textContent = s.question;
+      document.getElementById('reflexion').textContent = s.reflexion;
+      document.getElementById('philoMotCle').textContent = s.philoMotCle;
+      document.getElementById('philoOuverture').textContent = s.philoOuverture;
+      
+      // Audio
+      const audioBox = document.getElementById('audioBox');
+      if (s.audioUrl) {
+        audioBox.classList.remove('hidden');
+        document.getElementById('audioLink').href = s.audioUrl;
+        document.getElementById('audioTitle').textContent = s.audioTitle;
+        document.getElementById('audioCredit').textContent = s.audioCredit;
+      } else {
+        audioBox.classList.add('hidden');
+      }
+      
+      // Image
+      const imageBox = document.getElementById('speciesImageBox');
+      if (s.imageUrl) {
+        imageBox.classList.remove('hidden');
+        document.getElementById('speciesImage').src = s.imageUrl;
+        document.getElementById('speciesImage').alt = s.nom;
+        document.getElementById('speciesImageCredit').textContent = s.imageCredit;
+      } else {
+        imageBox.classList.add('hidden');
+      }
+      
+      // Navigation
+      updateNav();
+    }
+    
+    function updateNav() {
+      const currentIndex = availableYears.indexOf(currentYear);
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      const prevYear = document.getElementById('prevYear');
+      const nextYear = document.getElementById('nextYear');
+      
+      if (currentIndex > 0) {
+        prevBtn.disabled = false;
+        prevYear.textContent = availableYears[currentIndex - 1];
+      } else {
+        prevBtn.disabled = true;
+        prevYear.textContent = '';
+      }
+      
+      if (currentIndex < availableYears.length - 1) {
+        nextBtn.disabled = false;
+        nextYear.textContent = availableYears[currentIndex + 1];
+      } else {
+        nextBtn.disabled = true;
+        nextYear.textContent = '';
+      }
+    }
+    
+    function goToPrev() {
+      const currentIndex = availableYears.indexOf(currentYear);
+      if (currentIndex > 0) {
+        document.getElementById('yearInput').value = availableYears[currentIndex - 1];
+        showSpecies();
+        window.scrollTo(0, 0);
+      }
+    }
+    
+    function goToNext() {
+      const currentIndex = availableYears.indexOf(currentYear);
+      if (currentIndex < availableYears.length - 1) {
+        document.getElementById('yearInput').value = availableYears[currentIndex + 1];
+        showSpecies();
+        window.scrollTo(0, 0);
+      }
+    }
+    
+    function shareInstagram() {
+      const link = document.createElement('a');
+      link.href = `/stories/story_${currentYear}.png`;
+      link.download = `espece_${currentYear}.png`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+    
+    function shareTwitter() {
+      const s = data[currentYear];
+      const text = `Je suis né·e en ${currentYear}, l'année où ${s.nom} a disparu. Découvre quelle espèce a disparu l'année de ta naissance :`;
+      const url = window.location.href;
+      window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank');
+    }
+    
+    function shareWhatsApp() {
+      const s = data[currentYear];
+      const text = `Je suis né·e en ${currentYear}, l'année où ${s.nom} a disparu. Découvre quelle espèce a disparu l'année de ta naissance : ${window.location.href}`;
+      window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+    }
+    
+    function copyLink() {
+      navigator.clipboard.writeText(window.location.href);
+      alert('Lien copié !');
+    }
+    
+    function setYear(year) {
+      document.getElementById('yearInput').value = year;
+      showSpecies();
+      document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+    }
+    
+    function toggleGrid() {
+      const gridSection = document.getElementById('gridSection');
+      const btn = document.getElementById('allYearsBtn');
+      gridSection.classList.toggle('hidden');
+      if (!gridSection.classList.contains('hidden')) {
+        btn.innerHTML = '<span>×</span>';
+      } else {
+        btn.innerHTML = '<span>Tout</span>';
+      }
+    }
+    
+    function openAbout() {
+      document.getElementById('aboutModal').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+    
+    function closeAbout() {
+      document.getElementById('aboutModal').classList.add('hidden');
+      document.body.style.overflow = 'auto';
+    }
+    
+    window.onload = function() {
+      const year = document.getElementById('yearInput').value;
+      if (year) {
+        showSpecies();
+      }
+    };
+  </script>
+  
+  <!-- Modal À propos -->
+  <div class="about-modal hidden" id="aboutModal" onclick="closeAbout()">
+    <div class="about-content" onclick="event.stopPropagation()">
+      <button class="about-close" onclick="closeAbout()">×</button>
+      
+      <div class="about-section">
+        <h2 class="about-title">L'intention</h2>
+        <p class="about-text">On parle de biodiversité soit en termes économiques ("ça vaut X milliards"), soit en termes écologiques ("X espèces menacées"), soit en termes moraux ("on n'a pas le droit"). Mais jamais les trois ensemble. Résultat : un dialogue de sourds. Et la crise s'aggrave.</p>
+        <p class="about-text">La crise de la biodiversité est un problème complexe qui demande de croiser les regards : comprendre ce qu'on perd économiquement, ce qui se joue écologiquement, et ce que ça dit de notre rapport philosophique au vivant.</p>
+        <p class="about-text">En reliant une extinction à ton année de naissance, j'espère créer un lien personnel avec cette crise abstraite. Parce qu'on ne protège que ce qu'on comprend.</p>
+      </div>
+      
+      <div class="about-section">
+        <h2 class="about-title">La méthode</h2>
+        <p class="about-text">J'ai sélectionné une espèce par année entre 1960 et 2024, en croisant plusieurs sources : listes rouges de l'UICN, articles scientifiques, archives naturalistes. Les dates correspondent parfois à l'extinction officielle, parfois à la dernière observation confirmée, parfois à la déclaration d'extinction. La nature ne meurt pas avec un certificat de décès.</p>
+      </div>
+      
+      <div class="about-section">
+        <h2 class="about-title">Les limites</h2>
+        <p class="about-text">Ce projet n'est pas exhaustif. Des milliers d'espèces disparaissent chaque année, j'en ai choisi 65, une par an. Les données économiques sont parfois des estimations, les dates parfois approximatives. Si tu repères une erreur, écris-moi.</p>
+      </div>
+      
+      <div class="about-section">
+        <h2 class="about-title">Les sources</h2>
+        <p class="about-text">UICN Liste Rouge. Wikipédia. MNHN. Articles scientifiques divers. Archives naturalistes.</p>
+      </div>
+      
+      <div class="about-section about-author">
+        <h2 class="about-title">L'autrice</h2>
+        <p class="about-text">Lauriane Mouysset, directrice de recherche au CNRS. J'étudie la crise de la biodiversité à la croisée de l'économie, l'écologie et la philosophie. Parce que l'économie sans l'écologie, c'est aveugle. L'écologie sans la philosophie, c'est muet.</p>
+      </div>
+      
+      <div class="about-section">
+        <h2 class="about-title">Contact</h2>
+        <p class="about-text about-contact">
+          <span>📧 lauriane.mouysset(a)cnrs.fr</span>
+          <span>📸 <a href="https://www.instagram.com/lauriane_mouysset/" target="_blank">@lauriane_mouysset</a></span>
+        </p>
+      </div>
+      
+      <div class="about-section about-license">
+        <p class="about-text-small">© 2025 Lauriane Mouysset. Contenu protégé par le droit d'auteur. Libre de diffusion pour usage éducatif et non-commercial avec mention de la source.</p>
+      </div>
+      
+    </div>
+  </div>
+</body>
 </html>
