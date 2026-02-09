@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arts et numérique — Mouysset Studio</title>
+  
+  <link rel="icon" type="image/png" href="favicon.png">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@100;200;300;400&family=IBM+Plex+Mono:wght@300;400&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --f-name: 'IBM Plex Sans', sans-serif;
+      --f-body: 'IBM Plex Mono', monospace;
+      --noir: #FAF9F7;
+      --blanc: #1A1A18;
+      --fond-alt: #252523;
+      --texte: #E0E0DD;
+      --gris: #9A9A95;
+      --accent: #A65D4C;
+      --border: rgba(250,249,247,0.1);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--blanc); color: var(--texte); font-family: var(--f-body); line-height: 1.6; }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      background: rgba(26,26,24,0.96); backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      max-width: 1140px; margin: 0 auto; padding: 0 36px;
+      height: 56px; display: flex; justify-content: space-between; align-items: center;
+    }
+    .nav-logo {
+      font-family: var(--f-name); font-size: 12px; font-weight: 200;
+      color: var(--noir); letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none;
+    }
+    .nav-links { display: flex; align-items: center; gap: 24px; }
+    .nav-links a {
+      font-size: 11px; font-weight: 300; color: var(--texte);
+      text-decoration: none; letter-spacing: 0.05em; transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--noir); }
+    .nav-links a.active { color: var(--accent); }
+
+    .container { max-width: 1140px; margin: 0 auto; padding: 0 36px; }
+
+    /* INTRO */
+    .intro-section {
+      margin-top: 56px;
+      padding: 120px 0 80px;
+      text-align: center;
+    }
+    .intro-title {
+      font-family: var(--f-name);
+      font-size: clamp(32px, 5vw, 48px);
+      font-weight: 200;
+      color: var(--noir);
+      letter-spacing: 0.02em;
+      margin-bottom: 32px;
+      line-height: 1.2;
+    }
+    .intro-text {
+      font-family: var(--f-body);
+      font-size: 16px;
+      font-weight: 300;
+      line-height: 1.9;
+      color: var(--gris);
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    /* SECTION 1 : COMMENT ÇA FONCTIONNE (3 colonnes avec photos) */
+    .section {
+      padding: 80px 0;
+      border-top: 1px solid var(--border);
+    }
+    .section-title {
+      font-family: var(--f-name);
+      font-size: 24px;
+      font-weight: 300;
+      color: var(--noir);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 40px;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .three-cols {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 40px;
+    }
+    .col-visual {
+      width: 100%;
+      height: 240px;
+      background: var(--fond-alt);
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+    .col-visual img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .col-label {
+      font-family: var(--f-body);
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--accent);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .col-text {
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 1.8;
+      color: var(--gris);
+    }
+
+    /* SECTION 2 : CE QUE ÇA APPORTE */
+    .apporte-text {
+      font-size: 15px;
+      font-weight: 300;
+      line-height: 1.9;
+      color: var(--gris);
+      max-width: 900px;
+      margin: 0 auto 24px;
+    }
+
+    /* SECTION 3 : CE QUI ME DIFFÉRENCIE */
+    .diff-block {
+      margin-bottom: 48px;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .diff-block:last-child {
+      margin-bottom: 0;
+    }
+    .diff-title {
+      font-family: var(--f-body);
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--accent);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .diff-text {
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 1.9;
+      color: var(--gris);
+    }
+
+    /* SECTION 4 : GRILLE PROJETS */
+    .projets-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+    }
+    .projet-card {
+      display: block;
+      transition: transform 0.2s;
+      cursor: pointer;
+    }
+    .projet-card:hover {
+      transform: translateY(-4px);
+    }
+    .projet-thumb {
+      width: 100%;
+      height: 220px;
+      background: var(--fond-alt);
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+    .projet-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .projet-name {
+      font-family: var(--f-name);
+      font-size: 16px;
+      font-weight: 300;
+      color: var(--noir);
+      margin-bottom: 6px;
+    }
+    .projet-tag {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 400;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 8px;
+    }
+    .projet-desc {
+      font-size: 13px;
+      font-weight: 300;
+      line-height: 1.7;
+      color: var(--gris);
+    }
+
+    /* CTA */
+    .cta-section {
+      padding: 80px 0;
+      border-top: 1px solid var(--border);
+      text-align: center;
+    }
+    .cta-title {
+      font-family: var(--f-name);
+      font-size: 32px;
+      font-weight: 200;
+      color: var(--noir);
+      margin-bottom: 24px;
+      letter-spacing: 0.02em;
+    }
+    .cta-text {
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 2;
+      color: var(--gris);
+      margin-bottom: 32px;
+    }
+    .cta-button {
+      display: inline-block;
+      padding: 14px 36px;
+      font-family: var(--f-name);
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--noir);
+      background: transparent;
+      border: 1px solid var(--noir);
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .cta-button:hover {
+      background: var(--noir);
+      color: var(--blanc);
+    }
+
+    /* MODAL PROJET */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(26,26,24,0.95);
+      z-index: 2000;
+      overflow-y: auto;
+      padding: 80px 36px;
+    }
+    .modal-overlay.active {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-content {
+      max-width: 900px;
+      width: 100%;
+      background: var(--fond-alt);
+      padding: 48px;
+      position: relative;
+    }
+    .modal-close {
+      position: absolute;
+      top: 24px;
+      right: 24px;
+      font-size: 32px;
+      color: var(--gris);
+      cursor: pointer;
+      background: none;
+      border: none;
+      line-height: 1;
+      transition: color 0.2s;
+    }
+    .modal-close:hover {
+      color: var(--noir);
+    }
+    .modal-title {
+      font-family: var(--f-name);
+      font-size: 32px;
+      font-weight: 200;
+      color: var(--noir);
+      margin-bottom: 12px;
+      letter-spacing: 0.02em;
+    }
+    .modal-tag {
+      font-size: 11px;
+      font-weight: 400;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 24px;
+      display: block;
+    }
+    .modal-text {
+      font-size: 15px;
+      font-weight: 300;
+      line-height: 1.9;
+      color: var(--gris);
+      margin-bottom: 32px;
+    }
+    .modal-link {
+      display: inline-block;
+      padding: 14px 36px;
+      font-family: var(--f-name);
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--noir);
+      background: transparent;
+      border: 1px solid var(--noir);
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .modal-link:hover {
+      background: var(--noir);
+      color: var(--blanc);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .three-cols,
+      .projets-grid {
+        grid-template-columns: 1fr;
+        gap: 48px;
+      }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">MOUYSSET STUDIO</a>
+      <div class="nav-links">
+        <a href="actualites.html">Actualités</a>
+        <a href="collections.html">Collections</a>
+        <a href="arts-et-numerique.html" class="active">Arts et numérique</a>
+        <a href="a-propos.html">Démarche</a>
+        <a href="/cdn-cgi/l/email-protection#137f7266617a727d763d7e7c666a6060766753707d61603d7561">Contact</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- INTRO -->
+  <section class="intro-section">
+    <div class="container">
+      <h1 class="intro-title">Arts et numérique</h1>
+      <p class="intro-text">
+        La broderie incarne les données invisibles. Le numérique contextualise la science. Les ateliers ouvrent les données au public. Mes projets tissent une expérience entre chiffre, esthétique et échange.
+      </p>
+    </div>
+  </section>
+
+  <!-- SECTION 1 : COMMENT ÇA FONCTIONNE -->
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title">Comment ça fonctionne</h2>
+
+      <div class="three-cols">
+        
+        <!-- BRODERIE -->
+        <div>
+          <div class="col-visual">
+            <img src="photo-broderie-process.jpg" alt="Broderie">
+          </div>
+          <div class="col-label">Broderie</div>
+          <p class="col-text">
+            Je brode des données invisibles sur du papier. Rapports de pouvoir, émotions face à la nature, pensées divergentes : les fils dessinent ce que les chiffres ne peuvent pas mesurer mais qui structure nos vies.
+          </p>
+        </div>
+
+        <!-- NUMÉRIQUE -->
+        <div>
+          <div class="col-visual">
+            <img src="screenshot-interface-numerique.jpg" alt="Interface numérique">
+          </div>
+          <div class="col-label">Numérique</div>
+          <p class="col-text">
+            Je code des interfaces numériques pour contextualiser des données visibles. Curseurs, filtres, visualisations dynamiques : chacun peut explorer et se questionner. L'information devient appropriable.
+          </p>
+        </div>
+
+        <!-- ATELIERS -->
+        <div>
+          <div class="col-visual">
+            <img src="photo-atelier.jpg" alt="Atelier collectif">
+          </div>
+          <div class="col-label">Ateliers & Performances</div>
+          <p class="col-text">
+            J'invite le public à créer avec moi. Broder ensemble, performer les données, dialoguer : le public devient acteur de la révélation. Le geste devient espace de transmission.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 2 : CE QUE ÇA APPORTE CONCRÈTEMENT -->
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title">Ce que ça apporte concrètement</h2>
+
+      <p class="apporte-text">
+        Cette approche dépasse à la fois la simple médiation culturelle et la simple médiation scientifique. Elle ne se contente pas d'expliquer une œuvre déjà faite ou de visibiliser des données produites par des scientifiques. Elle fait de l'expérience du public une partie constitutive du projet. Dans mes ateliers scolaires pour Science Taille XX Elles, les élèves ne reçoivent pas un discours sur les femmes en science : ils créent les outils de leur propre transmission. Les cartes qu'ils créent circulent ensuite dans les établissements. Ils deviennent médiateurs.
+      </p>
+
+      <p class="apporte-text">
+        Mes interfaces comme "ton-extinction.fr" ne disent pas "voici la crise écologique". Elles disent "quelle espèce a disparu ton année de naissance ?". Elles personnalisent, incarnent, ancrent. L'utilisateur ne consomme pas passivement une visualisation : il interroge les données, crée sa propre narration.
+      </p>
+    </div>
+  </section>
+
+  <!-- SECTION 3 : CE QUI ME DIFFÉRENCIE -->
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title">Ce qui me différencie</h2>
+
+      <div class="diff-block">
+        <h3 class="diff-title">Ma double formation n'est pas décorative</h3>
+        <p class="diff-text">
+          Je suis directrice de recherche au CNRS. Mes travaux sur la biodiversité sont publiés dans des revues à comité de lecture et j'ai reçu plusieurs distinctions académiques dont la prestigieuse Médaille de Bronze du CNRS. Cette légitimité scientifique n'est pas un argument marketing : elle garantit que les données que je manipule artistiquement sont robustes, sourcées, vérifiables.
+        </p>
+        <p class="diff-text">
+          Mais surtout elle me permet de parler de l'intérieur : depuis la recherche en train de se faire et qui évolue chaque jour, depuis la position d'un chercheur qui étudie un sujet (la biodiversité) crucial mais peu considérée dans le débat politique (focalisé sur le climat). Mon art ne vulgarise pas la science : il la met en tension avec l'émotion, le corps, le geste. Parce que la science est avant tout portée par des êtres humains qui ne sont pas que des cerveaux.
+        </p>
+      </div>
+
+      <div class="diff-block">
+        <h3 class="diff-title">Mon expérience de femme scientifique nourrit directement mes projets</h3>
+        <p class="diff-text">
+          Ambassadrice de Femmes & Sciences depuis 2025, j'ai vécu de l'intérieur les mécanismes d'invisibilisation. J'ai été la seule femme dans des panels, j'ai vu mes contributions minimisées, j'ai entendu "tu as eu le CNRS parce que tu portais une jupe à l'audition". Cette expérience n'est pas anecdotique : elle structure mes projets.
+        </p>
+        <p class="diff-text">
+          "Guerrières" n'est pas une série "sur" les femmes en science. C'est une série née de mon expérience face aux stéréotypes de genre dans la recherche. Les ateliers que j'anime ne transmettent pas un savoir extérieur : ils partagent un vécu incarné. Cette authenticité change tout.
+        </p>
+      </div>
+
+      <div class="diff-block">
+        <h3 class="diff-title">Je ne sous-traite rien</h3>
+        <p class="diff-text">
+          Je conçois les projets (chercheure), je code les interfaces (développeuse), je brode les œuvres (artiste), j'anime les ateliers (médiatrice). Cette maîtrise complète de la chaîne de production garantit une cohérence que peu d'artistes peuvent offrir. Il n'y a pas de traduction, pas de perte : le projet porte ma pensée de bout en bout.
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SECTION 4 : PROJETS (GRILLE 3x2) -->
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title">Projets</h2>
+
+      <div class="projets-grid">
+
+        <!-- À SA PLACE -->
+        <div class="projet-card" data-projet="asaplace">
+          <div class="projet-thumb">
+            <img src="screenshot-asaplace.jpg" alt="À sa place">
+          </div>
+          <div class="projet-name">À sa place</div>
+          <div class="projet-tag">Numérique</div>
+          <p class="projet-desc">
+            Interface explorant les disparités de genre dans la reconnaissance scientifique via Wikipedia.
+          </p>
+        </div>
+
+        <!-- TON-EXTINCTION -->
+        <div class="projet-card" data-projet="tonextinction">
+          <div class="projet-thumb">
+            <img src="screenshot-ton-extinction.jpg" alt="Ton-extinction">
+          </div>
+          <div class="projet-name">Ton-extinction.fr</div>
+          <div class="projet-tag">Numérique</div>
+          <p class="projet-desc">
+            Quelle espèce a disparu l'année de ta naissance ? Interface personnalisant la crise écologique.
+          </p>
+        </div>
+
+        <!-- MA GUERRIÈRE (ATELIER) -->
+        <div class="projet-card" data-projet="maguerriere">
+          <div class="projet-thumb">
+            <img src="photo-atelier-guerrieres.jpg" alt="Atelier Ma Guerrière">
+          </div>
+          <div class="projet-name">Ma Guerrière</div>
+          <div class="projet-tag">Atelier</div>
+          <p class="projet-desc">
+            Ateliers de broderie collective autour de portraits de femmes scientifiques invisibilisées.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="container">
+      <h2 class="cta-title">Collaborer</h2>
+      <p class="cta-text">
+        Commande d'œuvre brodée<br>
+        Création d'interface sur mesure<br>
+        Atelier ou performance pour votre institution
+      </p>
+      <a href="/cdn-cgi/l/email-protection#d8b4b9adaab1b9b6bdf6b5b7ada1ababbdac98bbb6aaabf6beaa" class="cta-button">CONTACT</a>
+    </div>
+  </section>
+
+  <!-- MODAL PROJET -->
+  <div class="modal-overlay" id="modal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeModal()">×</button>
+      <h2 class="modal-title" id="modal-title"></h2>
+      <span class="modal-tag" id="modal-tag"></span>
+      <p class="modal-text" id="modal-text"></p>
+      <div id="modal-link-container"></div>
+    </div>
+  </div>
+
+  <footer style="padding: 48px 36px; border-top: 1px solid rgba(250,249,247,0.1);">
+    <div style="text-align: center; max-width: 600px; margin: 0 auto;">
+      <div style="font-size: 11px; color: #9A9A95; font-weight: 300; margin-bottom: 8px;">© 2026 Lauriane Mouysset</div>
+      <div style="font-size: 10px; color: #7A7A72; font-weight: 300; margin-bottom: 16px;">Directrice de recherche CNRS (depuis 2014) · Villa Médicis (2024-25)</div>
+      <div style="display: flex; gap: 16px; justify-content: center; align-items: center; flex-wrap: wrap;">
+        <a href="https://instagram.com/mouysset_studio" target="_blank" style="font-size: 10px; color: #7A7A72; text-decoration: none;">Instagram</a>
+        <span style="color: #7A7A72; font-size: 10px;">·</span>
+        <a href="https://lauriane-mouysset.fr" target="_blank" style="font-size: 10px; color: #7A7A72; text-decoration: none;">Recherche</a>
+        <span style="color: #7A7A72; font-size: 10px;">·</span>
+        <a href="https://e42cb6ea.sibforms.com/serve/MUIFAJrM3MBcMCOYHvaGG2SU4uTeNgiaBGILuDNO8xNJ7ruE0PpsXm-0O6LF8kfvyRZb2ANTWnqJZowIfgRjojVD7DjHvMIRH07ev9NVk3lDs6P2K017-EifWV-LcJ5A_kfZkVO5hX3M4n6Vs-skdeIB49FcjJKJ-yqmMHKTlNvWu9jSFWalAhVg62bcvmTk7bUuekjMZv0HcwZosw==" target="_blank" style="font-size: 10px; color: #7A7A72; text-decoration: none;">Newsletter</a>
+        <span styl        <span style="color: #7A7A72; font-size: 10px;">·</span>
+        <a href="/cdn-cgi/l/email-protection#1975786c6b7078777c3774766c606a6a7c6d597a776b6a377f6b" style="font-size: 10px; color: #7A7A72; text-decoration: none;">Contact</a>
+      </div>
+    </div>
+  </footer>
+
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+    // Données des projets
+    const projets = {
+      asaplace: {
+        title: "À sa place",
+        tag: "Numérique",
+        text: "L'expérience montre 8 découvertes scientifiques majeures, chacune impliquée dans un couple homme-femme. Deux métriques sont comparées : le nombre de langues dans lesquelles chaque chercheur·e apparaît sur Wikipédia (mémoire institutionnelle), et le nombre de pages vues (attention contemporaine).\n\nLe résultat est saisissant : là où l'histoire a promu les hommes, le monde s'intéresse désormais aux femmes. Cet objet numérique montre que la visibilisation des femmes scientifiques est nécessaire et qu'elle fonctionne. Continuons !",
+        link: "https://lauriane-mouysset.fr/a-sa-place/"
+      },
+      tonextinction: {
+        title: "Ton-extinction.fr",
+        tag: "Numérique",
+        text: "La crise de la biodiversité n'est pas un problème technique qu'on résoudra avec des chiffres. Ce n'est pas non plus un problème purement moral qu'on résoudra avec de la culpabilité. C'est un problème complexe qui demande de croiser les regards : comprendre ce qu'on perd économiquement, écologiquement, et philosophiquement ce que ça dit de notre rapport au vivant.\n\nChaque année de naissance est associée à une espèce éteinte cette année-là. L'interface personnalise l'expérience de la crise écologique : ce n'est plus abstrait, c'est ton année, ton extinction, ton regard croisé.",
+        link: "https://lauriane-mouysset.fr/ton-extinction/"
+      },
+      maguerriere: {
+        title: "Ma Guerrière",
+        tag: "Atelier",
+        text: "En cours de préparation.",
+        link: null
+      }
+    };
+
+    // Ouvrir modal
+    document.querySelectorAll('.projet-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const projetId = card.getAttribute('data-projet');
+        const projet = projets[projetId];
+        
+        document.getElementById('modal-title').textContent = projet.title;
+        document.getElementById('modal-tag').textContent = projet.tag;
+        document.getElementById('modal-text').innerHTML = projet.text.replace(/\n\n/g, '<br><br>');
+        
+        const linkContainer = document.getElementById('modal-link-container');
+        if (projet.link) {
+          linkContainer.innerHTML = `<a href="${projet.link}" target="_blank" class="modal-link">Voir le projet →</a>`;
+        } else {
+          linkContainer.innerHTML = '';
+        }
+        
+        document.getElementById('modal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+      });
+    });
+
+    // Fermer modal
+    function closeModal() {
+      document.getElementById('modal').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    // Fermer au clic sur overlay
+    document.getElementById('modal').addEventListener('click', (e) => {
+      if (e.target.id === 'modal') {
+        closeModal();
+      }
+    });
+
+    // Fermer avec Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeModal();
+      }
+    });
+</script>
+
+</body>
+</html>

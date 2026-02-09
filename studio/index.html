@@ -1,1 +1,440 @@
-zr
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mouysset Studio — Lauriane Mouysset</title>
+  
+  <link rel="icon" type="image/png" href="favicon.png">
+  
+  <meta name="description" content="Data Embroidery — Broder ce que l'on ne voit plus. Artiste contemporaine et directrice de recherche au CNRS.">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@100;200;300;400&family=IBM+Plex+Mono:wght@300;400&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --f-name: 'IBM Plex Sans', sans-serif;
+      --f-body: 'IBM Plex Mono', monospace;
+      --noir: #FAF9F7;
+      --blanc: #1A1A18;
+      --fond-alt: #252523;
+      --texte: #E0E0DD;
+      --gris: #9A9A95;
+      --gris-clair: #7A7A72;
+      --accent: #A65D4C;
+      --border: rgba(250,249,247,0.1);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--blanc); color: var(--texte); font-family: var(--f-body); }
+    .container { max-width: 1140px; margin: 0 auto; padding: 0 36px; }
+
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      background: rgba(26,26,24,0.96); backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      max-width: 1140px; margin: 0 auto; padding: 0 36px;
+      height: 56px; display: flex; justify-content: space-between; align-items: center;
+    }
+    .nav-logo {
+      font-family: var(--f-name); 
+      font-size: 12px; 
+      font-weight: 200;
+      color: var(--noir); 
+      letter-spacing: 0.12em;
+      text-transform: uppercase; 
+      text-decoration: none;
+    }
+    .nav-links { display: flex; align-items: center; gap: 6px; }
+    .nav-links a {
+      font-family: var(--f-body); font-size: 11px; font-weight: 400;
+      color: var(--gris); text-decoration: none; padding: 4px 10px; transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--noir); }
+
+    .header-block {
+      padding: 140px 0 40px;
+    }
+    .header-identity { max-width: 900px; }
+    .header-title {
+      margin-bottom: 28px; 
+      display: flex; 
+      align-items: center; 
+      gap: 14px;
+    }
+    .header-title::before {
+      content: ''; width: 32px; height: 1px; background: var(--accent);
+    }
+    .header-title span {
+      font-family: var(--f-name); 
+      font-size: 17px; /* Plus gros (était 15px) */
+      font-weight: 300; /* Un peu plus de poids */
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .header-name {
+      font-family: var(--f-name); 
+      font-size: clamp(56px, 8vw, 96px);
+      font-weight: 200;
+      line-height: 1; 
+      color: var(--noir); 
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      margin-bottom: 48px;
+    }
+    .header-name span { display: block; }
+
+    /* CONCEPT BLOCK */
+    .concept-block {
+      max-width: 900px;
+      margin-bottom: 40px;
+    }
+    
+    .concept-title {
+      font-family: var(--f-body);
+      font-size: 15px;
+      font-weight: 300;
+      line-height: 1.7;
+      color: var(--noir);
+      letter-spacing: 0.01em;
+      margin-bottom: 4px;
+    }
+    .concept-title em {
+      font-style: italic;
+    }
+    
+    .concept-statement {
+      font-family: var(--f-body);
+      font-size: 15px;
+      font-weight: 300;
+      line-height: 1.7;
+      color: var(--texte);
+    }
+    
+    .divider {
+      width: 100%;
+      height: 1px;
+      background: var(--border);
+      margin-bottom: 48px; /* Intermédiaire entre 32 et 60 */
+    }
+
+    /* INFO COMPACT */
+    .info-compact {
+      max-width: 900px;
+      margin-bottom: 48px; /* Même distance */
+    }
+    
+    .info-line {
+      font-family: var(--f-body);
+      font-size: 15px;
+      font-weight: 300;
+      line-height: 1.8;
+      color: var(--gris);
+      margin-bottom: 6px;
+    }
+    
+    .info-line:last-child {
+      margin-bottom: 0;
+    }
+
+    /* CARTES - Liserés alternés */
+    .explore-section { 
+      padding: 0;
+    }
+    .card-grid { 
+      display: grid; 
+      grid-template-columns: repeat(3, 1fr); 
+      gap: 1px;
+    }
+    .card {
+      display: block; 
+      background: var(--fond-alt); 
+      padding: 48px 32px;
+      text-decoration: none; 
+      position: relative; 
+      min-height: 200px;
+      transition: background 0.3s, transform 0.3s; 
+      cursor: pointer;
+      display: flex; 
+      flex-direction: column; 
+      justify-content: space-between;
+    }
+    
+    /* Liserés alternés pour grid 3x2 : blanc et rouge alternés */
+    .card:nth-child(1)::before {
+      content: ''; 
+      position: absolute; 
+      top: 0; left: 0; right: 0; 
+      height: 1px;
+      background: var(--border);
+    }
+    
+    .card:nth-child(2)::before {
+      content: ''; 
+      position: absolute; 
+      top: 0; left: 0; right: 0; 
+      height: 1px;
+      background: var(--accent);
+    }
+    
+    .card:nth-child(3)::before {
+      content: ''; 
+      position: absolute; 
+      top: 0; left: 0; right: 0; 
+      height: 1px;
+      background: var(--border);
+    }
+    
+    .card:nth-child(4)::before {
+      content: ''; 
+      position: absolute; 
+      top: 0; left: 0; right: 0; 
+      height: 1px;
+      background: var(--accent);
+    }
+    
+    .card:nth-child(5)::before {
+      content: ''; 
+      position: absolute; 
+      top: 0; left: 0; right: 0; 
+      height: 1px;
+      background: var(--border);
+    }
+    
+    .card:nth-child(6)::before {
+      content: ''; 
+      position: absolute; 
+      top: 0; left: 0; right: 0; 
+      height: 1px;
+      background: var(--accent);
+    }
+    
+    .card:hover { 
+      background: var(--noir); 
+      transform: translateY(-3px);
+    }
+    .card:hover .card-label { color: var(--blanc); }
+    .card:hover .card-hook { color: rgba(224,224,221,0.7); }
+    .card:hover .card-arrow { opacity: 1; color: var(--accent); }
+    
+    .card-header { 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: flex-start; 
+      margin-bottom: 16px; 
+    }
+    .card-label {
+      font-family: var(--f-name); 
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--noir); 
+      transition: color 0.3s;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .card-arrow { 
+      opacity: 0.25; 
+      transition: opacity 0.3s, color 0.3s; 
+      font-size: 20px; 
+      color: var(--gris);
+    }
+    .card-hook { 
+      font-size: 13px;
+      line-height: 1.7; 
+      color: var(--gris);
+      transition: color 0.3s;
+      font-weight: 300;
+    }
+
+    /* CONTACT - Mail plus discret + Paris */
+    .contact-band {
+      padding: 48px 0; 
+      margin-top: 80px; 
+      border-top: 1px solid var(--border);
+      display: grid; 
+      grid-template-columns: 1fr 1fr; 
+      gap: 40px;
+    }
+    .contact-email {
+      font-size: 13px; /* Plus petit (était 15px) */
+      font-weight: 300; /* Plus léger */
+      color: var(--gris); /* Gris au lieu de blanc */
+    }
+    .contact-location {
+      font-size: 13px;
+      font-weight: 300;
+      color: var(--gris);
+      margin-top: 6px;
+    }
+    .contact-links { 
+      display: flex; 
+      gap: 24px; 
+      flex-wrap: wrap; 
+      justify-content: flex-end; 
+      align-items: center; 
+    }
+    .contact-links a { 
+      font-size: 11px; 
+      font-weight: 400; 
+      color: var(--gris); 
+      text-decoration: none; 
+      transition: color 0.2s; 
+    }
+    .contact-links a:hover { color: var(--accent); }
+
+    footer {
+      padding: 24px 0 48px; 
+      border-top: 1px solid var(--border);
+      display: flex; 
+      justify-content: space-between;
+    }
+    footer span { 
+      font-size: 10px; 
+      color: var(--gris-clair); 
+      font-weight: 300;
+    }
+
+    @media (max-width: 900px) {
+      .card-grid { grid-template-columns: 1fr; }
+      .contact-band { grid-template-columns: 1fr; gap: 24px; }
+      .contact-links { justify-content: flex-start; }
+      .nav-links { display: none; }
+    }
+    @media (max-width: 540px) {
+      .container { padding: 0 24px; }
+      .header-name { font-size: clamp(42px, 12vw, 56px); }
+      .header-title span { font-size: 15px; }
+      .concept-title { font-size: 14px; }
+      .concept-statement { font-size: 14px; }
+      .info-line { font-size: 13px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-inner">
+      <a href="#" class="nav-logo">MOUYSSET STUDIO</a>
+      <div class="nav-links">
+        <a href="https://instagram.com/mouysset_studio" target="_blank">Instagram</a>
+        <a href="https://e42cb6ea.sibforms.com/serve/MUIFAJrM3MBcMCOYHvaGG2SU4uTeNgiaBGILuDNO8xNJ7ruE0PpsXm-0O6LF8kfvyRZb2ANTWnqJZowIfgRjojVD7DjHvMIRH07ev9NVk3lDs6P2K017-EifWV-LcJ5A_kfZkVO5hX3M4n6Vs-skdeIB49FcjJKJ-yqmMHKTlNvWu9jSFWalAhVg62bcvmTk7bUuekjMZv0HcwZosw==" target="_blank">Newsletter</a>
+        <a href="https://lauriane-mouysset.fr" target="_blank">Recherche CNRS</a>
+        <a href="/cdn-cgi/l/email-protection#1d717c686f747c737833707268646e6e78695d7e736f6e337b6f">Contact</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+
+    <header class="header-block">
+      <div class="header-identity">
+        <div class="header-title">
+          <span>Artiste contemporaine</span>
+        </div>
+        <h1 class="header-name">
+          <span>Lauriane</span>
+          <span>Mouysset</span>
+        </h1>
+      </div>
+    </header>
+
+    <div class="concept-block">
+      <p class="info-line" style="font-size: 13px; font-weight: 300; color: #9A9A95; margin-bottom: 32px;">
+        Papier · Fil · Photo · Interface numérique
+      </p>
+      <p class="concept-title">
+        <em>Data Embroidery</em> — Broder ce que l'on ne voit plus
+      </p>
+      <p class="concept-statement">
+        Mes œuvres n'illustrent pas des données. Elles les interrogent.
+      </p>
+    </div>
+
+    <div class="divider"></div>
+
+    <section class="explore-section">
+      <div class="card-grid">
+        
+        <a href="a-propos.html" class="card">
+          <div class="card-header">
+            <span class="card-label">Démarche</span>
+            <span class="card-arrow">↗</span>
+          </div>
+          <p class="card-hook">
+            Statement, biographie, distinctions
+          </p>
+        </a>
+        
+        <a href="collections.html" class="card">
+          <div class="card-header">
+            <span class="card-label">Collections</span>
+            <span class="card-arrow">↗</span>
+          </div>
+          <p class="card-hook">
+            Univers, descriptions, photos
+          </p>
+        </a>
+        
+        <a href="arts-et-numerique.html" class="card">
+          <div class="card-header">
+            <span class="card-label">Arts et numérique</span>
+            <span class="card-arrow">↗</span>
+          </div>
+          <p class="card-hook">
+            Broderie, code, ateliers
+          </p>
+        </a>
+
+        <a href="actualites.html" class="card">
+          <div class="card-header">
+            <span class="card-label">Actualités</span>
+            <span class="card-arrow">↗</span>
+          </div>
+          <p class="card-hook">
+            Expositions, agenda, archives
+          </p>
+        </a>
+
+        <a href="https://lauriane-mouysset.fr" target="_blank" class="card">
+          <div class="card-header">
+            <span class="card-label">Recherche CNRS</span>
+            <span class="card-arrow">↗</span>
+          </div>
+          <p class="card-hook">
+            Directrice, médaille, prix
+          </p>
+        </a>
+
+        <a href="/cdn-cgi/l/email-protection#f39f9286819a929d96dd9e9c868a80809687b3909d8180dd9581" class="card">
+          <div class="card-header">
+            <span class="card-label">Contact</span>
+            <span class="card-arrow">↗</span>
+          </div>
+          <p class="card-hook">
+            Commande, collaboration, acquisition
+          </p>
+        </a>
+
+      </div>
+    </section>
+
+  </div>
+
+  <footer style="padding: 48px 36px; border-top: 1px solid rgba(250,249,247,0.1);">
+    <div style="text-align: center; max-width: 600px; margin: 0 auto;">
+      <div style="font-size: 11px; color: #9A9A95; font-weight: 300; margin-bottom: 8px;">© 2026 Lauriane Mouysset</div>
+      <div style="font-size: 10px; color: #7A7A72; font-weight: 300; margin-bottom: 16px;">Directrice de recherche CNRS (depuis 2014) · Villa Médicis (2024-25)</div>
+      <div style="display: flex; gap: 16px; justify-content: center; align-items: center; flex-wrap: wrap;">
+        <a href="https://instagram.com/mouysset_studio" target="_blank" style="font-size: 10px; color: #7A7A72; text-decoration: none;">Instagram</a>
+        <span style="color: #7A7A72; font-size: 10px;">·</span>
+        <a href="https://lauriane-mouysset.fr" target="_blank" style="font-size: 10px; color: #7A7A72; text-decoration: none;">Recherche</a>
+        <span style="color: #7A7A72; font-size: 10px;">·</span>
+        <a href="https://e42cb6ea.sibforms.com/serve/MUIFAJrM3MBcMCOYHvaGG2SU4uTeNgiaBGILuDNO8xNJ7ruE0PpsXm-0O6LF8kfvyRZb2ANTWnqJZowIfgRjojVD7DjHvMIRH07ev9NVk3lDs6P2K017-EifWV-LcJ5A_kfZkVO5hX3M4n6Vs-skdeIB49FcjJKJ-yqmMHKTlNvWu9jSFWalAhVg62bcvmTk7bUuekjMZv0HcwZosw==" target="_blank" style="font-size: 10px; color: #7A7A72; text-decoration: none;">Newsletter</a>
+        <span style="color: #7A7A72; font-size: 10px;">·</span>
+        <a href="/cdn-cgi/l/email-protection#3a565b4f48535b545f1457554f4349495f4e7a59544849145c48" style="font-size: 10px; color: #7

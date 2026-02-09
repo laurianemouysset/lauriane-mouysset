@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Collections — Mouysset Studio</title>
+  
+  <link rel="icon" type="image/png" href="favicon.png">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@100;200;300;400&family=IBM+Plex+Mono:wght@300;400&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --f-name: 'IBM Plex Sans', sans-serif;
+      --f-body: 'IBM Plex Mono', monospace;
+      --noir: #FAF9F7;
+      --blanc: #1A1A18;
+      --fond-alt: #252523;
+      --texte: #E0E0DD;
+      --gris: #9A9A95;
+      --gris-clair: #7A7A72;
+      --accent: #A65D4C;
+      --border: rgba(250,249,247,0.1);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--blanc); color: var(--texte); font-family: var(--f-body); }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      background: rgba(26,26,24,0.96); backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      max-width: 1140px; margin: 0 auto; padding: 0 36px;
+      height: 56px; display: flex; justify-content: space-between; align-items: center;
+    }
+    .nav-logo {
+      font-family: var(--f-name); 
+      font-size: 12px; 
+      font-weight: 200;
+      color: var(--noir); 
+      letter-spacing: 0.12em;
+      text-transform: uppercase; 
+      text-decoration: none;
+    }
+    .nav-links { display: flex; align-items: center; gap: 24px; }
+    .nav-links a {
+      font-family: var(--f-body); 
+      font-size: 11px; 
+      font-weight: 400;
+      color: var(--gris); 
+      text-decoration: none; 
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--noir); }
+    .nav-links a.active { color: var(--accent); }
+
+    .container { max-width: 1140px; margin: 0 auto; padding: 0 36px; }
+
+    /* INTRO CHAPEAU */
+    .intro-section {
+      margin-top: 56px;
+      padding: 100px 0 60px;
+      text-align: center;
+    }
+    .intro-title {
+      font-family: var(--f-name);
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 200;
+      line-height: 1.3;
+      color: var(--noir);
+      letter-spacing: 0.02em;
+      margin-bottom: 24px;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .intro-text {
+      font-family: var(--f-body);
+      font-size: 16px;
+      font-weight: 300;
+      line-height: 1.9;
+      color: var(--gris);
+      letter-spacing: 0.01em;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+      text-align: left;
+    }
+
+    /* SECTION UNIVERS */
+    .univers-section {
+      padding: 60px 0 80px;
+      border-top: 1px solid var(--border);
+    }
+    .univers-title {
+      font-family: var(--f-name);
+      font-size: 24px;
+      font-weight: 300;
+      color: var(--noir);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .univers-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      max-width: 900px;
+      margin: 0 auto 32px;
+    }
+    .univers-item {
+      height: 200px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .univers-item:hover {
+      transform: scale(1.05);
+      opacity: 0.9;
+    }
+    .univers-item img {
+      height: 100%;
+      width: auto;
+      object-fit: contain;
+      display: block;
+    }
+    .univers-caption {
+      font-family: var(--f-body);
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 1.8;
+      color: var(--gris);
+      text-align: center;
+      max-width: 900px;
+      margin: 0 auto 40px auto;
+    }
+
+    /* SERIE SECTION */
+    .serie-section {
+      padding: 80px 0;
+      border-top: 1px solid var(--border);
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    .serie-header {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+    
+    .serie-title {
+      font-family: var(--f-name);
+      font-size: 24px;
+      font-weight: 300;
+      color: var(--noir);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    
+    .serie-badge {
+      font-family: var(--f-body);
+      font-size: 9px;
+      font-weight: 400;
+      color: var(--blanc);
+      background: var(--accent);
+      padding: 4px 8px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    
+    .serie-date {
+      font-family: var(--f-body);
+      font-size: 12px;
+      font-weight: 300;
+      color: var(--gris-clair);
+      margin-bottom: 16px;
+    }
+
+    .serie-pitch {
+      font-family: var(--f-body);
+      font-size: 15px;
+      font-weight: 300;
+      line-height: 1.9;
+      color: var(--gris);
+      letter-spacing: 0.01em;
+      margin-bottom: 40px;
+    }
+
+    /* MINIATURES GRID */
+    .miniatures-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 24px;
+      align-items: flex-start;
+    }
+    
+    .miniature {
+      height: 180px;
+      position: relative;
+      cursor: pointer;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      transition: all 0.3s ease;
+    }
+    
+    .miniature:hover {
+      transform: scale(1.05);
+      opacity: 0.9;
+    }
+    
+    .miniature img {
+      height: 100%;
+      width: auto;
+      object-fit: contain;
+      display: block;
+    }
+    
+    /* BADGES MINIATURES */
+    .miniature-badge {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: var(--accent);
+      color: var(--blanc);
+      font-family: var(--f-body);
+      font-size: 9px;
+      font-weight: 400;
+      padding: 4px 8px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    /* PREUVE SOCIALE */
+    .serie-social {
+      font-family: var(--f-body);
+      font-size: 12px;
+      font-weight: 300;
+      line-height: 1.8;
+      color: var(--gris-clair);
+      margin-bottom: 24px;
+    }
+    
+    .serie-tech {
+      font-family: var(--f-body);
+      font-size: 12px;
+      font-weight: 300;
+      line-height: 1.8;
+      color: var(--gris-clair);
+      margin-bottom: 16px;
+      margin-top: 16px;
+    }
+    
+    .info-label {
+      color: var(--accent);
+      font-weight: 400;
+    }
+
+    /* CTA PAR COLLECTION */
+    .serie-cta {
+      display: flex;
+      gap: 24px;
+      align-items: center;
+      font-family: var(--f-body);
+      font-size: 12px;
+      font-weight: 300;
+      color: var(--gris);
+    }
+    .serie-cta a {
+      color: var(--accent);
+      text-decoration: none;
+      border-bottom: 1px solid var(--accent);
+      transition: opacity 0.2s;
+    }
+    .serie-cta a:hover {
+      opacity: 0.7;
+    }
+
+    /* CTA GLOBAL FOOTER */
+    .cta-global {
+      padding: 80px 0;
+      border-top: 1px solid var(--border);
+      text-align: center;
+    }
+    .cta-title {
+      font-family: var(--f-name);
+      font-size: 24px;
+      font-weight: 300;
+      color: var(--noir);
+      letter-spacing: 0.03em;
+      margin-bottom: 24px;
+    }
+    .cta-text {
+      font-family: var(--f-body);
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 2;
+      color: var(--gris);
+      max-width: 600px;
+      margin: 0 auto 32px;
+    }
+    .cta-button {
+      display: inline-block;
+      font-family: var(--f-body);
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--noir);
+      text-decoration: none;
+      padding: 14px 40px;
+      border: 1px solid var(--border);
+      transition: all 0.3s;
+    }
+    .cta-button:hover {
+      background: var(--noir);
+      color: var(--blanc);
+      border-color: var(--noir);
+    }
+
+    /* LIGHTBOX CARROUSEL */
+    .lightbox {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.95);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .lightbox.active {
+      display: flex !important;
+    }
+    
+    .lightbox-wrapper {
+      position: relative;
+      max-width: 90vw;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .lightbox-image {
+      max-width: 100%;
+      max-height: 70vh;
+      object-fit: contain;
+      display: block;
+    }
+    
+    .lightbox-caption {
+      font-family: var(--f-body);
+      font-size: 14px;
+      font-weight: 300;
+      color: var(--gris);
+      margin-top: 20px;
+      text-align: center;
+    }
+    
+    .lightbox-counter {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      font-family: var(--f-body);
+      font-size: 12px;
+      color: var(--gris-clair);
+    }
+    
+    .lightbox-close {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      font-family: var(--f-body);
+      font-size: 32px;
+      color: var(--noir);
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 0;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.2s;
+      line-height: 1;
+    }
+    
+    .lightbox-close:hover {
+      opacity: 0.7;
+    }
+    
+    .lightbox-prev,
+    .lightbox-next {
+      position: fixed;
+      top: 50%;
+      transform: translateY(-50%);
+      font-family: var(--f-body);
+      font-size: 48px;
+      color: var(--noir);
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 20px;
+      transition: opacity 0.2s;
+      z-index: 10;
+      line-height: 1;
+    }
+    
+    .lightbox-prev:hover,
+    .lightbox-next:hover {
+      opacity: 0.7;
+    }
+    
+    .lightbox-prev {
+      left: 20px;
+    }
+    
+    .lightbox-next {
+      right: 20px;
+    }
+
+    /* FOOTER */
+    footer {
+      padding: 48px 36px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      max-width: 1140px;
+      margin: 0 auto;
+    }
+    footer span {
+      font-size: 10px;
+      color: var(--gris-clair);
+      font-weight: 300;
+    }
+
+    @media (max-width: 900px) {
+      .intro-section { padding: 80px 36px 60px; }
+      .univers-section { padding: 60px 36px 80px; }
+      .univers-item { height: 180px; }
+      .serie-section { padding: 60px 36px; }
+      .miniature { height: 150px; }
+      .lightbox-prev, .lightbox-next { font-size: 32px; padding: 10px; }
+      .cta-global { padding: 60px 36px; }
+      .serie-cta { flex-direction: column; align-items: flex-start; gap: 12px; }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">MOUYSSET STUDIO</a>
+      <div class="nav-links">
+        <a href="index.html">Accueil</a>
+        <a href="collections.html" class="active">Collections</a>
+        <a href="arts-et-numerique.html">Arts et numérique</a>
+        <a href="a-propos.html">Démarche</a>
+        <a href="actualites.html">Actualités</a>
+        <a href="contact.html">Contact</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+
+    <!-- CHAPEAU INTRO -->
+    <section class="intro-section">
+      <h1 class="intro-title">Cohabiter</h1>
+      <p class="intro-text">
+        Entre humains, avec le non-humain, avec nos morts, avec nos traumas, avec nos fantasmes.<br>
+        Chaque collection crée un espace de dialogue avec ce qui nous échappe.
+      </p>
+    </section>
+
+  </div>
+
+  <!-- SECTION PORTFOLIO CLIQUABLE -->
+  <section class="univers-section">
+    <div class="container">
+      <h2 class="univers-title">PORTFOLIO</h2>
+      <p class="univers-caption">
+        La broderie incarne les données invisibles. Le numérique contextualise les données visibles. Les ateliers ouvrent les données au public. Mes projets tissent une expérience entre chiffre, esthétique et échange.
+      </p>
+      <div class="univers-grid" id="univers-grid">
+        <div class="univers-item" data-index="0"><img src="guerrieres-2.jpg" alt="Guerrières"></div>
+        <div class="univers-item" data-index="1"><img src="guerrieres-3.jpg" alt="Guerrières"></div>
+        <div class="univers-item" data-index="2"><img src="guerrieres-7.jpg" alt="Guerrières"></div>
+        <div class="univers-item" data-index="3"><img src="guerrieres-5.jpg" alt="Guerrières"></div>
+        <div class="univers-item" data-index="4"><img src="guerrieres-8.jpg" alt="Guerrières"></div>
+        <div class="univers-item" data-index="5"><img src="tete-1.jpg" alt="Tête-à-tête"></div>
+        <div class="univers-item" data-index="6"><img src="tete-2.jpg" alt="Tête-à-tête"></div>
+        <div class="univers-item" data-index="7"><img src="tete-4.jpg" alt="Tête-à-tête"></div>
+        <div class="univers-item" data-index="8"><img src="mindset-2.jpg" alt="Mindset"></div>
+        <div class="univers-item" data-index="9"><img src="mindset-3.jpg" alt="Mindset"></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="container">
+
+    <!-- COLLECTION 1 : GUERRIÈRES -->
+    <section class="serie-section">
+      <div class="serie-header">
+        <h2 class="serie-title">GUERRIÈRES</h2>
+        <span class="serie-badge">ACTUALITÉ 2025</span>
+      </div>
+      <div class="serie-date">En cours depuis 2023</div>
+      <p class="serie-pitch">
+        Modèles de charme et scientifiques de génie : deux mondes qui ne se croisent jamais, mais qui partagent le même combat. Comment cohabiter avec un monde qui vous réduit à votre genre ? Cette série révèle les données invisibles de la cohabitation avec le monde des hommes : les masques portés, les guerres silencieuses, les stratégies de résistance. Elle m'a poussée à devenir ambassadrice de Femmes & Sciences.
+      </p>
+
+      <div class="miniatures-grid">
+        <div class="miniature" data-index="0">
+          <img src="guerrieres-1.jpg" alt="Guerrières 1">
+        </div>
+        <div class="miniature" data-index="1">
+          <img src="guerrieres-2.jpg" alt="Guerrières 2">
+        </div>
+        <div class="miniature" data-index="2">
+          <img src="guerrieres-3.jpg" alt="Guerrières 3">
+        </div>
+        <div class="miniature" data-index="3">
+          <img src="guerrieres-4.jpg" alt="Guerrières 4">
+        </div>
+        <div class="miniature" data-index="4">
+          <img src="guerrieres-5.jpg" alt="Guerrières 5">
+        </div>
+        <div class="miniature" data-index="5">
+          <img src="guerrieres-6.jpg" alt="Guerrières 6">
+        </div>
+        <div class="miniature" data-index="6">
+          <img src="guerrieres-7.jpg" alt="Guerrières 7">
+        </div>
+        <div class="miniature" data-index="7">
+          <img src="guerrieres-8.jpg" alt="Guerrières 8">
+        </div>
+      </div>
+
+      <p class="serie-tech">
+        Œuvres uniques signées avec certificat d'authenticité. Reproduction sur du papier d'images du 20e siècle, brodées à la main, tailles 20 cm x 30 cm, 40 x 60 cm, 60 x 90 cm selon les modèles. Encadrement sous verre avec cadre en métal noir, protégeant l'œuvre et permettant une manipulation sans risque. Série complète disponible sur demande.
+      </p>
+
+      <div class="serie-social">
+        <span class="info-label">Expositions :</span> Pavillon Vendôme (février-avril 2026)<br>
+        <span class="info-label">Ateliers :</span> Ma guerrière (7 mars 2026, Pavillon Vendôme)<br>
+        <span class="info-label">Interface numérique :</span> <a href="https://lauriane-mouysset.fr/a-sa-place/" target="_blank" style="color: var(--gris-clair);">À sa place</a><br>
+        <span class="info-label">Performance :</span> disponible sur demande
+      </div>
+
+      <div class="serie-cta">
+        <a href="arts-et-numerique.html" style="color: var(--accent); margin-right: 16px;">Découvrir Arts et numérique</a>
+        <span style="color: var(--gris);">·</span>
+        <a href="/cdn-cgi/l/email-protection#2f434e5a5d464e414a0142405a565c5c4a5b6f4c415d5c01495d" style="color: var(--accent); margin-left: 16px;">Contact</a>
+      </div>
+    </section>
+
+    <!-- COLLECTION 2 : AGORA -->
+    <section class="serie-section">
+      <div class="serie-header">
+        <h2 class="serie-title">AGORA</h2>
+        <span class="serie-badge">ACTUALITÉ 2025</span>
+      </div>
+      <div class="serie-date">En cours depuis 2025</div>
+      <p class="serie-pitch">
+        Comment faire cohabiter différentes manières de penser ? À l'échelle collective d'abord : une société polarisée qui doit résoudre des crises communes. À l'échelle intime ensuite : des cerveaux qui ne fonctionnent pas pareil et pour qui la cohabitation sociale est un effort permanent. Entre désaccords politiques et neurodiversité, cette série explore les géométries de la pensée divergente.
+      </p>
+
+      <div class="miniatures-grid">
+        <div class="miniature" data-index="0">
+          <img src="agora-1.jpg" alt="Agora 1">
+        </div>
+      </div>
+
+      <div class="serie-social">
+        <span class="info-label">Exposition et ateliers :</span> Cercle de l'Art (avril 2026)<br>
+        <span class="info-label">Vente :</span> Art Month du Cercle de l'Art (avril 2026)<br>
+        Production en cours, visuels disponibles en mars
+      </div>
+
+      <div class="serie-cta">
+        <a href="/cdn-cgi/l/email-protection#fa969b8f88939b949fd497958f8389899f8eba99948889d49c88" style="color: var(--accent);">Contact</a>
+      </div>
+    </section>
+
+    <!-- COLLECTION 3 : TÊTE-À-TÊTE -->
+    <section class="serie-section">
+      <div class="serie-header">
+        <h2 class="serie-title">TÊTE-À-TÊTE</h2>
+      </div>
+      <div class="serie-date">2021-2022 · Collection close</div>
+      <p class="serie-pitch">
+        Un insecte doré brodé sur un portrait ancien : beau et dérangeant. Ce rapport ambigu, entre fascination et angoisse, caractérise notre relation au vivant et explique notre paralysie face à la crise écologique. Chaque broderie incarne cette tension intime entre humain et non-humain.
+      </p>
+
+      <div class="miniatures-grid">
+        <div class="miniature" data-index="0">
+          <img src="tete-1.jpg" alt="Tête-à-tête 1">
+        </div>
+        <div class="miniature" data-index="1">
+          <img src="tete-2.jpg" alt="Tête-à-tête 2">
+        </div>
+        <div class="miniature" data-index="2">
+          <img src="tete-3.jpg" alt="Tête-à-tête 3">
+        </div>
+        <div class="miniature" data-index="3">
+          <img src="tete-4.jpg" alt="Tête-à-tête 4">
+        </div>
+        <div class="miniature" data-index="4">
+          <img src="tete-5.jpg" alt="Tête-à-tête 5">
+        </div>
+      </div>
+
+      <p class="serie-tech">
+        Œuvres uniques signées avec certificat d'authenticité. Photos originales du début du 20e siècle, brodées à la main, taille 14 cm x 9 cm, encadrements variables de 10 cm x 5 cm à 30 cm x 40 cm. Encadrement sous verre avec cadre en métal noir, protégeant l'œuvre et permettant une manipulation sans risque. Catalogue des 40 œuvres disponible sur demande.
+      </p>
+
+      <div class="serie-social">
+        <span class="info-label">Exposition :</span> Galerie Ad Luminem (2022)<br>
+        <span class="info-label">Collections :</span> Collection privée, Paris
+      </div>
+
+      <div class="serie-cta">
+        <a href="/cdn-cgi/l/email-protection#3e525f4b4c575f505b1053514b474d4d5b4a7e5d504c4d10584c" style="color: var(--accent);">Contact</a>
+      </div>
+    </section>
+
+    <!-- COLLECTION 4 : MINDSET -->
+    <section class="serie-section">
+      <div class="serie-header">
+        <h2 class="serie-title">MINDSET</h2>
+      </div>
+      <div class="serie-date">2021-2022 · Collection close</div>
+      <p class="serie-pitch">
+        Des formes géométriques brodées sur des portraits : architectures de pensées qui ne se ressemblent pas. Cette série explore la cohabitation avec la différence cognitive, quand votre cerveau ne décode pas le monde social comme les autres, quand le consensus vous échappe, quand penser autrement vous isole.
+      </p>
+
+      <div class="miniatures-grid">
+        <div class="miniature" data-index="0">
+          <img src="mindset-1.jpg" alt="Mindset 1">
+        </div>
+        <div class="miniature" data-index="1">
+          <img src="mindset-2.jpg" alt="Mindset 2">
+        </div>
+        <div class="miniature" data-index="2">
+          <img src="mindset-3.jpg" alt="Mindset 3">
+        </div>
+        <div class="miniature" data-index="3">
+          <img src="mindset-4.jpg" alt="Mindset 4">
+        </div>
+        <div class="miniature" data-index="4">
+          <img src="mindset-5.jpg" alt="Mindset 5">
+        </div>
+      </div>
+
+      <p class="serie-tech">
+        Œuvres uniques signées avec certificat d'authenticité. Photos originales collées sur un support cartonné brodé à la main, tailles 21x15 cm, 30x21 cm, 42x30 cm, 60x42 cm selon les modèles. Encadrement sous verre avec cadre en bois clair, protégeant l'œuvre et permettant une manipulation sans risque. Série complète de 45 œuvres disponible sur demande.
+      </p>
+
+      <div class="serie-social">
+        <span class="info-label">Expositions :</span> Off du festival d'Arles, Galerie Ephémère, Arles (2022) · Pavillon Vendôme (2022) · Galerie Ad Luminem (2022)<br>
+        <span class="info-label">Collections :</span> Collection privée, Paris
+      </div>
+
+      <div class="serie-cta">
+        <a href="/cdn-cgi/l/email-protection#264a4753544f474843084b49535f555543526645485455084054" style="color: var(--accent);">Contact</a>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- CTA GLOBAL -->
+  <section class="cta-global">
+    <div class="container">
+      <h2 class="cta-title">Acquérir une œuvre</h2>
+      <p class="cta-text">
+        Œuvres brodées : à partir de 500 euros<br>
+        Projets numériques et performances : tarifs sur mesure<br>
+        Prix disponible sur demande
+      </p>
+      <a href="/cdn-cgi/l/email-protection#d4b8b5a1a6bdb5bab1fab9bba1ada7a7b1a094b7baa6a7fab2a6" class="cta-button">CONTACT</a>
+    </div>
+  </section>
+
+  <!-- LIGHTBOX CARROUSEL -->
+  <div class="lightbox" id="lightbox">
+    <button class="lightbox-close" id="close-btn">×</button>
+    <button class="lightbox-prev" id="prev-btn">‹</button>
+    <button class="lightbox-next" id="next-btn">›</button>
+    
+    <div class="lightbox-wrapper">
+      <img class="lightbox-image" id="lightbox-image" src="" alt="">
+      <div class="lightbox-caption" id="lightbox-caption"></div>
+    </div>
+    <div class="lightbox-counter" id="lightbox-counter"></div>
+  </div>
+
+  <footer>
+    <div style="text-align: center; max-width: 600px; margin: 0 auto;">
+      <div style="font-size: 11px; color: #9A9A95; font-weight: 300; margin-bottom: 8px;">© 2026 Lauriane Mouysset</div>
+      <div style="font-size: 10px; color: #7A7A72; font-weight: 300; margin-bottom: 16px;">Directrice de recherche CNRS · Villa Médicis (2024-25)</div>
+      <div style="display: flex; gap: 16px; justify-content: center; align-items: center;">
+        <a href="https://instagram.com/mouysset_studio" target="_blank" style="font-size: 10px; color: #7A7A72; text-decoration: none;">Instagram</a>
+        <span style="color: #7A7A72; font-size: 10px;">·</span>
+        <a href="https://lauriane-mouysset.fr" target="_blank" style="font-size: 10px; color: #7A7A72; text-decoration: none;">Recherche</a>
+        <span style="color: #7A7A72; font-size: 10px;">·</span>
+        <a href="/cdn-cgi/l/email-protection#ed818c989f848c8388c3808298949e9e8899ad8e839f9ec38b9f" style="font-size: 10px; color: #7A7A72; text-decoration: none;">Contact</a>
+      </div>
+    </div>
+  </footer>
+
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+    (function() {
+      let currentImages = [];
+      let currentIndex = 0;
+      let allImages = [];
+      
+      const lightbox = document.getElementById('lightbox');
+      const lightboxImage = document.getElementById('lightbox-image');
+      const lightboxCaption = document.getElementById('lightbox-caption');
+      const lightboxCounter = document.getElementById('lightbox-counter');
+      const closeBtn = document.getElementById('close-btn');
+      const prevBtn = document.getElementById('prev-btn');
+      const nextBtn = document.getElementById('next-btn');
+
+      // Collecter TOUTES les images de TOUTES les collections pour UNIVERS
+      function collectAllImages() {
+        allImages = [];
+        document.querySelectorAll('.miniature img').forEach(function(img) {
+          allImages.push({
+            src: img.src,
+            alt: img.alt
+          });
+        });
+      }
+
+      function openLightbox() {
+        lightbox.classList.add('active');
+        updateImage();
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeLightbox() {
+        lightbox.classList.remove('active');
+        document.body.style.overflow = 'auto';
+      }
+
+      function changeImage(direction) {
+        currentIndex += direction;
+        
+        if (currentIndex < 0) currentIndex = currentImages.length - 1;
+        if (currentIndex >= currentImages.length) currentIndex = 0;
+        
+        updateImage();
+      }
+
+      function updateImage() {
+        if (currentImages.length === 0) return;
+        
+        lightboxImage.src = currentImages[currentIndex].src;
+        lightboxCaption.textContent = currentImages[currentIndex].alt;
+        lightboxCounter.textContent = (currentIndex + 1) + '/' + currentImages.length;
+      }
+
+      // Clic sur PORTFOLIO = carrousel des images PORTFOLIO uniquement
+      document.querySelectorAll('.univers-item').forEach(function(item) {
+        item.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          
+          // Collecter uniquement les images de PORTFOLIO
+          currentImages = [];
+          document.querySelectorAll('.univers-item img').forEach(function(img) {
+            currentImages.push({
+              src: img.src,
+              alt: img.alt
+            });
+          });
+          
+          currentIndex = parseInt(this.dataset.index);
+          openLightbox();
+        });
+      });
+
+      // Clic sur miniatures collection = carrousel de LA collection
+      document.querySelectorAll('.miniature').forEach(function(miniature) {
+        miniature.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+           
+          const section = this.closest('.serie-section');
+          currentImages = [];
+          section.querySelectorAll('.miniature img').forEach(function(img) {
+            currentImages.push({
+              src: img.src,
+              alt: img.alt
+            });
+          });
+          
+          currentIndex = parseInt(this.dataset.index);
+          openLightbox();
+        });
+      });
+
+      closeBtn.addEventListener('click', closeLightbox);
+      prevBtn.addEventListener('click', function() { changeImage(-1); });
+      nextBtn.addEventListener('click', function() { changeI
