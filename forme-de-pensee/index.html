@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Forme de pensée — Lauriane Mouysset</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Mono:ital,wght@0,300;0,400;1,300&display=swap');
+  :root{--cream:#f2ede4;--ink:#2a2725;--mid:#7a756c;--light:#b8b3aa;--faint:#d5d0c8;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--cream);font-family:'DM Mono',monospace;color:var(--ink);
+    min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;align-items:center;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+  .screen{position:fixed;inset:0;z-index:10;background:var(--cream);display:flex;flex-direction:column;
+    align-items:center;justify-content:center;padding:40px 24px;transition:opacity .7s,transform .7s;overflow-y:auto;}
+  .screen.hide{opacity:0;transform:translateY(-15px);pointer-events:none;}
+  .screen.below{z-index:5;}
+  .intro-name{font-size:10px;letter-spacing:.18em;color:var(--light);text-transform:uppercase;margin-bottom:50px;}
+  .intro-title{font-family:'Instrument Serif',serif;font-size:clamp(2.2em,8vw,3.8em);font-weight:400;line-height:1.1;text-align:center;margin-bottom:20px;}
+  .intro-sub{font-family:'Instrument Serif',serif;font-size:clamp(1em,3vw,1.2em);font-style:italic;color:var(--mid);text-align:center;margin-bottom:55px;max-width:350px;line-height:1.55;}
+  .intro-detail{font-size:12px;color:var(--mid);text-align:center;max-width:420px;line-height:1.9;margin-bottom:55px;}
+  .btn{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.1em;color:var(--ink);background:none;border:1px solid var(--ink);padding:14px 38px;cursor:pointer;transition:all .35s;text-transform:lowercase;}
+  .btn:hover{background:var(--ink);color:var(--cream);}
+  #screen-q{justify-content:flex-start;padding-top:60px;}
+  .q-progress{font-size:10px;letter-spacing:.15em;color:var(--mid);text-transform:uppercase;margin-bottom:8px;align-self:flex-start;max-width:460px;width:100%;}
+  .q-bar{width:100%;max-width:460px;height:1px;background:var(--faint);margin-bottom:40px;position:relative;}
+  .q-bar-fill{position:absolute;left:0;top:0;height:100%;background:var(--ink);transition:width .5s;}
+  .q-text{font-family:'Instrument Serif',serif;font-size:clamp(1.3em,4.5vw,1.6em);font-weight:400;line-height:1.45;margin-bottom:28px;max-width:460px;width:100%;min-height:2.5em;color:var(--ink);}
+  .options{display:flex;flex-direction:column;gap:7px;max-width:460px;width:100%;}
+  .opt{font-family:'DM Mono',monospace;font-size:12px;line-height:1.4;color:var(--ink);background:none;border:1px solid var(--faint);
+    padding:12px 16px;text-align:left;cursor:pointer;transition:all .3s;position:relative;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
+  .opt::before{content:'';position:absolute;left:0;top:0;height:100%;width:0;background:var(--ink);transition:width .3s;}
+  .opt span{position:relative;z-index:1;transition:color .3s;}
+  .opt:hover{border-color:var(--ink);}
+  .opt:hover::before{width:3px;}
+  .opt.selected{border-color:var(--ink);}
+  .opt.selected::before{width:100%;}
+  .opt.selected span{color:var(--cream);}
+  .name-label{font-family:'Instrument Serif',serif;font-size:clamp(1.2em,4vw,1.5em);text-align:center;margin-bottom:28px;line-height:1.4;}
+  .name-input{font-family:'DM Mono',monospace;font-size:14px;color:var(--ink);background:none;border:none;border-bottom:1px solid var(--ink);padding:10px 4px;width:260px;text-align:center;outline:none;}
+  .name-input::placeholder{color:var(--light);}
+  .name-submit{margin-top:32px;}
+  #screen-result{padding:10px 10px 36px;justify-content:center;}
+  .canvas-wrap{width:100%;max-width:540px;aspect-ratio:4/5;margin:0 0 14px;border:1px solid rgba(160,155,148,0.5);}
+  #cv{width:100%;height:100%;display:block;}
+  .result-title{font-family:'Instrument Serif',serif;font-size:1.6em;margin-bottom:6px;text-align:center;}
+  .result-sub{font-size:12px;color:var(--mid);text-align:center;line-height:1.8;margin-bottom:20px;}
+  .result-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+  .btn-dl{background:var(--ink);color:var(--cream);border:1px solid var(--ink);font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.08em;padding:14px 28px;cursor:pointer;transition:all .3s;text-transform:lowercase;}
+  .btn-dl:hover{background:transparent;color:var(--ink);}
+  .btn-sm{background:none;color:var(--mid);border:1px solid var(--faint);font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.08em;padding:14px 28px;cursor:pointer;transition:all .3s;text-transform:lowercase;}
+  .btn-sm:hover{border-color:var(--ink);color:var(--ink);}
+  .drawing-label{font-size:10px;color:var(--mid);letter-spacing:.12em;text-transform:uppercase;text-align:center;margin-bottom:6px;opacity:0;transition:opacity .5s;}
+  .drawing-label.show{opacity:1;}
+  /* Email capture */
+  .email-block{margin-top:16px;opacity:0;transition:opacity .6s;text-align:center;}
+  .email-block.show{opacity:1;}
+  .email-label{font-family:'Instrument Serif',serif;font-size:1em;font-style:italic;color:var(--mid);margin-bottom:12px;}
+  .email-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;align-items:center;}
+  .email-input{font-family:'DM Mono',monospace;font-size:12px;color:var(--ink);background:none;border:none;
+    border-bottom:1px solid var(--mid);padding:8px 4px;width:220px;text-align:center;outline:none;transition:border-color .3s;}
+  .email-input:focus{border-color:var(--ink);}
+  .email-input::placeholder{color:var(--light);}
+  .btn-send{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.08em;color:var(--cream);background:var(--ink);
+    border:1px solid var(--ink);padding:10px 18px;cursor:pointer;transition:all .3s;text-transform:lowercase;}
+  .btn-send:hover{background:transparent;color:var(--ink);}
+  .btn-send:disabled{opacity:.4;cursor:default;}
+  .email-confirm{font-size:11px;color:var(--mid);margin-top:10px;min-height:1.4em;}
+  .email-confirm.ok{color:#5a7a5a;}
+  .email-confirm.err{color:#9a5a5a;}
+  /* Kiosk mode */
+  .kiosk-active .intro-detail{display:none;}
+  .kiosk-active #screen-result .email-block{display:none;}
+  .kiosk-countdown{position:fixed;bottom:20px;right:20px;font-size:10px;letter-spacing:.1em;color:var(--light);
+    font-family:'DM Mono',monospace;opacity:0;transition:opacity .4s;z-index:100;pointer-events:none;}
+  .kiosk-countdown.show{opacity:1;}
+  .kiosk-badge{position:fixed;top:16px;right:16px;font-size:9px;letter-spacing:.15em;color:var(--light);
+    font-family:'DM Mono',monospace;text-transform:uppercase;z-index:100;pointer-events:none;}
+  /* QR code for kiosk */
+  .kiosk-qr{margin-top:12px;text-align:center;}
+  .kiosk-qr img{width:100px;height:100px;opacity:.6;}
+  .kiosk-qr-label{font-size:9px;color:var(--light);letter-spacing:.1em;margin-top:4px;}
+</style>
+</head>
+<body>
+<div class="screen" id="screen-intro">
+  <div class="intro-name" style="color:var(--ink);font-size:15px;letter-spacing:.25em;margin-bottom:5px;">Lauriane Mouysset</div>
+  <div style="font-size:12px;letter-spacing:.18em;color:var(--mid);text-transform:uppercase;margin-bottom:50px;">Collection Agora</div>
+  <div class="intro-title">Forme de pensée</div>
+  <div class="intro-sub">Quelle forme géométrique<br>prendrait votre façon de penser ?</div>
+  <div class="intro-detail">Trois questions. Aucune bonne réponse.<br>Votre cerveau est unique, et c'est ça qui est beau.</div>
+  <button class="btn" id="btnStart">commencer</button>
+</div>
+<div class="screen hide" id="screen-q">
+  <div class="q-progress" id="qProg"></div>
+  <div class="q-bar"><div class="q-bar-fill" id="qBarFill"></div></div>
+  <div class="q-text" id="qText"></div>
+  <div class="options" id="opts"></div>
+</div>
+<div class="screen hide" id="screen-name">
+  <div class="name-label">Dernière chose —<br>comment vous appelez-vous ?</div>
+  <input type="text" class="name-input" id="nameInput" placeholder="votre prénom" autocomplete="off" maxlength="30">
+  <button class="btn name-submit" id="btnName">voir ma forme</button>
+</div>
+<div class="screen hide" id="screen-result">
+  <div class="drawing-label" id="drawLabel">votre forme se dessine</div>
+  <div class="canvas-wrap"><canvas id="cv"></canvas></div>
+  <div id="resultInfo" style="opacity:0;transition:opacity .8s;text-align:center;">
+    <div class="result-title">Votre forme de pensée</div>
+    <div class="result-sub">Téléchargez-la, ou recommencez.</div>
+    <div class="result-actions">
+      <button class="btn-dl" id="btnDl">télécharger</button>
+      <button class="btn-sm" id="btnAgain">recommencer</button>
+    </div>
+    <div class="email-block" id="emailBlock">
+      <div class="email-label">Recevez votre forme par email</div>
+      <div class="email-row">
+        <input type="email" class="email-input" id="emailInput" placeholder="email@exemple.com" autocomplete="email">
+        <button class="btn-send" id="btnSend">envoyer</button>
+      </div>
+      <div class="email-confirm" id="emailConfirm"></div>
+    </div>
+  </div>
+</div>
+<div class="kiosk-countdown" id="kioskCountdown"></div>
+<script>
+const QS=[
+  {num:'01/03',text:'Comment vos idées s\u2019organisent-elles ?',
+    opts:[{l:'je classe et je catégorise',v:'classify'},{l:'je relie et je connecte',v:'connect'},
+      {l:'je superpose et je stratifie',v:'layer'},{l:'je laisse pousser',v:'grow'}]},
+  {num:'02/03',text:'Comment votre esprit avance-t-il ?',
+    opts:[{l:'en ligne droite',v:'linear'},{l:'en spirale',v:'spiral'},
+      {l:'sur plusieurs pistes à la fois',v:'parallel'},{l:'par sauts',v:'leap'}]},
+  {num:'03/03',text:'Quelle densité a votre pensée ?',
+    opts:[{l:'légère et aérée',v:'light'},{l:'quelques points d\u2019ancrage',v:'anchored'},
+      {l:'dense et structurée',v:'dense'},{l:'foisonnante, elle déborde',v:'overflow'}]},
+];
+
+let answers=[],currentQ=0,userName='';
+const W=1920,H=2400;
+const cv=document.getElementById('cv');cv.width=W;cv.height=H;
+const ctx=cv.getContext('2d');
+const CR=[242,237,228],MG=72;
+const CX=W/2;
+
+function mkR(s){return()=>{s=(s*16807+7)%2147483647;return(s&0x7fffffff)/0x7fffffff;};}
+
+// ===== BUST =====
+function renderBust(){
+  const bW=760,bH=560,off=document.createElement('canvas');off.width=bW;off.height=bH;
+  const c=off.getContext('2d'),bx=bW/2,by=0;
+  const nB=by+bH*.08,mY=by+bH*.18,chY=by+bH*.34,nT=chY+10,nBo=by+bH*.48,sY=by+bH*.55,bot=bH;
+  const fW=110,chW=86;
+  // Head
+  c.fillStyle='#a09a92';c.beginPath();c.moveTo(bx-fW,by);c.lineTo(bx+fW,by);
+  c.quadraticCurveTo(bx+fW+4,chY-28,bx+chW+6,chY);c.quadraticCurveTo(bx+14,chY+12,bx-2,chY+8);
+  c.quadraticCurveTo(bx-18,chY+10,bx-chW,chY+2);c.quadraticCurveTo(bx-fW-4,chY-24,bx-fW,by);c.fill();
+  const fg=c.createLinearGradient(bx-fW,mY,bx+fW,mY);
+  fg.addColorStop(0,'rgba(180,175,168,0.15)');fg.addColorStop(.4,'rgba(180,175,168,0)');fg.addColorStop(1,'rgba(140,135,128,0.1)');
+  c.fillStyle=fg;c.fill();
+  // Nose
+  c.fillStyle='rgba(85,80,74,0.25)';c.beginPath();c.moveTo(bx-14,by);c.quadraticCurveTo(bx-16,nB-4,bx-10,nB+6);
+  c.quadraticCurveTo(bx,nB+12,bx+10,nB+6);c.quadraticCurveTo(bx+16,nB-4,bx+14,by);c.closePath();c.fill();
+  c.fillStyle='rgba(70,66,60,0.28)';c.beginPath();c.ellipse(bx-11,nB+3,6,4.4,.15,0,Math.PI*2);c.fill();
+  c.beginPath();c.ellipse(bx+10,nB+3,6,4.4,-.1,0,Math.PI*2);c.fill();
+  c.fillStyle='rgba(85,80,74,0.1)';c.fillRect(bx-6,nB+8,12,mY-nB-12);
+  // Mouth
+  c.fillStyle='rgba(120,115,108,0.35)';c.beginPath();c.moveTo(bx-30,mY+2);c.quadraticCurveTo(bx-12,mY-7,bx+2,mY-4);
+  c.quadraticCurveTo(bx+16,mY-6,bx+28,mY+1);c.quadraticCurveTo(bx+2,mY+4,bx-30,mY+2);c.fill();
+  c.fillStyle='rgba(130,125,118,0.25)';c.beginPath();c.moveTo(bx-22,mY+5);c.quadraticCurveTo(bx,mY+18,bx+24,mY+4);
+  c.quadraticCurveTo(bx,mY+9,bx-22,mY+5);c.fill();
+  c.strokeStyle='rgba(75,72,66,0.28)';c.lineWidth=1.4;c.beginPath();c.moveTo(bx-30,mY+2);
+  c.quadraticCurveTo(bx-6,mY-3,bx+2,mY-1);c.quadraticCurveTo(bx+16,mY-2,bx+28,mY+1);c.stroke();
+  c.fillStyle='rgba(85,80,74,0.08)';c.beginPath();c.ellipse(bx-2,chY-8,chW-16,24,0,0,Math.PI*2);c.fill();
+  // Neck
+  const nW=38;c.fillStyle='#908a82';c.beginPath();c.moveTo(bx-nW,nT);c.lineTo(bx+nW,nT-2);
+  c.lineTo(bx+nW+2,nBo);c.lineTo(bx-nW-2,nBo+2);c.closePath();c.fill();
+  c.fillStyle='rgba(70,66,60,0.15)';c.beginPath();c.ellipse(bx,nT+8,nW+8,14,0,0,Math.PI);c.fill();
+  // Shoulders — same height, left angular / right smooth
+  c.fillStyle='#706b64';c.beginPath();c.moveTo(bx-nW-2,nBo+2);
+  c.lineTo(bx-nW-35,sY-2);c.lineTo(bx-136,sY);
+  c.quadraticCurveTo(bx-200,sY+8,bx-260,sY+20);c.lineTo(bx-276,bot);
+  c.lineTo(bx+284,bot);c.lineTo(bx+260,sY+20);
+  c.quadraticCurveTo(bx+200,sY+8,bx+136,sY);
+  c.quadraticCurveTo(bx+nW+55,sY-2,bx+nW+2,nBo);c.closePath();c.fill();
+  // V-neck
+  c.fillStyle='#807b74';c.beginPath();c.moveTo(bx-nW-2,nBo+4);
+  c.quadraticCurveTo(bx-12,nBo+40,bx,sY+30);
+  c.quadraticCurveTo(bx+12,nBo+38,bx+nW+2,nBo+2);
+  c.lineTo(bx+nW+2,nBo);c.quadraticCurveTo(bx+10,nBo+28,bx,sY+18);
+  c.quadraticCurveTo(bx-10,nBo+30,bx-nW-2,nBo+2);c.closePath();c.fill();
+  c.strokeStyle='rgba(60,57,52,0.1)';c.lineWidth=1.5;
+  c.beginPath();c.moveTo(bx-100,sY+36);c.quadraticCurveTo(bx-50,sY+48,bx-12,sY+60);c.stroke();
+  c.beginPath();c.moveTo(bx+88,sY+44);c.quadraticCurveTo(bx+44,sY+52,bx+12,sY+58);c.stroke();
+  return{data:c.getImageData(0,0,bW,bH),w:bW,h:bH};
+}
+const bust=renderBust();
+const bustScale=2/3;
+const bustBottom=H*.52+bust.h;
+const bustTop=bustBottom-bust.h*bustScale;
+const cutY=bustTop;
+
+function drawBust(){
+  const R=mkR(999),bx=CX-bust.w*bustScale/2,by=bustTop;
+  for(let i=0;i<120000;i++){const lx=R()*bust.w,ly=R()*bust.h;
+    const ix=Math.floor(lx),iy=Math.floor(ly);if(ix<0||ix>=bust.w||iy<0||iy>=bust.h)continue;
+    const id=(iy*bust.w+ix)*4;if(bust.data.data[id+3]<10)continue;
+    const dk=1-bust.data.data[id]/255;if(R()>dk*1.4+.03)continue;
+    ctx.fillStyle=`rgba(60,57,52,${.22+dk*.35})`;
+    ctx.beginPath();ctx.arc(bx+lx*bustScale,by+ly*bustScale,.6+R()*.35,0,Math.PI*2);ctx.fill();}
+  const bVisH=bust.h*bustScale;
+  const bf=ctx.createLinearGradient(0,bustTop+bVisH-40,0,bustTop+bVisH);
+  bf.addColorStop(0,'rgba(242,237,228,0)');bf.addColorStop(1,`rgb(${CR})`);
+  ctx.fillStyle=bf;ctx.fillRect(CX-400,bustTop+bVisH-40,800,40);
+}
+
+// ===== STITCH PRIMITIVES — hand-drawn style =====
+const INK='0,0,0';
+function ST(x1,y1,x2,y2,al,R){
+  // Heavy endpoint jitter — like a hand placing the pen
+  const jt=8;
+  x1+=(R()-.5)*jt;y1+=(R()-.5)*jt;x2+=(R()-.5)*jt;y2+=(R()-.5)*jt;
+  const dx=x2-x1,dy=y2-y1,len=Math.sqrt(dx*dx+dy*dy);if(len<1.5)return;
+  const nx=dx/len,ny=dy/len;
+  // Global line personality: bow (arc), tremor frequency, pressure
+  const bow=(R()-.5)*12;
+  const tremFreq=3+R()*5;
+  const tremAmp=2+R()*5;
+  const pressure=0.7+R()*0.6;
+  const alBase=al*pressure;
+  // Draw as a chain of short, trembling dashes with gaps
+  let d=0;
+  while(d<len){
+    const sl=Math.min(5+R()*8,len-d);
+    const t=d/len;
+    // Perpendicular offset: bow + high-freq tremor
+    const w=bow*Math.sin(t*Math.PI) + Math.sin(t*tremFreq*Math.PI)*tremAmp*(0.5+R()) + (R()-.5)*3;
+    const de=Math.min(d+sl,len);
+    const t2=de/len;
+    const w2=bow*Math.sin(t2*Math.PI) + Math.sin(t2*tremFreq*Math.PI)*tremAmp*(0.5+R()) + (R()-.5)*3;
+    ctx.beginPath();
+    ctx.moveTo(x1+nx*d+ny*w, y1+ny*d-nx*w);
+    ctx.lineTo(x1+nx*de+ny*w2, y1+ny*de-nx*w2);
+    const segAl=alBase*(0.7+R()*0.5);
+    ctx.strokeStyle=`rgba(${INK},${Math.min(segAl,1)})`;
+    ctx.lineWidth=3.5+R()*4;
+    ctx.lineCap='round';ctx.stroke();
+    d+=sl+2+R()*5;
+  }
+  // Occasional double-stroke: re-draw part of the line slightly offset (like going over it twice)
+  if(len>30&&R()<0.3){
+    const off=(R()-.5)*6;let d2=len*R()*0.3;const d2end=d2+len*(0.2+R()*0.3);
+    while(d2<d2end&&d2<len){
+      const sl=Math.min(6+R()*6,d2end-d2);
+      const t=d2/len;const w=bow*Math.sin(t*Math.PI)+off+(R()-.5)*4;
+      ctx.beginPath();
+      ctx.moveTo(x1+nx*d2+ny*w,y1+ny*d2-nx*w);
+      const de=Math.min(d2+sl,len);const t2=de/len;
+      const w2=bow*Math.sin(t2*Math.PI)+off+(R()-.5)*4;
+      ctx.lineTo(x1+nx*de+ny*w2,y1+ny*de-nx*w2);
+      ctx.strokeStyle=`rgba(${INK},${alBase*0.4})`;ctx.lineWidth=2+R()*3;ctx.lineCap='round';ctx.stroke();
+      d2+=sl+3+R()*4;}
+  }
+}
+function SA(cx,cy,r,a1,a2,al,R){
+  // Hand-drawn arc: wobbly radius, uneven steps, pressure variation
+  const rBase=r*(0.9+R()*0.2);
+  const pressure=0.7+R()*0.6;const alBase=al*pressure;
+  const wobbleAmp=r*0.08+3;
+  const wobbleFreq=4+R()*6;
+  const steps=Math.max(10,Math.floor(Math.abs(a2-a1)*rBase/6));
+  for(let i=0;i<steps;i++){
+    const t1=a1+(a2-a1)*((i+R()*0.3)/steps);
+    const t2=a1+(a2-a1)*((i+0.4+R()*0.4)/steps);
+    const r1=rBase+Math.sin(t1*wobbleFreq)*wobbleAmp+(R()-.5)*5;
+    const r2=rBase+Math.sin(t2*wobbleFreq)*wobbleAmp+(R()-.5)*5;
+    ctx.beginPath();
+    ctx.moveTo(cx+Math.cos(t1)*r1,cy+Math.sin(t1)*r1);
+    ctx.lineTo(cx+Math.cos(t2)*r2,cy+Math.sin(t2)*r2);
+    const segAl=alBase*(0.65+R()*0.5);
+    ctx.strokeStyle=`rgba(${INK},${Math.min(segAl,1)})`;
+    ctx.lineWidth=3+R()*4;ctx.lineCap='round';ctx.stroke();
+  }
+}
+function PG(cx,cy,r,sides,rot,al,R){
+  // Very irregular polygon — like sketched freehand
+  const vs=[];for(let i=0;i<sides;i++){
+    const a=rot+(i/sides)*Math.PI*2+(R()-.5)*.15;
+    const rv=r*(0.85+R()*0.3);
+    vs.push({x:cx+Math.cos(a)*rv+(R()-.5)*6, y:cy+Math.sin(a)*rv+(R()-.5)*6});}
+  for(let i=0;i<sides;i++)ST(vs[i].x,vs[i].y,vs[(i+1)%sides].x,vs[(i+1)%sides].y,al,R);return vs;
+}
+function HT(hx,hy,r,angle,sp,al,R){
+  const cos=Math.cos(angle+(R()-.5)*.1),sin=Math.sin(angle+(R()-.5)*.1);
+  for(let d=-r;d<=r;d+=sp*(0.6+R()*0.8)){
+    const ch=Math.sqrt(Math.max(0,r*r-d*d));if(ch<3)continue;
+    const drift=(R()-.5)*6;const angleJit=(R()-.5)*4;
+    ST(hx+cos*d-sin*ch+drift,hy+sin*d+cos*ch+angleJit,
+       hx+cos*d+sin*ch-drift,hy+sin*d-cos*ch-angleJit,al,R);}
+}
+
+function computeParams(){
+  const a=answers;let seed=73;
+  a.forEach((v,i)=>{for(let c=0;c<v.length;c++)seed=(seed*31+v.charCodeAt(c)+i*137)%2147483647;});
+  const intensity={light:{cpx:3,den:.3,mul:3},anchored:{cpx:6,den:.5,mul:9},dense:{cpx:9,den:.7,mul:18},overflow:{cpx:12,den:1,mul:27}}[a[2]]||{cpx:6,den:.5,mul:9};
+  const rhyMap={classify_linear:'accumulate',classify_spiral:'ferment',classify_parallel:'bounce',classify_leap:'flash',
+    connect_linear:'accumulate',connect_spiral:'bounce',connect_parallel:'flash',connect_leap:'flash',
+    layer_linear:'ferment',layer_spiral:'ferment',layer_parallel:'accumulate',layer_leap:'bounce',
+    grow_linear:'ferment',grow_spiral:'bounce',grow_parallel:'accumulate',grow_leap:'flash'};
+  // 3 random booleans derived from seed → 8 variants per morphology (64 → 512 combinations)
+  const rB=mkR(seed+1337);
+  const flip1=rB()>.5, flip2=rB()>.5, flip3=rB()>.5;
+  return{
+    str:a[0],mov:a[1],rhy:rhyMap[a[0]+'_'+a[1]]||'accumulate',
+    cpx:intensity.cpx,den:intensity.den,mul:intensity.mul,
+    flip1,flip2,flip3,
+    seed};
+}
+
+// ===== 16 DISTINCT MORPHOLOGIES =====
+function drawForm(){
+  ctx.save();
+  const p=computeParams(),R=mkR(p.seed+500),cx=CX;
+  const ancY=cutY+4;
+  const headHW=110*bustScale;
+  // Drawing zone: 3% margin inside frame on all sides, bottom = ancY
+  const zM=0.03,innerW=W-2*MG,innerH=H-2*MG;
+  const zoneT=MG+innerH*zM,zoneL=MG+innerW*zM,zoneR=W-MG-innerW*zM;
+  const zoneW=zoneR-zoneL,zoneH=ancY-zoneT,zoneHW=zoneW/2;
+  ctx.beginPath();ctx.rect(zoneL,zoneT,zoneW,zoneH);ctx.clip();
+  // bR capped to fit zone
+  const rawBR=Math.min(600+p.mul*56+p.cpx*50,1200)*(p.flip1?1.15:.88);
+  const bR=Math.min(rawBR,zoneHW,zoneH*.47);
+  const fcy=Math.max(zoneT+bR,Math.min(ancY-bR,zoneT+zoneH*(p.flip2?.45:.55)));
+  const al=.82+p.den*.15;
+  const f1=p.flip1,f2=p.flip2,f3=p.flip3;
+  // Helper: draw horizontal line from x at ancY back to head edge if outside head
+  const rootH=(x)=>{
+    if(x<cx-headHW)ST(x,ancY,cx-headHW,ancY,al*.3,R);
+    else if(x>cx+headHW)ST(x,ancY,cx+headHW,ancY,al*.3,R);};
+  const key=p.str+'_'+p.mov;
+
+  // ==========================================
+  // CLASSIFY + LINEAR → SKYLINE (wide rectangles, windows, antennas)
+  // ==========================================
+  if(key==='classify_linear'){
+    const nB=5+Math.floor(p.mul*1.2);const totalW=Math.min(bR*1.5,zoneW);
+    for(let i=0;i<nB;i++){
+      const bw=totalW/nB*(.4+R()*.6);const bh=bR*(.3+R()*.7);
+      const bx2=cx-totalW/2+i*totalW/nB+R()*8;const by2=ancY-bh;
+      ST(bx2,ancY,bx2,by2,al*.65,R);ST(bx2,by2,bx2+bw,by2,al*.65,R);
+      ST(bx2+bw,by2,bx2+bw,ancY,al*.65,R);
+      rootH(bx2);rootH(bx2+bw);
+      const nF=2+Math.floor(bh/55);const nWi=1+Math.floor(bw/35);
+      for(let f=0;f<nF;f++){const fy=by2+bh*.08+f*(bh*.84/nF);
+        if(p.den>.4)ST(bx2+3,fy,bx2+bw-3,fy,al*.18,R);
+        for(let w=0;w<nWi;w++){const wx=bx2+bw*.12+w*(bw*.76/Math.max(1,nWi-1));
+          if(R()<p.den){const ws=6+R()*5;ctx.beginPath();ctx.rect(wx-ws/2,fy+3,ws,ws*1.2);
+            ctx.strokeStyle=`rgba(${INK},${al*.3})`;ctx.lineWidth=1.8;ctx.stroke();}}}
+      if(R()<.5){ST(bx2+bw/2,by2,bx2+bw/2,by2-15-R()*35,al*.45,R);
+        if(R()<.5)ST(bx2+bw/2-8,by2-8,bx2+bw/2+8,by2-8,al*.3,R);}
+    }
+    // Continuous baseline across skyline
+    ST(cx-totalW/2,ancY,cx+totalW/2,ancY,al*.15,R);
+  }
+
+  // ==========================================
+  // CLASSIFY + SPIRAL → MANDALA (geometric star, radial symmetry, angular)
+  // ==========================================
+  else if(key==='classify_spiral'){
+    const arms=5+Math.floor(R()*4);const nLay=4+Math.floor(p.cpx*1.5);
+    // Concentric polygons with alternating rotation
+    for(let l=0;l<nLay;l++){const t=(l+1)/(nLay+1);const lr=bR*t;
+      PG(cx,fcy,lr,arms,l*.35,al*(.3+t*.35),R);}
+    // Star diagonals — connect every-other vertex of outer polygon
+    const outerR=bR*.92;
+    for(let i=0;i<arms;i++){const a1=(i/arms)*Math.PI*2;const a2=((i+Math.floor(arms/2))/arms)*Math.PI*2;
+      ST(cx+Math.cos(a1)*outerR,fcy+Math.sin(a1)*outerR,cx+Math.cos(a2)*outerR,fcy+Math.sin(a2)*outerR,al*.3,R);}
+    // Radial spokes
+    for(let i=0;i<arms*2;i++){const a=(i/(arms*2))*Math.PI*2;
+      ST(cx+Math.cos(a)*bR*.05,fcy+Math.sin(a)*bR*.05,cx+Math.cos(a)*bR*.95,fcy+Math.sin(a)*bR*.95,al*.2,R);}
+    // Inner hatched zones
+    for(let z=0;z<Math.floor(p.den*4)+1;z++){const a=R()*Math.PI*2;const d=R()*bR*.4;
+      HT(cx+Math.cos(a)*d,fcy+Math.sin(a)*d,bR*(.06+R()*.08),R()*Math.PI,5,al*.25,R);}
+    // Central cross
+    ST(cx-bR*.1,fcy,cx+bR*.1,fcy,al*.5,R);ST(cx,fcy-bR*.1,cx,fcy+bR*.1,al*.5,R);
+    ST(cx,ancY,cx,fcy+bR*.5,al*.4,R);
+  }
+
+  // ==========================================
+  // CLASSIFY + PARALLEL → GRID (orthogonal lattice, filled cells)
+  // ==========================================
+  else if(key==='classify_parallel'){
+    const nC=3+Math.floor(p.mul/2);const nR=4+Math.floor(p.cpx);
+    const gW=Math.min(bR*1.2,zoneW);
+    const gH=Math.min(bR*1.2,zoneH*.9);
+    for(let r=0;r<=nR;r++){const y=fcy-gH/2+r*gH/nR;ST(cx-gW/2,y,cx+gW/2,y,al*(.3+.1*Math.sin(r)),R);}
+    for(let c=0;c<=nC;c++){const x=cx-gW/2+c*gW/nC;ST(x,fcy-gH/2,x,fcy+gH/2,al*(.3+.1*Math.sin(c)),R);}
+    for(let r=0;r<nR;r++){for(let c=0;c<nC;c++){
+      if(R()<p.den*.65){const cx2=cx-gW/2+(c+.5)*gW/nC;const cy2=fcy-gH/2+(r+.5)*gH/nR;
+        const cr=Math.min(gW/nC,gH/nR)*.3;
+        if(R()<.5)SA(cx2,cy2,cr,0,Math.PI*2,al*.3,R);else HT(cx2,cy2,cr,R()*Math.PI,5,al*.25,R);}}}
+    // Stem + horizontal connections to head
+    ST(cx,ancY,cx,fcy+gH/2,al*.35,R);
+    rootH(cx-gW/2);rootH(cx+gW/2);
+  }
+
+  // ==========================================
+  // CLASSIFY + LEAP → SHARDS (sharp angular fragments, mineral)
+  // ==========================================
+  else if(key==='classify_leap'){
+    const n=5+p.mul;const pieces=[];
+    for(let i=0;i<n;i++){const a=R()*Math.PI*2;const d=15+R()*bR*.7;
+      const px=cx+Math.cos(a)*d,py=fcy+Math.sin(a)*d;const pr=15+R()*bR*.16;
+      const sides=3+Math.floor(R()*2); // triangles and diamonds only
+      const vs=PG(px,py,pr,sides,R()*Math.PI,al*(.5+R()*.3),R);
+      // Internal fracture lines
+      if(vs.length>2){ST(vs[0].x,vs[0].y,vs[Math.floor(vs.length/2)].x,vs[Math.floor(vs.length/2)].y,al*.25,R);}
+      if(R()<p.den)HT(px,py,pr*.4,R()*Math.PI,5,al*.2,R);
+      pieces.push({x:px,y:py});}
+    // Thin fracture lines between nearby shards
+    for(let i=0;i<n;i++){for(let j=i+1;j<n;j++){
+      const d=Math.sqrt((pieces[i].x-pieces[j].x)**2+(pieces[i].y-pieces[j].y)**2);
+      if(d<bR*.5&&R()<.4){ST(pieces[i].x,pieces[i].y,pieces[j].x,pieces[j].y,al*.12,R);}}}
+    let cl=pieces[0],cd=1e9;pieces.forEach(p2=>{const d=Math.abs(p2.y-ancY);if(d<cd){cd=d;cl=p2;}});
+    ST(cx,ancY,cl.x,cl.y,al*.3,R);
+  }
+
+  // ==========================================
+  // CONNECT + LINEAR → RIVER (smooth horizontal sine waves, flowing)
+  // ==========================================
+  else if(key==='connect_linear'){
+    const nW=2+Math.floor(p.mul/2);const totalH=Math.min(bR*1.5,zoneH);
+    for(let w=0;w<nW;w++){
+      const amp=bR*(.15+R()*.2);const freq=2+p.cpx*.5+R();
+      const yOff=(w-(nW-1)/2)*bR*.2;
+      const pts=[];
+      for(let i=0;i<=80;i++){const t=i/80;
+        pts.push({x:cx-bR*.7+t*bR*1.4, y:fcy+yOff+Math.sin(t*freq*Math.PI)*amp});}
+      for(let i=0;i<pts.length-1;i++)ST(pts[i].x,pts[i].y,pts[i+1].x,pts[i+1].y,al*(.4+.25*(1-w/nW)),R);
+      // Small ripples perpendicular to flow
+      for(let i=5;i<pts.length;i+=4+Math.floor(R()*3)){
+        const pt=pts[i];const nx=0,ny=1;const rl=3+R()*8;
+        ST(pt.x,pt.y-rl,pt.x,pt.y+rl,al*.15,R);}
+    }
+    // Horizontal current lines
+    for(let h=0;h<2+Math.floor(p.den*3);h++){
+      const y=fcy+(R()-.5)*bR*.8;
+      ST(cx-bR*.55,y,cx+bR*.55,y,al*.08,R);}
+    // Connect to bust
+    const botPt=fcy+bR*.3;ST(cx,ancY,cx,botPt>ancY?ancY:botPt,al*.3,R);
+  }
+
+  // ==========================================
+  // CONNECT + SPIRAL → DOUBLE HELIX (two intertwining spirals, DNA)
+  // ==========================================
+  else if(key==='connect_spiral'){
+    const turns=2+p.cpx*.4;
+    for(let arm=0;arm<2;arm++){const dir=arm===0?1:-1;const pts=[];const tot=Math.floor(turns*50);
+      for(let i=0;i<=tot;i++){const t=i/tot;const a=t*turns*Math.PI*2*dir+arm*Math.PI;
+        const r=8+Math.pow(t,.5)*bR;pts.push({x:cx+Math.cos(a)*r,y:fcy+Math.sin(a)*r});}
+      for(let i=0;i<pts.length-1;i++)ST(pts[i].x,pts[i].y,pts[i+1].x,pts[i+1].y,al*(.45+.2*(1-arm)),R);
+      // Cross-hatches perpendicular to curve
+      for(let i=0;i<pts.length;i+=2+Math.floor(R()*2)){const pt=pts[i];const a=Math.atan2(pt.y-fcy,pt.x-cx)+Math.PI/2;
+        const cl=4+R()*12;ST(pt.x+Math.cos(a)*cl,pt.y+Math.sin(a)*cl,pt.x-Math.cos(a)*cl,pt.y-Math.sin(a)*cl,al*.28,R);}}
+    // Rungs between arms at intervals
+    for(let i=0;i<4+p.mul;i++){const a=R()*Math.PI*2;const r=bR*(.2+R()*.6);
+      ST(cx+Math.cos(a)*r,fcy+Math.sin(a)*r,cx+Math.cos(a+.3)*r*.9,fcy+Math.sin(a+.3)*r*.9,al*.2,R);}
+    ST(cx,ancY,cx,fcy+bR*.35,al*.4,R);
+  }
+
+  // ==========================================
+  // CONNECT + PARALLEL → CONSTELLATION (dots + fine lines, network)
+  // ==========================================
+  else if(key==='connect_parallel'){
+    const n=8+p.mul*2;const nds=[];
+    for(let i=0;i<n;i++){const a=(i/n)*Math.PI*2+R()*.5;const d=20+R()*bR*.7;
+      nds.push({x:cx+Math.cos(a)*d,y:fcy+Math.sin(a)*d});}
+    // Connect by proximity
+    for(let i=0;i<n;i++){const sorted=nds.map((nd,j)=>({j,d:Math.sqrt((nd.x-nds[i].x)**2+(nd.y-nds[i].y)**2)}))
+      .filter(x=>x.j!==i).sort((a,b)=>a.d-b.d);
+      for(let c=0;c<Math.min(3,sorted.length);c++){if(sorted[c].d<bR*.7)
+        ST(nds[i].x,nds[i].y,nds[sorted[c].j].x,nds[sorted[c].j].y,al*.2,R);}}
+    // Stars at each node: small cross + circle
+    nds.forEach(nd=>{SA(nd.x,nd.y,5+R()*6,0,Math.PI*2,al*.55,R);
+      const s=3+R()*4;ST(nd.x-s,nd.y,nd.x+s,nd.y,al*.4,R);ST(nd.x,nd.y-s,nd.x,nd.y+s,al*.4,R);
+      if(R()<p.den*.5)HT(nd.x,nd.y,5+R()*6,R()*Math.PI,4,al*.18,R);});
+    let cl=nds[0],cd=1e9;nds.forEach(nd=>{const d=Math.abs(nd.y-ancY);if(d<cd){cd=d;cl=nd;}});
+    ST(cx,ancY,cl.x,cl.y,al*.3,R);
+  }
+
+  // ==========================================
+  // CONNECT + LEAP → ARCHIPELAGO (round islands, organic connections)
+  // ==========================================
+  else if(key==='connect_leap'){
+    const n=5+p.mul;const cells=[];
+    for(let i=0;i<n;i++){const a=R()*Math.PI*2;const d=R()*bR*.7;
+      const cr=25+R()*bR*.14;const ccx=cx+Math.cos(a)*d,ccy=fcy+Math.sin(a)*d;
+      // Double concentric circles
+      SA(ccx,ccy,cr,0,Math.PI*2,al*(.45+R()*.2),R);
+      SA(ccx,ccy,cr*.6,0,Math.PI*2,al*.2,R);
+      // Internal organic fill
+      if(p.den>.4){for(let j=0;j<3+Math.floor(R()*3);j++){
+        const ia=R()*Math.PI*2;const ir=R()*cr*.4;
+        ctx.beginPath();ctx.arc(ccx+Math.cos(ia)*ir,ccy+Math.sin(ia)*ir,2+R()*3,0,Math.PI*2);
+        ctx.fillStyle=`rgba(${INK},${al*.25})`;ctx.fill();}}
+      cells.push({x:ccx,y:ccy,r:cr});}
+    // Curved arcs connecting nearby islands
+    for(let i=0;i<cells.length;i++){for(let j=i+1;j<cells.length;j++){
+      const d=Math.sqrt((cells[i].x-cells[j].x)**2+(cells[i].y-cells[j].y)**2);
+      if(d<cells[i].r+cells[j].r+80){
+        const mx=(cells[i].x+cells[j].x)/2+(R()-.5)*40;
+        const my=(cells[i].y+cells[j].y)/2+(R()-.5)*40;
+        ST(cells[i].x,cells[i].y,mx,my,al*.15,R);ST(mx,my,cells[j].x,cells[j].y,al*.15,R);}}}
+    ST(cx,ancY,cx,fcy+bR*.35,al*.3,R);
+  }
+
+  // ==========================================
+  // LAYER + LINEAR → PEAKS (sharp triangular mountains, angular)
+  // ==========================================
+  else if(key==='layer_linear'){
+    const nRanges=3+Math.floor(p.cpx);const totalH=Math.min(bR*1.4,zoneH);
+    for(let rng=0;rng<nRanges;rng++){
+      const t=rng/nRanges;const baseY=ancY-t*totalH*.7;
+      const nPeaks=2+Math.floor(R()*3);const w=Math.min(bR*(.6+t*.5),zoneHW);
+      const pts=[{x:cx-w,y:baseY}];
+      for(let pk=0;pk<nPeaks;pk++){
+        const peakX=cx-w+(pk+.5)*w*2/nPeaks+(R()-.5)*40;
+        const peakH=bR*(.15+R()*.35)*(1+t*.5);
+        pts.push({x:peakX,y:baseY-peakH});
+        if(pk<nPeaks-1)pts.push({x:peakX+w/nPeaks*(.3+R()*.4),y:baseY-peakH*.2-R()*20});}
+      pts.push({x:cx+w,y:baseY});
+      // Draw mountain silhouette
+      for(let i=0;i<pts.length-1;i++)ST(pts[i].x,pts[i].y,pts[i+1].x,pts[i+1].y,al*(.3+t*.4),R);
+      // Hatching inside mountain bodies
+      if(p.den>.3&&R()<.6){const mid=pts[Math.floor(pts.length/2)];
+        HT(mid.x,baseY-20-R()*30,bR*(.05+R()*.1),R()*.3,5,al*.2,R);}
+    }
+    // Snow caps: tiny hatches at the very top peaks
+    for(let i=0;i<2+Math.floor(R()*2);i++){
+      const px=cx+(R()-.5)*bR*.6;const py=fcy-bR*.2+R()*bR*.3;
+      ST(px-4,py,px+4,py,al*.15,R);}
+    // Horizontal connections from base mountain edges to head
+    const baseW=bR*.6;
+    rootH(cx-baseW);rootH(cx+baseW);
+  }
+
+  // ==========================================
+  // LAYER + SPIRAL → TOPOGRAPHIC (organic wobbly contours, map-like)
+  // ==========================================
+  else if(key==='layer_spiral'){
+    const nRings=5+Math.floor(p.cpx*1.5)+Math.floor(p.mul/2);
+    for(let i=0;i<nRings;i++){const r=bR*(.08+(i/nRings)*.85);const wobble=6+R()*12;
+      const pts=[];for(let j=0;j<=60;j++){const a=(j/60)*Math.PI*2;
+        const wr=r+Math.sin(a*(3+i%3))*wobble+Math.cos(a*(5+i%2))*wobble*.5;
+        pts.push({x:cx+Math.cos(a)*wr,y:fcy+Math.sin(a)*wr});}
+      for(let j=0;j<pts.length-1;j++)ST(pts[j].x,pts[j].y,pts[j+1].x,pts[j+1].y,al*(.2+.04*i),R);}
+    // Elevation marks
+    for(let i=0;i<3+Math.floor(p.den*3);i++){const a=R()*Math.PI*2,d=R()*bR*.5;
+      const ex=cx+Math.cos(a)*d,ey=fcy+Math.sin(a)*d;
+      ST(ex-3,ey,ex+3,ey,al*.35,R);ST(ex,ey-3,ex,ey+3,al*.35,R);}
+    ST(cx,ancY,cx,fcy+bR*.6,al*.3,R);
+  }
+
+  // ==========================================
+  // LAYER + PARALLEL → TOTEMS (narrow carved poles with internal symbols)
+  // ==========================================
+  else if(key==='layer_parallel'){
+    const nTot=2+Math.floor(p.mul/3);const totW=bR*.08;
+    for(let ti=0;ti<nTot;ti++){
+      const tx=cx+(ti-(nTot-1)/2)*totW*5;const totH=Math.min(bR*(.9+R()*.5),zoneH*.95);
+      // Main pole
+      ST(tx-totW,ancY,tx-totW,ancY-totH,al*.6,R);ST(tx+totW,ancY,tx+totW,ancY-totH,al*.6,R);
+      ST(tx-totW,ancY-totH,tx+totW,ancY-totH,al*.6,R);
+      rootH(tx-totW);rootH(tx+totW);
+      // Internal carvings
+      const nSec=3+Math.floor(p.cpx*1.2);
+      for(let s=0;s<nSec;s++){const sy=ancY-totH*(s+1)/(nSec+1);
+        ST(tx-totW,sy,tx+totW,sy,al*.25,R);
+        // Alternating symbols
+        if(s%3===0)SA(tx,sy+totH/(nSec+1)*.4,totW*.6,0,Math.PI*2,al*.35,R);
+        else if(s%3===1){PG(tx,sy+totH/(nSec+1)*.4,totW*.5,4,Math.PI/4,al*.35,R);}
+        else{ST(tx-totW*.5,sy+2,tx+totW*.5,sy+totH/(nSec+1)*.7,al*.3,R);
+          ST(tx+totW*.5,sy+2,tx-totW*.5,sy+totH/(nSec+1)*.7,al*.3,R);}}
+      // Top ornament
+      if(R()<.7){PG(tx,ancY-totH-totW*1.2,totW*1.2,3,-Math.PI/2,al*.45,R);}
+    }
+  }
+
+  // ==========================================
+  // LAYER + LEAP → STRATA (horizontal offset slabs, tectonic)
+  // ==========================================
+  else if(key==='layer_leap'){
+    const nSlabs=5+Math.floor(p.cpx*1.5);
+    for(let i=0;i<nSlabs;i++){const t=i/nSlabs;const y=Math.max(zoneT+10,fcy-bR*.7)+t*Math.min(bR*1.3,zoneH*.8);
+      const ox=(R()-.5)*80;const w=Math.min(bR*(.15+R()*.3),zoneHW*.8);const h=bR*(.03+R()*.06);
+      // Rectangle
+      ST(cx+ox-w,y-h,cx+ox+w,y-h,al*(.35+t*.3),R);
+      ST(cx+ox+w,y-h,cx+ox+w,y+h,al*(.35+t*.3),R);
+      ST(cx+ox+w,y+h,cx+ox-w,y+h,al*(.35+t*.3),R);
+      ST(cx+ox-w,y+h,cx+ox-w,y-h,al*(.35+t*.3),R);
+      // Internal horizontal lines (strata texture)
+      for(let li=0;li<Math.floor(h/6);li++){const ly=y-h+4+li*6;
+        ST(cx+ox-w+3,ly,cx+ox+w-3,ly,al*.12,R);}
+      if(R()<p.den*.5)HT(cx+ox,y,Math.min(w*.3,h),R()*.2,5,al*.18,R);
+      // Offset connection to next
+      if(i>0)ST(cx+ox,y-h,cx+(R()-.5)*80,y-bR*1.3/nSlabs+bR*.06,al*.1,R);}
+    ST(cx,ancY,cx,fcy+bR*.5,al*.25,R);
+  }
+
+  // ==========================================
+  // GROW + LINEAR → TREE (single trunk, branching upward)
+  // ==========================================
+  else if(key==='grow_linear'){
+    const maxD=2+Math.floor(p.cpx*.7);const brN=p.mul<3?2:p.mul<6?3:4;
+    function br(bx2,by2,a,d,lm){if(d>maxD)return;
+      const len=(maxD-d+1)*(bR*0.09)*lm*(.8+R()*.4);
+      const ex=bx2+Math.cos(a)*len,ey=by2+Math.sin(a)*len;
+      // Double line for trunk thickness
+      const th=(maxD-d)*1.5;
+      ST(bx2,by2,ex,ey,al*(.35+.35*(1-d/maxD)),R);
+      if(d<2){const nx=-Math.sin(a)*th,ny=Math.cos(a)*th;ST(bx2+nx,by2+ny,ex+nx,ey+ny,al*.18,R);}
+      // Terminal details
+      if(d===maxD){if(p.den>.4){SA(ex,ey,5+R()*10,0,Math.PI*2,al*.35,R);}
+        else{const s=5;ST(ex-s,ey-s,ex+s,ey+s,al*.3,R);ST(ex+s,ey-s,ex-s,ey+s,al*.3,R);}}
+      for(let b=0;b<brN;b++){const na=a+(b-(brN-1)/2)*.25+(R()-.5)*.06;br(ex,ey,na,d+1,.75+R()*.1);}}
+    br(cx,ancY,-Math.PI/2+(R()-.5)*.1,0,1);
+    if(p.cpx>2){br(cx-12,ancY,-Math.PI/2-.22,1,.5);br(cx+12,ancY,-Math.PI/2+.22,1,.5);}
+  }
+
+  // ==========================================
+  // GROW + SPIRAL → FERN (curling fronds, organic spirals)
+  // ==========================================
+  else if(key==='grow_spiral'){
+    const nFronds=2+Math.floor(p.mul/2);
+    for(let f=0;f<nFronds;f++){
+      const baseA=-Math.PI/2+(f-(nFronds-1)/2)*.35+(R()-.5)*.1;
+      const mainLen=Math.min(bR*(.7+R()*.3),zoneH*.85);const curl=(R()>.5?1:-1)*.6;
+      const pts=[];let px2=cx,py2=ancY;
+      for(let i=0;i<=30;i++){const t=i/30;
+        const a=baseA+curl*t*t;const step=mainLen/30;
+        px2+=Math.cos(a)*step;py2+=Math.sin(a)*step;pts.push({x:px2,y:py2});}
+      for(let i=0;i<pts.length-1;i++)ST(pts[i].x,pts[i].y,pts[i+1].x,pts[i+1].y,al*(.4+.3*(1-f/nFronds)),R);
+      // Side leaflets — alternating
+      for(let i=3;i<pts.length;i+=2){const pt=pts[i];const prev=pts[i-1];
+        const da=Math.atan2(pt.y-prev.y,pt.x-prev.x);const side=(i%4<2)?1:-1;
+        const la=da+side*.7;const ll=12+R()*25*(1-i/pts.length);
+        const lx=pt.x+Math.cos(la)*ll,ly=pt.y+Math.sin(la)*ll;
+        ST(pt.x,pt.y,lx,ly,al*.3,R);
+        if(R()<p.den*.5)SA(lx,ly,3+R()*4,0,Math.PI*2,al*.2,R);}
+      // Spiral tip (fiddle-head)
+      const tip=pts[pts.length-1];const tipA=baseA+curl;
+      SA(tip.x+Math.cos(tipA)*12,tip.y+Math.sin(tipA)*12,8+R()*8,0,Math.PI*1.5,al*.35,R);
+    }
+  }
+
+  // ==========================================
+  // GROW + PARALLEL → GRASS FIELD (many thin vertical stems, prairie)
+  // ==========================================
+  else if(key==='grow_parallel'){
+    const nStems=12+p.mul*4;const fieldW=Math.min(bR*1.3,zoneW);
+    for(let i=0;i<nStems;i++){const sx=cx-fieldW/2+R()*fieldW;const sh=Math.min(bR*(.25+R()*.85),zoneH*.95);
+      const sway=(R()-.5)*.25;const pts=[];
+      for(let j=0;j<=10;j++){const t=j/10;
+        pts.push({x:sx+Math.sin(t*Math.PI+sway)*sh*.06+sway*t*25,y:ancY-t*sh});}
+      for(let j=0;j<pts.length-1;j++)ST(pts[j].x,pts[j].y,pts[j+1].x,pts[j+1].y,al*(.2+R()*.3),R);
+      // Top detail
+      if(R()<p.den){const top=pts[pts.length-1];
+        ST(top.x,top.y,top.x+(R()-.5)*16,top.y-5-R()*12,al*.3,R);}
+      if(sh>bR*.5&&R()<.5){const mid=pts[5];
+        ST(mid.x,mid.y,mid.x+12+R()*18,mid.y-8-R()*12,al*.2,R);}
+    }
+    for(let i=0;i<Math.floor(p.den*8)+2;i++){const gx=cx+(R()-.5)*fieldW;
+      ST(gx-4,ancY+R()*3,gx+4,ancY+R()*3,al*.12,R);}
+    // Continuous baseline + horizontal connections to head
+    ST(cx-fieldW/2,ancY,cx+fieldW/2,ancY,al*.12,R);
+    rootH(cx-fieldW/2);rootH(cx+fieldW/2);
+  }
+
+  // ==========================================
+  // GROW + LEAP → DANDELION (central burst + floating seed-puffs with wind trails)
+  // ==========================================
+  else if(key==='grow_leap'){
+    // Central starburst
+    const nRays=8+Math.floor(p.mul*1.5);
+    for(let i=0;i<nRays;i++){const a=(i/nRays)*Math.PI*2+R()*.15;
+      const rl=bR*(.2+R()*.2);
+      ST(cx+Math.cos(a)*5,fcy+Math.sin(a)*5,cx+Math.cos(a)*rl,fcy+Math.sin(a)*rl,al*.35,R);}
+    SA(cx,fcy,bR*.08,0,Math.PI*2,al*.5,R);
+    // Floating seeds — round puffs with trailing curved lines
+    const nSeeds=4+Math.floor(p.mul);
+    for(let i=0;i<nSeeds;i++){const a=R()*Math.PI*2;const d=bR*(.35+R()*.45);
+      const sx=cx+Math.cos(a)*d,sy=fcy+Math.sin(a)*d;
+      SA(sx,sy,5+R()*7,0,Math.PI*2,al*.4,R);
+      // Tiny radiating filaments
+      for(let f=0;f<4+Math.floor(R()*3);f++){const fa=R()*Math.PI*2;const fl=6+R()*10;
+        ST(sx+Math.cos(fa)*3,sy+Math.sin(fa)*3,sx+Math.cos(fa)*fl,sy+Math.sin(fa)*fl,al*.2,R);}
+      // Wind trail — curved line back toward center
+      const mx=sx+(cx-sx)*.4+(R()-.5)*40;const my=sy+(fcy-sy)*.4+(R()-.5)*40;
+      ST(sx,sy,mx,my,al*.1,R);ST(mx,my,cx+Math.cos(a)*bR*.15,fcy+Math.sin(a)*bR*.15,al*.08,R);}
+    // Stem
+    ST(cx,ancY,cx,fcy+bR*.06,al*.4,R);
+  }
+
+  // ===== FALLBACK =====
+  else{
+    PG(cx,fcy,bR*.6,5,R(),al*.5,R);PG(cx,fcy,bR*.3,4,R(),al*.35,R);
+    ST(cx,ancY,cx,fcy+bR*.4,al*.4,R);
+  }
+
+  // ===== ROOT CONNECTION — all lines trace back to head =====
+  // Horizontal base across head top
+  ST(cx-headHW,ancY,cx+headHW,ancY,al*.35,R);
+  // Fan-out braces from head to form width
+  const fanW=Math.min(bR*.5,zoneHW);
+  if(fanW>headHW){
+    ST(cx-headHW,ancY,cx-fanW,ancY-bR*.12,al*.2,R);
+    ST(cx+headHW,ancY,cx+fanW,ancY-bR*.12,al*.2,R);
+    ST(cx-headHW*.6,ancY,cx-fanW*.7,ancY-bR*.2,al*.15,R);
+    ST(cx+headHW*.6,ancY,cx+fanW*.7,ancY-bR*.2,al*.15,R);
+  }
+
+  // ===== FLIP-BASED OVERLAYS (3 random booleans → 8 variants per morphology) =====
+  if(f2){// Secondary geometric echo — concentric arcs
+    for(let i=0;i<4;i++){const r=bR*(.25+i*.2);SA(cx,fcy,r,R()*Math.PI,R()*Math.PI+Math.PI*(.6+R()*.5),al*.1,R);}
+  }
+  if(f3){// Scatter field — stipple dots across the form
+    const nDots=Math.floor(p.den*30)+12;
+    for(let i=0;i<nDots;i++){const a=R()*Math.PI*2,d=R()*bR*.75;
+      ctx.beginPath();ctx.arc(cx+Math.cos(a)*d,fcy+Math.sin(a)*d,1+R()*2.5,0,Math.PI*2);
+      ctx.fillStyle=`rgba(${INK},${al*.2})`;ctx.fill();}
+  }
+  if(f1&&f3){// Cross-hatch diagonal field
+    for(let i=0;i<6+Math.floor(p.den*6);i++){const y=fcy-bR*.5+R()*bR;const w=bR*(.15+R()*.25);
+      ST(cx-w,y-w*.3,cx+w,y+w*.3,al*.07,R);}
+  }
+
+  // ===== GLOBAL OVERLAYS (rhythm) =====
+  if(p.rhy==='flash'){const n=5+Math.floor(R()*5);for(let i=0;i<n;i++){const a=R()*Math.PI*2;
+    ST(cx+Math.cos(a)*bR*.2,fcy+Math.sin(a)*bR*.2,cx+Math.cos(a)*bR*(.7+R()*.2),fcy+Math.sin(a)*bR*(.7+R()*.2),al*.18,R);}}
+  if(p.rhy==='bounce'){for(let i=0;i<3+Math.floor(R()*3);i++){const a=R()*Math.PI*2;
+    SA(cx,fcy,bR*(.3+R()*.45),a,a+.5+R()*.6,al*.15,R);}}
+  if(p.rhy==='ferment'){HT(cx,fcy,bR*.15,R()*Math.PI,6,al*.18,R);}
+  if(p.rhy==='accumulate'){for(let i=0;i<Math.floor(p.den*18)+6;i++){const a=R()*Math.PI*2,d=R()*bR*.6;
+    ctx.beginPath();ctx.arc(cx+Math.cos(a)*d,fcy+Math.sin(a)*d,1.5+R()*1.2,0,Math.PI*2);
+    ctx.fillStyle=`rgba(${INK},${al*.25})`;ctx.fill();}}
+  ctx.restore();
+}
+
+// ===== ANIMATION =====
+let drawCommands=[],animFrame=null;
+function captureDrawing(){
+  drawCommands=[];
+  const oB=ctx.beginPath.bind(ctx),oM=ctx.moveTo.bind(ctx),oL=ctx.lineTo.bind(ctx),oS=ctx.stroke.bind(ctx),oA=ctx.arc.bind(ctx),oF=ctx.fill.bind(ctx),oR=ctx.rect.bind(ctx);
+  let cur=null;
+  ctx.beginPath=function(){oB();cur={ops:[],type:null};};
+  ctx.moveTo=function(x,y){oM(x,y);if(cur)cur.ops.push({t:'m',x,y});};
+  ctx.lineTo=function(x,y){oL(x,y);if(cur)cur.ops.push({t:'l',x,y});};
+  ctx.rect=function(x,y,w,h){oR(x,y,w,h);if(cur)cur.ops.push({t:'r',x,y,w,h});};
+  ctx.stroke=function(){if(cur){cur.style=ctx.strokeStyle;cur.lw=ctx.lineWidth;cur.cap=ctx.lineCap;cur.type='stroke';drawCommands.push(cur);}oS();};
+  ctx.arc=function(x,y,r,a1,a2){oA(x,y,r,a1,a2);if(cur)cur.ops.push({t:'a',x,y,r,a1,a2});};
+  ctx.fill=function(){if(cur){cur.style=ctx.fillStyle;cur.type='fill';drawCommands.push(cur);}oF();};
+  drawForm();
+  ctx.beginPath=oB;ctx.moveTo=oM;ctx.lineTo=oL;ctx.stroke=oS;ctx.arc=oA;ctx.fill=oF;ctx.rect=oR;
+}
+function drawBase(){
+  ctx.fillStyle=`rgb(${CR})`;ctx.fillRect(0,0,W,H);
+  const GR=mkR(42);for(let i=0;i<8000;i++){ctx.fillStyle=`rgba(${180+GR()*30},${175+GR()*30},${168+GR()*30},0.012)`;
+    ctx.beginPath();ctx.arc(GR()*W,GR()*H,.7+GR()*.5,0,Math.PI*2);ctx.fill();}
+  drawBust();
+  // Single frame — drawn after bust so visible on all 4 sides
+  ctx.strokeStyle='rgba(130,125,118,0.55)';ctx.lineWidth=1.5;ctx.strokeRect(MG,MG,W-MG*2,H-MG*2);
+  // Person's name — centered between bust and footer
+  ctx.textAlign='center';
+  const footerZone=H-MG-130;
+  const bVisH=bust.h*bustScale;
+  const nameY=bustTop+bVisH+(footerZone-bustTop-bVisH)/2+16;
+  if(userName){
+    ctx.font='600 48px "DM Mono",monospace';ctx.fillStyle='rgba(40,36,30,0.85)';
+    const dn=userName.charAt(0).toUpperCase()+userName.slice(1).toLowerCase();
+    ctx.fillText(dn,CX,nameY);}
+  // Footer
+  ctx.letterSpacing='8px';ctx.font='400 41px "DM Mono",monospace';ctx.fillStyle='rgba(42,39,37,0.6)';
+  ctx.fillText('LAURIANE MOUYSSET',CX,H-MG-120);
+  ctx.letterSpacing='6px';ctx.font='400 30px "DM Mono",monospace';ctx.fillStyle='rgba(122,117,108,0.6)';
+  ctx.fillText('COLLECTION AGORA',CX,H-MG-55);
+  ctx.letterSpacing='0px';ctx.textAlign='start';
+}
+function animateDraw(onDone){
+  drawBase();ctx.save();ctx.globalAlpha=0;captureDrawing();ctx.restore();drawBase();
+  const total=drawCommands.length;
+  const batchSize=Math.max(1,Math.floor(total/360));
+  let idx=0;
+  function frame(){const end=Math.min(idx+batchSize,total);
+    for(let i=idx;i<end;i++){const cmd=drawCommands[i];ctx.beginPath();
+      cmd.ops.forEach(op=>{if(op.t==='m')ctx.moveTo(op.x,op.y);else if(op.t==='l')ctx.lineTo(op.x,op.y);
+        else if(op.t==='a')ctx.arc(op.x,op.y,op.r,op.a1,op.a2);
+        else if(op.t==='r')ctx.rect(op.x,op.y,op.w,op.h);});
+      if(cmd.type==='stroke'){ctx.strokeStyle=cmd.style;ctx.lineWidth=cmd.lw;ctx.lineCap=cmd.cap||'round';ctx.stroke();}
+      else{ctx.fillStyle=cmd.style;ctx.fill();}}
+    idx=end;if(idx<total)animFrame=requestAnimationFrame(frame);else if(onDone)onDone();}
+  animFrame=requestAnimationFrame(frame);
+}
+
+// ===== CONFIG =====
+// Replace with your deployed Google Apps Script URL:
+const WEBHOOK_URL = ''; // e.g. 'https://script.google.com/macros/s/AKfyc.../exec'
+
+// ===== KIOSK MODE =====
+const urlParams = new URLSearchParams(window.location.search);
+const KIOSK = urlParams.get('kiosk') === '1';
+const KIOSK_TIMEOUT = parseInt(urlParams.get('timeout') || '30') * 1000;
+let kioskTimer = null;
+
+if (KIOSK) {
+  document.body.classList.add('kiosk-active');
+  const badge = document.createElement('div');
+  badge.className = 'kiosk-badge';
+  badge.textContent = 'installation';
+  document.body.appendChild(badge);
+  // Disable context menu & selection in kiosk
+  document.addEventListener('contextmenu', e => e.preventDefault());
+  document.body.style.userSelect = 'none';
+  document.body.style.webkitUserSelect = 'none';
+}
+
+function resetKioskTimer() {
+  if (!KIOSK) return;
+  clearTimeout(kioskTimer);
+  document.getElementById('kioskCountdown').classList.remove('show');
+  kioskTimer = setTimeout(() => {
+    // Show countdown
+    const cd = document.getElementById('kioskCountdown');
+    cd.classList.add('show');
+    let sec = 5;
+    cd.textContent = `retour à l'accueil dans ${sec}s`;
+    const tick = setInterval(() => {
+      sec--;
+      if (sec <= 0) { clearInterval(tick); cd.classList.remove('show'); doReset(); }
+      else cd.textContent = `retour à l'accueil dans ${sec}s`;
+    }, 1000);
+    // Cancel if user interacts
+    const cancel = () => { clearInterval(tick); cd.classList.remove('show'); resetKioskTimer();
+      document.removeEventListener('pointerdown', cancel); };
+    document.addEventListener('pointerdown', cancel);
+  }, KIOSK_TIMEOUT - 5000);
+}
+
+if (KIOSK) {
+  ['pointerdown','pointermove','keydown'].forEach(evt =>
+    document.addEventListener(evt, () => resetKioskTimer(), { passive: true }));
+}
+
+// ===== URL PARAM REGENERATION =====
+const paramSeed = urlParams.get('seed');
+const paramAnswers = urlParams.get('a');
+const paramName = urlParams.get('n');
+if (paramSeed && paramAnswers && paramAnswers.length >= 3) {
+  // Direct link to regenerate a specific form
+  const aMap = paramAnswers.split(',');
+  if (aMap.length === 3) {
+    answers = aMap;
+    userName = decodeURIComponent(paramName || '');
+    setTimeout(() => showResult(), 300);
+  }
+}
+
+// ===== WEBHOOK =====
+function buildPayload(email) {
+  const p = computeParams();
+  return {
+    timestamp: new Date().toISOString(),
+    prenom: userName,
+    email: email || '',
+    q1_structure: answers[0] || '',
+    q2_mouvement: answers[1] || '',
+    q3_intensite: answers[2] || '',
+    seed: p.seed,
+    source: KIOSK ? 'installation' : 'web'
+  };
+}
+
+function postToSheet(payload) {
+  if (!WEBHOOK_URL) { console.log('[forme-pensee] No webhook URL configured. Payload:', payload); return Promise.resolve(false); }
+  return fetch(WEBHOOK_URL, {
+    method: 'POST', mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  }).then(() => true).catch(err => { console.error('Webhook error:', err); return false; });
+}
+
+// ===== EMAIL =====
+function isValidEmail(e) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); }
+
+document.getElementById('btnSend').addEventListener('click', async () => {
+  const emailEl = document.getElementById('emailInput');
+  const confirmEl = document.getElementById('emailConfirm');
+  const btn = document.getElementById('btnSend');
+  const email = emailEl.value.trim();
+  if (!isValidEmail(email)) {
+    confirmEl.textContent = 'adresse invalide';
+    confirmEl.className = 'email-confirm err';
+    return;
+  }
+  btn.disabled = true;
+  btn.textContent = '…';
+  confirmEl.textContent = '';
+  const payload = buildPayload(email);
+  const ok = await postToSheet(payload);
+  if (ok || !WEBHOOK_URL) {
+    confirmEl.textContent = WEBHOOK_URL ? 'envoyé ✓' : 'enregistré (mode test)';
+    confirmEl.className = 'email-confirm ok';
+    btn.textContent = 'envoyé';
+  } else {
+    confirmEl.textContent = 'erreur — réessaie';
+    confirmEl.className = 'email-confirm err';
+    btn.disabled = false;
+    btn.textContent = 'envoyer';
+  }
+});
+
+document.getElementById('emailInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') { e.preventDefault(); document.getElementById('btnSend').click(); }
+});
+
+// ===== UI =====
+const sI=document.getElementById('screen-intro'),sN=document.getElementById('screen-name'),
+  sQ=document.getElementById('screen-q'),sR=document.getElementById('screen-result');
+
+function showScreen(show,hide){hide.forEach(s=>s.classList.add('hide'));
+  setTimeout(()=>{hide.forEach(s=>s.classList.add('below'));show.classList.remove('hide');show.classList.remove('below');},400);}
+
+document.getElementById('btnStart').addEventListener('click',()=>{
+  showScreen(sQ,[sI]);showQuestion(0);
+  if(KIOSK){resetKioskTimer();try{document.documentElement.requestFullscreen?.();}catch(e){}}
+});
+
+function showQuestion(idx){
+  currentQ=idx;const q=QS[idx];document.getElementById('qProg').textContent=q.num;
+  document.getElementById('qBarFill').style.width=((idx)/3*100)+'%';
+  const qText=document.getElementById('qText');qText.style.opacity='0';
+  setTimeout(()=>{qText.textContent=q.text;qText.style.opacity='1';qText.style.transition='opacity .4s';},100);
+  const optsEl=document.getElementById('opts');optsEl.innerHTML='';
+  q.opts.forEach((opt,i)=>{const btn=document.createElement('button');btn.className='opt';btn.style.opacity='0';btn.style.transform='translateY(6px)';
+    btn.innerHTML=`<span>${opt.l}</span>`;
+    btn.addEventListener('click',()=>{answers[idx]=opt.v;btn.classList.add('selected');
+      setTimeout(()=>{const all=optsEl.querySelectorAll('.opt');all.forEach(o=>{o.style.transition='opacity .3s,transform .3s';o.style.opacity='0';o.style.transform='translateX(-8px)';});
+        setTimeout(()=>{if(idx<2)showQuestion(idx+1);else showNameScreen();},350);},450);});
+    optsEl.appendChild(btn);
+    setTimeout(()=>{btn.style.transition='opacity .35s,transform .35s,border-color .3s,color .3s';btn.style.opacity='1';btn.style.transform='translateY(0)';},200+i*70);});
+}
+
+function showNameScreen(){document.getElementById('qBarFill').style.width='100%';
+  setTimeout(()=>{showScreen(sN,[sQ]);setTimeout(()=>document.getElementById('nameInput').focus(),500);},300);}
+
+document.getElementById('btnName').addEventListener('click',()=>{userName=document.getElementById('nameInput').value.trim()||'';showResult();});
+document.getElementById('nameInput').addEventListener('keydown',(e)=>{if(e.key==='Enter'){e.preventDefault();document.getElementById('btnName').click();}});
+
+function showResult(){
+  showScreen(sR,[sN,sI,sQ]);document.getElementById('drawLabel').classList.add('show');
+  // Reset email UI
+  document.getElementById('emailInput').value='';
+  document.getElementById('emailConfirm').textContent='';
+  document.getElementById('btnSend').disabled=false;
+  document.getElementById('btnSend').textContent='envoyer';
+  document.getElementById('emailBlock').classList.remove('show');
+
+  setTimeout(()=>{animateDraw(()=>{
+    document.getElementById('drawLabel').classList.remove('show');
+    setTimeout(()=>{
+      document.getElementById('resultInfo').style.opacity='1';
+      setTimeout(()=>document.getElementById('emailBlock').classList.add('show'),600);
+    },400);
+    // Auto-post to sheet (without email) for stats
+    postToSheet(buildPayload(''));
+    if(KIOSK) resetKioskTimer();
+  });},700);
+}
+
+document.getElementById('btnDl').addEventListener('click',()=>{const link=document.createElement('a');
+  link.download='forme-de-pensee'+(userName?'-'+userName.toLowerCase():'')+'.png';link.href=cv.toDataURL('image/png');link.click();});
+
+function doReset(){
+  if(animFrame)cancelAnimationFrame(animFrame);
+  answers=[];currentQ=0;userName='';
+  document.getElementById('nameInput').value='';
+  document.getElementById('resultInfo').style.opacity='0';
+  document.getElementById('drawLabel').classList.remove('show');
+  document.getElementById('emailBlock').classList.remove('show');
+  showScreen(sI,[sR,sQ,sN]);
+  if(KIOSK){try{document.exitFullscreen?.();}catch(e){}}
+}
+
+document.getElementById('btnAgain').addEventListener('click', doReset);
+</script>
+</body>
+</html>
