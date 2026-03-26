@@ -323,21 +323,22 @@ function drawForm(){
   // CLASSIFY + LINEAR → SKYLINE (wide rectangles, windows, antennas)
   // ==========================================
   if(key==='classify_linear'){
-    // VERTICAL BARS — hand-drawn bar chart, no closed rectangles
+    // IRREGULAR VERTICALS — tilted bars of varying heights and thicknesses
     const nB=6+Math.floor(p.mul*1.5);const totalW=Math.min(bR*1.4,zoneW);
     for(let i=0;i<nB;i++){
-      const bx2=cx-totalW/2+i*totalW/nB+(R()-.5)*12;
-      const bh=bR*(.15+R()*.75);
-      const alBar=al*(.3+R()*.35);
-      // Single vertical line per bar
-      ST(bx2,ancY,bx2,ancY-bh,alBar,R);
-      // Occasional second line close by (thickening effect)
-      if(R()<p.den*.5){const ox=2+R()*4;
-        ST(bx2+ox,ancY,bx2+ox,ancY-bh*(0.6+R()*.4),alBar*.6,R);}
+      const spacing=totalW/nB*(0.5+R()*1); // irregular spacing
+      const bx2=cx-totalW/2+i*totalW/nB+(R()-.5)*25;
+      const bh=bR*(.05+Math.pow(R(),0.6)*.9); // power curve: some very short, some very tall
+      const tilt=(R()-.5)*0.09; // +-~5 degrees in radians
+      const alBar=al*(.25+R()*.35);
+      // Tilted vertical
+      const topX=bx2+Math.sin(tilt)*bh;
+      ST(bx2,ancY,topX,ancY-bh,alBar,R);
+      // Occasional parallel companion (varying thickness feel)
+      if(R()<p.den*.4){const ox=3+R()*6;const shortH=bh*(0.3+R()*.5);
+        ST(bx2+ox,ancY,bx2+ox+Math.sin(tilt)*shortH,ancY-shortH,alBar*.5,R);}
       rootH(bx2);
     }
-    // Baseline
-    ST(cx-totalW/2,ancY,cx+totalW/2,ancY,al*.15,R);
   }
 
   // ==========================================
@@ -578,24 +579,19 @@ function drawForm(){
   // LAYER + PARALLEL → TOTEMS (narrow carved poles with internal symbols)
   // ==========================================
   else if(key==='layer_parallel'){
-    // STELES — thin vertical poles with subtle internal textures
+    // TEXTURED VERTICALS — single central lines with internal textures, no rectangular contours
     const nTot=Math.min(4,2+Math.floor(p.mul/3));const totW=bR*.04;
     for(let ti=0;ti<nTot;ti++){
       const tx=cx+(ti-(nTot-1)/2)*totW*8;const totH=Math.min(bR*(.9+R()*.5),zoneH*.95);
-      // Thin edges
-      ST(tx-totW,ancY,tx-totW,ancY-totH,al*.45,R);
-      ST(tx+totW,ancY,tx+totW,ancY-totH,al*.45,R);
-      ST(tx-totW,ancY-totH,tx+totW,ancY-totH,al*.4,R);
-      rootH(tx-totW);rootH(tx+totW);
-      // Internal textures: subtle hachures and arcs, no geometric symbols
+      // Single central vertical line only — no edges
+      ST(tx,ancY,tx,ancY-totH,al*.4,R);
+      rootH(tx);
+      // Internal textures along the line
       const nSec=3+Math.floor(p.cpx*.8);
       for(let s=0;s<nSec;s++){const sy=ancY-totH*(s+1)/(nSec+1);
-        // Soft horizontal separation
-        ST(tx-totW,sy+(R()-.5)*3,tx+totW,sy+(R()-.5)*3,al*.12,R);
-        // Alternating subtle textures
         const secH=totH/(nSec+1);
-        if(R()<.5){HT(tx+(R()-.5)*2,sy+secH*.3,totW*.7,R()*Math.PI,4,al*.1,R);}
-        else{SA(tx+(R()-.5)*3,sy+secH*.35,totW*.5,R()*Math.PI,R()*Math.PI+Math.PI*(.4+R()*.4),al*.12,R);}}
+        if(R()<.5){HT(tx+(R()-.5)*3,sy+secH*.3,totW*.8,R()*Math.PI,4,al*.1,R);}
+        else{SA(tx+(R()-.5)*4,sy+secH*.35,totW*.6,R()*Math.PI,R()*Math.PI+Math.PI*(.4+R()*.4),al*.12,R);}}
     }
   }
 
