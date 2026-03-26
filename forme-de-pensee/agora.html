@@ -118,6 +118,7 @@ function drawBust(){
 }
 
 // ===== STITCH PRIMITIVES — hand-drawn style =====
+const INK='0,0,0';
 function ST(x1,y1,x2,y2,al,R){
   const jt=2;
   x1+=(R()-.5)*jt;y1+=(R()-.5)*jt;x2+=(R()-.5)*jt;y2+=(R()-.5)*jt;
@@ -126,8 +127,6 @@ function ST(x1,y1,x2,y2,al,R){
   const bow=(R()-.5)*4;
   const tremFreq=3+R()*5;
   const tremAmp=0.5+R()*1;
-  const pressure=0.8+R()*0.4;
-  const alBase=al*pressure;
   let d=0;
   while(d<len){
     const sl=Math.min(5+R()*8,len-d);
@@ -139,8 +138,7 @@ function ST(x1,y1,x2,y2,al,R){
     ctx.beginPath();
     ctx.moveTo(x1+nx*d+ny*w,y1+ny*d-nx*w);
     ctx.lineTo(x1+nx*de+ny*w2,y1+ny*de-nx*w2);
-    const segAl=alBase*(0.8+R()*0.35);
-    ctx.strokeStyle=`rgba(${INK},${Math.min(segAl,1)})`;
+    ctx.strokeStyle='rgba(0,0,0,0.9)';
     ctx.lineWidth=1.8+R()*1.4;
     ctx.lineCap='round';ctx.stroke();
     d+=sl+3+R()*1.5;
@@ -148,7 +146,6 @@ function ST(x1,y1,x2,y2,al,R){
 }
 function SA(cx,cy,r,a1,a2,al,R){
   const rBase=r*(0.95+R()*0.1);
-  const pressure=0.8+R()*0.4;const alBase=al*pressure;
   const wobbleAmp=r*0.03+1;
   const wobbleFreq=4+R()*6;
   const steps=Math.max(10,Math.floor(Math.abs(a2-a1)*rBase/6));
@@ -160,8 +157,7 @@ function SA(cx,cy,r,a1,a2,al,R){
     ctx.beginPath();
     ctx.moveTo(cx+Math.cos(t1)*r1,cy+Math.sin(t1)*r1);
     ctx.lineTo(cx+Math.cos(t2)*r2,cy+Math.sin(t2)*r2);
-    const segAl=alBase*(0.75+R()*0.4);
-    ctx.strokeStyle=`rgba(${INK},${Math.min(segAl,1)})`;
+    ctx.strokeStyle='rgba(0,0,0,0.75)';
     ctx.lineWidth=2+R()*1.5;ctx.lineCap='round';ctx.stroke();
   }
 }
@@ -180,6 +176,7 @@ function HT(hx,hy,r,angle,sp,al,R){
     ST(hx+cos*d-sin*ch+drift,hy+sin*d+cos*ch+angleJit,
        hx+cos*d+sin*ch-drift,hy+sin*d-cos*ch-angleJit,al,R);}
 }
+
 
 // ===== PARAMS =====
 function makeParams(str,mov,intensity,f1,f2,f3){
@@ -212,209 +209,226 @@ function drawFormWith(p){
   const R=mkR(p.seed+500),cx=CX;
   const ancY=cutY+4;
   const headHW=110*bustScale;
+  // Drawing zone: 3% margin inside frame on all sides, bottom = ancY
   const zM=0.03,innerW=W-2*MG,innerH=H-2*MG;
   const zoneT=MG+innerH*zM,zoneL=MG+innerW*zM,zoneR=W-MG-innerW*zM;
   const zoneW=zoneR-zoneL,zoneH=ancY-zoneT,zoneHW=zoneW/2;
-  ctx.beginPath();ctx.rect(zoneL,zoneT,zoneW,zoneH);ctx.clip();
-  const rawBR=Math.min(600+p.mul*56+p.cpx*50,1200)*(p.flip1?1.15:.88);
+  ctx.beginPath();ctx.rect(zoneL,zoneT,zoneW,zoneH+20);ctx.clip();
+  // bR capped to fit zone
+  const rawBR=Math.min(700+p.mul*60+p.cpx*55,1400)*(p.flip1?1.15:.88);
   const bR=Math.min(rawBR,zoneHW,zoneH*.47);
   const fcy=Math.max(zoneT+bR,Math.min(ancY-bR,zoneT+zoneH*(p.flip2?.45:.55)));
-  const al=.82+p.den*.15;
+  const al=1.0;
   const f1=p.flip1,f2=p.flip2,f3=p.flip3;
+  // Helper: draw horizontal line from x at ancY back to head edge if outside head
   const rootH=(x)=>{
-    if(x<cx-headHW)ST(x,ancY,cx-headHW,ancY,al*.3,R);
-    else if(x>cx+headHW)ST(x,ancY,cx+headHW,ancY,al*.3,R);};
+    if(x<cx-headHW)ST(x,ancY,cx-headHW,ancY,al*0.6,R);
+    else if(x>cx+headHW)ST(x,ancY,cx+headHW,ancY,al*0.6,R);};
   const key=p.str+'_'+p.mov;
 
   // ==========================================
-  // CLASSIFY + LINEAR -> SKYLINE
+  // CLASSIFY + LINEAR → SKYLINE (wide rectangles, windows, antennas)
   // ==========================================
   if(key==='classify_linear'){
-    // SKYLINE — ondulating columns instead of rigid rectangles
-    const nB=5+Math.floor(p.mul*1.2);const totalW=Math.min(bR*1.5,zoneW);
+    // IRREGULAR VERTICALS — tilted bars of varying heights and thicknesses
+    const nB=6+Math.floor(p.mul*1.5);const totalW=Math.min(bR*1.4,zoneW);
     for(let i=0;i<nB;i++){
-      const bw=totalW/nB*(.4+R()*.6);const bh=bR*(.3+R()*.7);
-      const bx2=cx-totalW/2+i*totalW/nB+R()*12;const by2=ancY-bh;
-      // Wavy verticals instead of straight
-      const wav=8+R()*12;const freq=2+R()*3;
-      for(let s=0;s<10;s++){const t1=s/10,t2=(s+1)/10;const y1=ancY-bh*t1,y2=ancY-bh*t2;
-        const ox1=Math.sin(t1*freq*Math.PI)*wav,ox2=Math.sin(t2*freq*Math.PI)*wav;
-        ST(bx2+ox1,y1,bx2+ox2,y2,al*.6,R);ST(bx2+bw+ox1*.7,y1,bx2+bw+ox2*.7,y2,al*.6,R);}
-      // Wobbly top
-      ST(bx2+(R()-.5)*wav,by2+(R()-.5)*8,bx2+bw+(R()-.5)*wav,by2+(R()-.5)*8,al*.55,R);
-      rootH(bx2);rootH(bx2+bw);
-      // Organic internal marks
-      for(let f=0;f<2+Math.floor(bh/80);f++){const fy=by2+bh*.1+f*(bh*.8/(2+Math.floor(bh/80)));
-        SA(bx2+bw/2+(R()-.5)*10,fy,bw*.3+R()*bw*.2,R()*Math.PI,R()*Math.PI+Math.PI*(.3+R()*.5),al*.15,R);}
-      if(R()<.4){SA(bx2+bw/2,by2-5,bw*.2+R()*10,0,Math.PI*2,al*.25,R);}
+      const spacing=totalW/nB*(0.5+R()*1); // irregular spacing
+      const bx2=cx-totalW/2+i*totalW/nB+(R()-.5)*25;
+      const bh=bR*(.05+Math.pow(R(),0.6)*.9); // power curve: some very short, some very tall
+      const tilt=(R()-.5)*0.09; // +-~5 degrees in radians
+      const alBar=al*(.8+R()*.35);
+      // Tilted vertical
+      const topX=bx2+Math.sin(tilt)*bh;
+      ST(bx2,ancY,topX,ancY-bh,alBar,R);
+      // Occasional parallel companion (varying thickness feel)
+      if(R()<p.den*.4){const ox=3+R()*6;const shortH=bh*(0.3+R()*.5);
+        ST(bx2+ox,ancY,bx2+ox+Math.sin(tilt)*shortH,ancY-shortH,alBar*.5,R);}
+      rootH(bx2);
     }
-    ST(cx-totalW/2,ancY,cx+totalW/2,ancY,al*.15,R);
   }
 
   // ==========================================
-  // CLASSIFY + SPIRAL -> MANDALA
+  // CLASSIFY + SPIRAL → MANDALA (geometric star, radial symmetry, angular)
   // ==========================================
   else if(key==='classify_spiral'){
     const arms=5+Math.floor(R()*4);const nLay=4+Math.floor(p.cpx*1.5);
+    // Concentric polygons with alternating rotation
+    // Offset concentric polygons — each layer drifts from center
     for(let l=0;l<nLay;l++){const t=(l+1)/(nLay+1);const lr=bR*t;
-      PG(cx,fcy,lr,arms,l*.35,al*(.3+t*.35),R);}
+      const drift=t*bR*0.08;
+      const lcx=cx+(R()-.5)*drift*2,lcy=fcy+(R()-.5)*drift*2;
+      const lArms=arms+Math.floor((R()-.5)*2.5); // vary sides per layer
+      PG(lcx,lcy,lr,Math.max(3,lArms),l*.35+(R()-.5)*.3,al*(.8+t*.4),R);}
+    // Star diagonals — connect every-other vertex of outer polygon (no radial spokes)
     const outerR=bR*.92;
     for(let i=0;i<arms;i++){const a1=(i/arms)*Math.PI*2;const a2=((i+Math.floor(arms/2))/arms)*Math.PI*2;
-      ST(cx+Math.cos(a1)*outerR,fcy+Math.sin(a1)*outerR,cx+Math.cos(a2)*outerR,fcy+Math.sin(a2)*outerR,al*.3,R);}
-    for(let i=0;i<arms*2;i++){const a=(i/(arms*2))*Math.PI*2;
-      ST(cx+Math.cos(a)*bR*.05,fcy+Math.sin(a)*bR*.05,cx+Math.cos(a)*bR*.95,fcy+Math.sin(a)*bR*.95,al*.2,R);}
+      ST(cx+Math.cos(a1)*outerR,fcy+Math.sin(a1)*outerR,cx+Math.cos(a2)*outerR,fcy+Math.sin(a2)*outerR,al*0.7,R);}
+    // Scattered inner details
     for(let z=0;z<Math.floor(p.den*4)+1;z++){const a=R()*Math.PI*2;const d=R()*bR*.4;
       const zx=cx+Math.cos(a)*d,zy=fcy+Math.sin(a)*d;
-      if(R()<.4)HT(zx,zy,bR*(.06+R()*.08),R()*Math.PI,5,al*.25,R);
-      else if(R()<.6){SA(zx,zy,bR*(.05+R()*.1),R()*Math.PI,R()*Math.PI+1.5+R(),al*.18,R);}
-      else{const s=5+R()*12;ST(zx-s,zy+(R()-.5)*s,zx+s,zy+(R()-.5)*s,al*.2,R);
-        ST(zx+(R()-.5)*s,zy-s,zx+(R()-.5)*s,zy+s,al*.2,R);}}
-    for(let i=0;i<2+Math.floor(R()*2);i++){const a=R()*Math.PI*2,r=bR*(.3+R()*.4);
-      const px=cx+Math.cos(a)*r,py=fcy+Math.sin(a)*r;
-      const len=20+R()*40;const da=a+Math.PI/2+(R()-.5)*.5;
-      ST(px,py,px+Math.cos(da)*len,py+Math.sin(da)*len,al*.15,R);}
-    ST(cx-bR*.1,fcy,cx+bR*.1,fcy,al*.5,R);ST(cx,fcy-bR*.1,cx,fcy+bR*.1,al*.5,R);
-    ST(cx,ancY,cx,fcy+bR*.5,al*.4,R);
+      if(R()<.4)HT(zx,zy,bR*(.06+R()*.08),R()*Math.PI,5,al*0.7,R);
+      else if(R()<.6)SA(zx,zy,bR*(.05+R()*.1),R()*Math.PI,R()*Math.PI+1.5+R(),al*0.7,R);
+      else{const s=5+R()*10;ST(zx-s,zy+(R()-.5)*s,zx+s,zy+(R()-.5)*s,al*0.7,R);}}
+    ST(cx,ancY,cx,fcy+bR*.5,al*0.9,R);
   }
 
   // ==========================================
-  // CLASSIFY + PARALLEL -> GRID
+  // CLASSIFY + PARALLEL → GRID (orthogonal lattice, filled cells)
   // ==========================================
   else if(key==='classify_parallel'){
-    // GRID — organic web instead of rigid orthogonal lattice
-    const nC=3+Math.floor(p.mul/2);const nR2=4+Math.floor(p.cpx);
-    const gW=Math.min(bR*1.2,zoneW);const gH=Math.min(bR*1.2,zoneH*.9);
-    // Wavy horizontals
-    for(let r=0;r<=nR2;r++){const y=fcy-gH/2+r*gH/nR2;const wav=6+R()*10;
-      const pts=[];for(let s=0;s<=20;s++){const t=s/20;
-        pts.push({x:cx-gW/2+t*gW,y:y+Math.sin(t*Math.PI*(2+R()*2))*wav+(R()-.5)*4});}
-      for(let s=0;s<pts.length-1;s++)ST(pts[s].x,pts[s].y,pts[s+1].x,pts[s+1].y,al*(.25+.1*Math.sin(r)),R);}
-    // Wavy verticals
-    for(let c=0;c<=nC;c++){const x=cx-gW/2+c*gW/nC;const wav=6+R()*10;
-      const pts=[];for(let s=0;s<=20;s++){const t=s/20;
-        pts.push({x:x+Math.sin(t*Math.PI*(2+R()*2))*wav+(R()-.5)*4,y:fcy-gH/2+t*gH});}
-      for(let s=0;s<pts.length-1;s++)ST(pts[s].x,pts[s].y,pts[s+1].x,pts[s+1].y,al*(.25+.1*Math.sin(c)),R);}
-    // Cell fills: mixed organic shapes
-    for(let r=0;r<nR2;r++){for(let c=0;c<nC;c++){
-      if(R()<p.den*.65){const cx2=cx-gW/2+(c+.5)*gW/nC+(R()-.5)*8;const cy2=fcy-gH/2+(r+.5)*gH/nR2+(R()-.5)*8;
-        const cr=Math.min(gW/nC,gH/nR2)*.3;
-        if(R()<.5)SA(cx2,cy2,cr,0,Math.PI*2,al*.3,R);else HT(cx2,cy2,cr,R()*Math.PI,5,al*.25,R);}}}
-    ST(cx,ancY,cx,fcy+gH/2,al*.35,R);
+    // ORGANIC WEB — irregular crossing lines like a net or weave
+    const nLines=6+Math.floor(p.mul*.8)+Math.floor(p.cpx*.5);
+    const gW=Math.min(bR*1.1,zoneW*.8);
+    const gH=Math.min(bR*1.1,zoneH*.8);
+    // Lines at irregular angles crossing the zone
+    for(let i=0;i<nLines;i++){
+      const a=R()*Math.PI; // angles from 0 to PI (not full circle, to avoid near-duplicates)
+      const drift=(R()-.5)*gW*.4;
+      const cos=Math.cos(a),sin=Math.sin(a);
+      const len=gW*(.3+R()*.5);
+      const ox=cx+drift,oy=fcy+(R()-.5)*gH*.5;
+      // Each line is slightly wavy
+      const pts=[];const nSeg=8+Math.floor(R()*6);
+      for(let s=0;s<=nSeg;s++){const t=s/nSeg-.5;
+        const wx=ox+cos*t*len+(R()-.5)*6;
+        const wy=oy+sin*t*len+(R()-.5)*6;
+        pts.push({x:wx,y:wy});}
+      const alLine=al*(.6+R()*.3);
+      for(let s=0;s<pts.length-1;s++)ST(pts[s].x,pts[s].y,pts[s+1].x,pts[s+1].y,alLine,R);
+    }
+    // Stem
+    ST(cx,ancY,cx,fcy+gH/2,al*0.7,R);
     rootH(cx-gW/2);rootH(cx+gW/2);
   }
 
   // ==========================================
-  // CLASSIFY + LEAP -> SHARDS
+  // CLASSIFY + LEAP → SHARDS (sharp angular fragments, mineral)
   // ==========================================
   else if(key==='classify_leap'){
     const n=5+p.mul;const pieces=[];
     for(let i=0;i<n;i++){const a=R()*Math.PI*2;const d=15+R()*bR*.7;
       const px=cx+Math.cos(a)*d,py=fcy+Math.sin(a)*d;const pr=15+R()*bR*.16;
-      const sides=3+Math.floor(R()*2);
-      const vs=PG(px,py,pr,sides,R()*Math.PI,al*(.5+R()*.3),R);
-      if(vs.length>2){ST(vs[0].x,vs[0].y,vs[Math.floor(vs.length/2)].x,vs[Math.floor(vs.length/2)].y,al*.25,R);}
-      if(R()<.35)HT(px,py,pr*.4,R()*Math.PI,5,al*.2,R);
-      else if(R()<.5)SA(px,py,pr*.5,R()*Math.PI,R()*Math.PI+Math.PI*(0.5+R()),al*.2,R);
-      else if(R()<.3){const s=pr*.3;ST(px-s,py,px+s,py,al*.2,R);ST(px,py-s,px,py+s,al*.2,R);}
+      const sides=3+Math.floor(R()*2); // triangles and diamonds only
+      const vs=PG(px,py,pr,sides,R()*Math.PI,al*(.9+R()*.25),R);
+      // Mixed internal details: fracture lines + arcs + hatches
+      if(vs.length>2){ST(vs[0].x,vs[0].y,vs[Math.floor(vs.length/2)].x,vs[Math.floor(vs.length/2)].y,al*0.7,R);}
+      if(R()<.35)HT(px,py,pr*.4,R()*Math.PI,5,al*0.7,R);
+      else if(R()<.5)SA(px,py,pr*.5,R()*Math.PI,R()*Math.PI+Math.PI*(0.5+R()),al*0.7,R);
+      else if(R()<.3){const s=pr*.3;ST(px-s,py,px+s,py,al*0.7,R);ST(px,py-s,px,py+s,al*0.7,R);}
       pieces.push({x:px,y:py});}
+    // Thin fracture lines between nearby shards
     for(let i=0;i<n;i++){for(let j=i+1;j<n;j++){
       const d=Math.sqrt((pieces[i].x-pieces[j].x)**2+(pieces[i].y-pieces[j].y)**2);
-      if(d<bR*.5&&R()<.4){ST(pieces[i].x,pieces[i].y,pieces[j].x,pieces[j].y,al*.12,R);}}}
+      if(d<bR*.5&&R()<.4){ST(pieces[i].x,pieces[i].y,pieces[j].x,pieces[j].y,al*0.6,R);}}}
     let cl=pieces[0],cd=1e9;pieces.forEach(p2=>{const d=Math.abs(p2.y-ancY);if(d<cd){cd=d;cl=p2;}});
-    ST(cx,ancY,cl.x,cl.y,al*.3,R);
+    ST(cx,ancY,cl.x,cl.y,al*0.9,R);
   }
 
   // ==========================================
-  // CONNECT + LINEAR -> RIVER
+  // CONNECT + LINEAR → RIVER (smooth horizontal sine waves, flowing)
   // ==========================================
   else if(key==='connect_linear'){
-    const nW=2+Math.floor(p.mul/2);const totalH=Math.min(bR*1.5,zoneH);
+    // RIVER — smooth flowing sinusoidal curves
+    const nW=Math.min(4,2+Math.floor(p.mul/4));
     for(let w=0;w<nW;w++){
-      const amp=bR*(.15+R()*.2);const freq=2+p.cpx*.5+R();
+      const amp=bR*(.15+R()*.2);const freq=1.5+p.cpx*.2+R()*.5;
       const yOff=(w-(nW-1)/2)*bR*.2;
       const pts=[];
-      for(let i=0;i<=80;i++){const t=i/80;
+      for(let i=0;i<=120;i++){const t=i/120;
         pts.push({x:cx-bR*.7+t*bR*1.4, y:fcy+yOff+Math.sin(t*freq*Math.PI)*amp});}
-      for(let i=0;i<pts.length-1;i++)ST(pts[i].x,pts[i].y,pts[i+1].x,pts[i+1].y,al*(.4+.25*(1-w/nW)),R);
-      for(let i=5;i<pts.length;i+=4+Math.floor(R()*3)){
-        const pt=pts[i];const rl=3+R()*8;
-        ST(pt.x,pt.y-rl,pt.x,pt.y+rl,al*.15,R);}
+      for(let i=0;i<pts.length-1;i++)ST(pts[i].x,pts[i].y,pts[i+1].x,pts[i+1].y,al*(.85+.3*(1-w/nW)),R);
     }
-    for(let h=0;h<2+Math.floor(p.den*3);h++){
-      const ix=cx+(R()-.5)*bR*1.1,iy=fcy+(R()-.5)*bR*.6;
-      if(R()<.5){SA(ix,iy,8+R()*18,0,Math.PI*2,al*.2,R);HT(ix,iy,6+R()*10,R()*Math.PI,5,al*.12,R);}
-      else{PG(ix,iy,10+R()*15,3+Math.floor(R()*3),R()*Math.PI,al*.18,R);}}
-    for(let h=0;h<Math.floor(p.cpx*.5)+1;h++){
-      const y=fcy+(R()-.5)*bR*.5;ST(cx-bR*.3+R()*20,y-15-R()*20,cx+bR*.3-R()*20,y+15+R()*20,al*.07,R);}
-    const botPt=fcy+bR*.3;ST(cx,ancY,cx,botPt>ancY?ancY:botPt,al*.3,R);
+    const botPt=fcy+bR*.3;ST(cx,ancY,cx,botPt>ancY?ancY:botPt,al*0.7,R);
   }
 
   // ==========================================
-  // CONNECT + SPIRAL -> DOUBLE HELIX
+  // CONNECT + SPIRAL → DOUBLE HELIX (two intertwining spirals, DNA)
   // ==========================================
   else if(key==='connect_spiral'){
-    const turns=2+p.cpx*.4;
-    for(let arm=0;arm<2;arm++){const dir=arm===0?1:-1;const pts=[];const tot=Math.floor(turns*50);
-      for(let i=0;i<=tot;i++){const t=i/tot;const a=t*turns*Math.PI*2*dir+arm*Math.PI;
-        const r=8+Math.pow(t,.5)*bR;pts.push({x:cx+Math.cos(a)*r,y:fcy+Math.sin(a)*r});}
-      for(let i=0;i<pts.length-1;i++)ST(pts[i].x,pts[i].y,pts[i+1].x,pts[i+1].y,al*(.45+.2*(1-arm)),R);
-      for(let i=0;i<pts.length;i+=2+Math.floor(R()*2)){const pt=pts[i];const a=Math.atan2(pt.y-fcy,pt.x-cx)+Math.PI/2;
-        const cl=4+R()*12;ST(pt.x+Math.cos(a)*cl,pt.y+Math.sin(a)*cl,pt.x-Math.cos(a)*cl,pt.y-Math.sin(a)*cl,al*.28,R);}}
-    for(let i=0;i<4+p.mul;i++){const a=R()*Math.PI*2;const r=bR*(.2+R()*.6);
-      ST(cx+Math.cos(a)*r,fcy+Math.sin(a)*r,cx+Math.cos(a+.3)*r*.9,fcy+Math.sin(a+.3)*r*.9,al*.2,R);
-      if(R()<.4){const fx=cx+Math.cos(a)*r*1.1,fy=fcy+Math.sin(a)*r*1.1;
-        PG(fx,fy,6+R()*12,3+Math.floor(R()*2),R()*Math.PI,al*.15,R);}
-      if(R()<.3){const fx=cx+Math.cos(a+1)*r*.5,fy=fcy+Math.sin(a+1)*r*.5;
-        HT(fx,fy,8+R()*10,R()*Math.PI,5,al*.1,R);}}
-    ST(cx,ancY,cx,fcy+bR*.35,al*.4,R);
+    // DOUBLE HELIX — two intertwining spiral arms (DNA seen from above)
+    const turns=1+p.cpx*.15; // keep low for readability (1-2.5 turns)
+    const nPts=Math.floor(turns*40);
+    const arms=[[],[]];
+    for(let i=0;i<=nPts;i++){
+      const t=i/nPts;
+      const a=t*turns*Math.PI*2;
+      const r=15+t*bR*.85;
+      // Two arms offset by PI
+      arms[0].push({x:cx+Math.cos(a)*r,y:fcy+Math.sin(a)*r});
+      arms[1].push({x:cx+Math.cos(a+Math.PI)*r,y:fcy+Math.sin(a+Math.PI)*r});
+    }
+    // Draw both arms
+    for(let arm=0;arm<2;arm++){
+      for(let i=0;i<arms[arm].length-1;i++)
+        ST(arms[arm][i].x,arms[arm][i].y,arms[arm][i+1].x,arms[arm][i+1].y,al*(.95-.15*arm),R);
+    }
+    // Rungs (transversal bars connecting the two arms at regular intervals)
+    const rungStep=Math.max(3,Math.floor(nPts/8));
+    for(let i=rungStep;i<arms[0].length;i+=rungStep+Math.floor(R()*2)){
+      ST(arms[0][i].x,arms[0][i].y,arms[1][i].x,arms[1][i].y,al*0.7,R);
+    }
+    // Small marks at rung intersections
+    for(let i=rungStep;i<arms[0].length;i+=rungStep*2){
+      const mx=(arms[0][i].x+arms[1][i].x)/2,my=(arms[0][i].y+arms[1][i].y)/2;
+      if(R()<.5)SA(mx,my,4+R()*6,0,Math.PI*2,al*0.7,R);
+      else{const s=3+R()*4;ST(mx-s,my,mx+s,my,al*0.7,R);ST(mx,my-s,mx,my+s,al*0.7,R);}
+    }
+    ST(cx,ancY,cx,fcy+bR*.35,al*0.9,R);
   }
 
   // ==========================================
-  // CONNECT + PARALLEL -> CONSTELLATION
+  // CONNECT + PARALLEL → CONSTELLATION (dots + fine lines, network)
   // ==========================================
   else if(key==='connect_parallel'){
     const n=8+p.mul*2;const nds=[];
     for(let i=0;i<n;i++){const a=(i/n)*Math.PI*2+R()*.5;const d=20+R()*bR*.7;
       nds.push({x:cx+Math.cos(a)*d,y:fcy+Math.sin(a)*d});}
+    // Connect by proximity
     for(let i=0;i<n;i++){const sorted=nds.map((nd,j)=>({j,d:Math.sqrt((nd.x-nds[i].x)**2+(nd.y-nds[i].y)**2)}))
       .filter(x=>x.j!==i).sort((a,b)=>a.d-b.d);
       for(let c=0;c<Math.min(3,sorted.length);c++){if(sorted[c].d<bR*.7)
-        ST(nds[i].x,nds[i].y,nds[sorted[c].j].x,nds[sorted[c].j].y,al*.2,R);}}
+        ST(nds[i].x,nds[i].y,nds[sorted[c].j].x,nds[sorted[c].j].y,al*0.7,R);}}
+    // Mixed node details: circles, polygons, hatches, crosses — different per node
     nds.forEach(nd=>{const t=R();
-      if(t<.3){SA(nd.x,nd.y,5+R()*6,0,Math.PI*2,al*.55,R);const s=3+R()*4;ST(nd.x-s,nd.y,nd.x+s,nd.y,al*.4,R);ST(nd.x,nd.y-s,nd.x,nd.y+s,al*.4,R);}
-      else if(t<.55){PG(nd.x,nd.y,6+R()*10,3+Math.floor(R()*3),R()*Math.PI,al*.4,R);}
-      else if(t<.75){HT(nd.x,nd.y,6+R()*8,R()*Math.PI,4,al*.25,R);}
-      else{SA(nd.x,nd.y,4+R()*8,R()*Math.PI,R()*Math.PI+Math.PI*(0.6+R()*.8),al*.4,R);
-        const s=5+R()*6;ST(nd.x-s,nd.y-(R()-.5)*s,nd.x+s,nd.y+(R()-.5)*s,al*.25,R);}});
+      if(t<.3){SA(nd.x,nd.y,5+R()*6,0,Math.PI*2,al*0.9,R);const s=3+R()*4;ST(nd.x-s,nd.y,nd.x+s,nd.y,al*0.9,R);ST(nd.x,nd.y-s,nd.x,nd.y+s,al*0.9,R);}
+      else if(t<.55){PG(nd.x,nd.y,6+R()*10,3+Math.floor(R()*3),R()*Math.PI,al*0.9,R);}
+      else if(t<.75){HT(nd.x,nd.y,6+R()*8,R()*Math.PI,4,al*0.7,R);}
+      else{SA(nd.x,nd.y,4+R()*8,R()*Math.PI,R()*Math.PI+Math.PI*(0.6+R()*.8),al*0.9,R);
+        const s=5+R()*6;ST(nd.x-s,nd.y-(R()-.5)*s,nd.x+s,nd.y+(R()-.5)*s,al*0.7,R);}});
     let cl=nds[0],cd=1e9;nds.forEach(nd=>{const d=Math.abs(nd.y-ancY);if(d<cd){cd=d;cl=nd;}});
-    ST(cx,ancY,cl.x,cl.y,al*.3,R);
+    ST(cx,ancY,cl.x,cl.y,al*0.9,R);
   }
 
   // ==========================================
-  // CONNECT + LEAP -> ARCHIPELAGO
+  // CONNECT + LEAP → ARCHIPELAGO (round islands, organic connections)
   // ==========================================
   else if(key==='connect_leap'){
     const n=5+p.mul;const cells=[];
     for(let i=0;i<n;i++){const a=R()*Math.PI*2;const d=R()*bR*.7;
       const cr=25+R()*bR*.14;const ccx=cx+Math.cos(a)*d,ccy=fcy+Math.sin(a)*d;
-      if(R()<.6){SA(ccx,ccy,cr,0,Math.PI*2,al*(.45+R()*.2),R);SA(ccx,ccy,cr*.6,0,Math.PI*2,al*.2,R);}
-      else{PG(ccx,ccy,cr,4+Math.floor(R()*3),R()*Math.PI,al*(.4+R()*.2),R);}
+      // Double concentric circles
+      // Mixed island shapes: some circular, some angular, some hatched
+      if(R()<.6){SA(ccx,ccy,cr,0,Math.PI*2,al*(.9+R()*.2),R);SA(ccx,ccy,cr*.6,0,Math.PI*2,al*0.7,R);}
+      else{PG(ccx,ccy,cr,4+Math.floor(R()*3),R()*Math.PI,al*(.95+R()*.2),R);}
+      // Mixed internal fill
       if(p.den>.4){for(let j=0;j<3+Math.floor(R()*3);j++){
         const ia=R()*Math.PI*2;const ir=R()*cr*.4;const fx=ccx+Math.cos(ia)*ir,fy=ccy+Math.sin(ia)*ir;
-        if(R()<.5){ctx.beginPath();ctx.arc(fx,fy,2+R()*3,0,Math.PI*2);ctx.fillStyle=`rgba(${INK},${al*.25})`;ctx.fill();}
-        else{ST(fx-3-R()*4,fy,fx+3+R()*4,fy,al*.18,R);}}}
+        if(R()<.5){ctx.beginPath();ctx.arc(fx,fy,2+R()*3,0,Math.PI*2);ctx.fillStyle=`rgba(${INK},${al*0.7})`;ctx.fill();}
+        else{ST(fx-3-R()*4,fy,fx+3+R()*4,fy,al*0.7,R);}}}
       cells.push({x:ccx,y:ccy,r:cr});}
+    // Curved arcs connecting nearby islands
     for(let i=0;i<cells.length;i++){for(let j=i+1;j<cells.length;j++){
       const d=Math.sqrt((cells[i].x-cells[j].x)**2+(cells[i].y-cells[j].y)**2);
       if(d<cells[i].r+cells[j].r+80){
         const mx=(cells[i].x+cells[j].x)/2+(R()-.5)*40;
         const my=(cells[i].y+cells[j].y)/2+(R()-.5)*40;
-        ST(cells[i].x,cells[i].y,mx,my,al*.15,R);ST(mx,my,cells[j].x,cells[j].y,al*.15,R);}}}
-    ST(cx,ancY,cx,fcy+bR*.35,al*.3,R);
+        ST(cells[i].x,cells[i].y,mx,my,al*0.7,R);ST(mx,my,cells[j].x,cells[j].y,al*0.7,R);}}}
+    ST(cx,ancY,cx,fcy+bR*.35,al*0.9,R);
   }
 
   // ==========================================
-  // LAYER + LINEAR -> PEAKS
+  // LAYER + LINEAR → PEAKS (sharp triangular mountains, angular)
   // ==========================================
   else if(key==='layer_linear'){
     const nRanges=3+Math.floor(p.cpx);const totalH=Math.min(bR*1.4,zoneH);
@@ -428,118 +442,122 @@ function drawFormWith(p){
         pts.push({x:peakX,y:baseY-peakH});
         if(pk<nPeaks-1)pts.push({x:peakX+w/nPeaks*(.3+R()*.4),y:baseY-peakH*.2-R()*20});}
       pts.push({x:cx+w,y:baseY});
-      for(let i=0;i<pts.length-1;i++)ST(pts[i].x,pts[i].y,pts[i+1].x,pts[i+1].y,al*(.3+t*.4),R);
+      // Draw mountain silhouette
+      for(let i=0;i<pts.length-1;i++)ST(pts[i].x,pts[i].y,pts[i+1].x,pts[i+1].y,al*(.8+t*.4),R);
+      // Hatching inside mountain bodies
       if(p.den>.3&&R()<.6){const mid=pts[Math.floor(pts.length/2)];
-        HT(mid.x,baseY-20-R()*30,bR*(.05+R()*.1),R()*.3,5,al*.2,R);}
+        HT(mid.x,baseY-20-R()*30,bR*(.05+R()*.1),R()*.3,5,al*0.7,R);}
     }
+    // Snow caps: tiny hatches at the very top peaks
     for(let i=0;i<2+Math.floor(R()*2);i++){
       const px=cx+(R()-.5)*bR*.6;const py=fcy-bR*.2+R()*bR*.3;
-      ST(px-4,py,px+4,py,al*.15,R);}
+      ST(px-4,py,px+4,py,al*0.7,R);}
+    // Horizontal connections from base mountain edges to head
     const baseW=bR*.6;
     rootH(cx-baseW);rootH(cx+baseW);
   }
 
   // ==========================================
-  // LAYER + SPIRAL -> TOPOGRAPHIC
+  // LAYER + SPIRAL → TOPOGRAPHIC (organic wobbly contours, map-like)
   // ==========================================
   else if(key==='layer_spiral'){
-    const nRings=5+Math.floor(p.cpx*1.5)+Math.floor(p.mul/2);
-    for(let i=0;i<nRings;i++){const r=bR*(.08+(i/nRings)*.85);const wobble=6+R()*12;
+    const nRings=Math.min(8,4+Math.floor(p.cpx*0.5));
+    for(let i=0;i<nRings;i++){const r=bR*(.08+(i/nRings)*.85);const wobble=3+R()*5;
       const pts=[];for(let j=0;j<=60;j++){const a=(j/60)*Math.PI*2;
         const wr=r+Math.sin(a*(3+i%3))*wobble+Math.cos(a*(5+i%2))*wobble*.5;
         pts.push({x:cx+Math.cos(a)*wr,y:fcy+Math.sin(a)*wr});}
-      for(let j=0;j<pts.length-1;j++)ST(pts[j].x,pts[j].y,pts[j+1].x,pts[j+1].y,al*(.2+.04*i),R);}
+      for(let j=0;j<pts.length-1;j++)ST(pts[j].x,pts[j].y,pts[j+1].x,pts[j+1].y,al*(.6+.05*i),R);}
+    // Angular interruptions — break the pure ring pattern
     for(let i=0;i<2+Math.floor(p.cpx*.5);i++){const a=R()*Math.PI*2,d=bR*(.15+R()*.5);
       const px=cx+Math.cos(a)*d,py=fcy+Math.sin(a)*d;
-      PG(px,py,12+R()*25,3+Math.floor(R()*3),R()*Math.PI,al*.2,R);}
+      PG(px,py,12+R()*25,3+Math.floor(R()*3),R()*Math.PI,al*0.7,R);}
+    // Scattered elevation marks + hatched zones
     for(let i=0;i<3+Math.floor(p.den*3);i++){const a=R()*Math.PI*2,d=R()*bR*.5;
       const ex=cx+Math.cos(a)*d,ey=fcy+Math.sin(a)*d;
-      if(R()<.5){ST(ex-3,ey,ex+3,ey,al*.35,R);ST(ex,ey-3,ex,ey+3,al*.35,R);}
-      else{HT(ex,ey,8+R()*12,R()*Math.PI,5,al*.15,R);}}
+      if(R()<.5){ST(ex-3,ey,ex+3,ey,al*0.9,R);ST(ex,ey-3,ex,ey+3,al*0.9,R);}
+      else{HT(ex,ey,8+R()*12,R()*Math.PI,5,al*0.7,R);}}
+    // Stray radial lines that cut across rings
     for(let i=0;i<Math.floor(p.den*2)+1;i++){const a=R()*Math.PI*2;
-      ST(cx+Math.cos(a)*bR*.1,fcy+Math.sin(a)*bR*.1,cx+Math.cos(a)*bR*(.5+R()*.3),fcy+Math.sin(a)*bR*(.5+R()*.3),al*.1,R);}
-    ST(cx,ancY,cx,fcy+bR*.6,al*.3,R);
+      ST(cx+Math.cos(a)*bR*.1,fcy+Math.sin(a)*bR*.1,cx+Math.cos(a)*bR*(.5+R()*.3),fcy+Math.sin(a)*bR*(.5+R()*.3),al*0.6,R);}
+    ST(cx,ancY,cx,fcy+bR*.6,al*0.9,R);
   }
 
   // ==========================================
-  // LAYER + PARALLEL -> TOTEMS
+  // LAYER + PARALLEL → TOTEMS (narrow carved poles with internal symbols)
   // ==========================================
   else if(key==='layer_parallel'){
-    // TOTEMS — curving organic stems instead of rigid poles
-    const nTot=2+Math.floor(p.mul/3);const totW=bR*.08;
+    // TEXTURED VERTICALS — single central lines with internal textures, no rectangular contours
+    const nTot=Math.min(4,2+Math.floor(p.mul/3));const totW=bR*.04;
+    const totemXs=[];
     for(let ti=0;ti<nTot;ti++){
-      const tx=cx+(ti-(nTot-1)/2)*totW*5;const totH=Math.min(bR*(.9+R()*.5),zoneH*.95);
-      const sway=(R()-.5)*15;const swayF=2+R()*2;
-      rootH(tx-totW);rootH(tx+totW);
-      // Curved edges instead of straight verticals
-      for(let s=0;s<12;s++){const t1=s/12,t2=(s+1)/12;
-        const y1=ancY-totH*t1,y2=ancY-totH*t2;
-        const ox1=Math.sin(t1*swayF*Math.PI)*sway,ox2=Math.sin(t2*swayF*Math.PI)*sway;
-        ST(tx-totW+ox1,y1,tx-totW+ox2,y2,al*.55,R);
-        ST(tx+totW+ox1*.8,y1,tx+totW+ox2*.8,y2,al*.55,R);}
-      // Wobbly cap
-      SA(tx+(R()-.5)*5,ancY-totH,totW*1.2,Math.PI,Math.PI*2,al*.4,R);
-      // Organic internal carvings
-      const nSec=3+Math.floor(p.cpx*1.2);
+      const tx=cx+(ti-(nTot-1)/2)*totW*8;const totH=Math.min(bR*(.9+R()*.5),zoneH*.95);
+      totemXs.push(tx);
+      // Single central vertical line
+      ST(tx,ancY,tx,ancY-totH,al*0.9,R);
+      // Internal textures along the line
+      const nSec=3+Math.floor(p.cpx*.8);
       for(let s=0;s<nSec;s++){const sy=ancY-totH*(s+1)/(nSec+1);
-        // Wavy horizontal separation
-        SA(tx,sy,totW*1.1,R()*.3,Math.PI-R()*.3,al*.2,R);
-        // Mixed symbols
-        if(s%3===0)SA(tx+(R()-.5)*4,sy+totH/(nSec+1)*.4,totW*.6,0,Math.PI*2,al*.35,R);
-        else if(s%3===1)PG(tx+(R()-.5)*4,sy+totH/(nSec+1)*.4,totW*.5,3+Math.floor(R()*3),R()*Math.PI,al*.3,R);
-        else HT(tx+(R()-.5)*6,sy+totH/(nSec+1)*.3,totW*.4,R()*Math.PI,5,al*.2,R);}
-      if(R()<.7)SA(tx,ancY-totH-totW,totW,0,Math.PI*2,al*.35,R);
+        const secH=totH/(nSec+1);
+        if(R()<.5){HT(tx+(R()-.5)*3,sy+secH*.3,totW*.8,R()*Math.PI,4,al*0.6,R);}
+        else{SA(tx+(R()-.5)*4,sy+secH*.35,totW*.6,R()*Math.PI,R()*Math.PI+Math.PI*(.4+R()*.4),al*0.6,R);}}
     }
+    // Store totem positions for post-clip connection
+    p._totemXs=totemXs;
   }
 
   // ==========================================
-  // LAYER + LEAP -> STRATA
+  // LAYER + LEAP → STRATA (horizontal offset slabs, tectonic)
   // ==========================================
   else if(key==='layer_leap'){
-    // STRATA — flowing organic ribbons instead of rigid rectangles
-    const nSlabs=5+Math.floor(p.cpx*1.5);
-    for(let i=0;i<nSlabs;i++){const t=i/nSlabs;
-      const y=Math.max(zoneT+10,fcy-bR*.7)+t*Math.min(bR*1.3,zoneH*.8);
-      const ox=(R()-.5)*80;const w=Math.min(bR*(.15+R()*.3),zoneHW*.8);const h=bR*(.03+R()*.06);
-      const wav=5+R()*10;const freq=1.5+R()*2;
-      // Top and bottom edges as flowing curves
-      const alSlab=al*(.35+t*.3);
-      const ptsTop=[],ptsBot=[];
-      for(let s=0;s<=16;s++){const st=s/16;
-        const wobT=Math.sin(st*freq*Math.PI)*wav+(R()-.5)*4;
-        const wobB=Math.sin((st+.3)*freq*Math.PI)*wav*(0.7+R()*.3)+(R()-.5)*4;
-        ptsTop.push({x:cx+ox-w+st*w*2,y:y-h+wobT});
-        ptsBot.push({x:cx+ox-w+st*w*2,y:y+h+wobB});}
-      for(let s=0;s<ptsTop.length-1;s++){ST(ptsTop[s].x,ptsTop[s].y,ptsTop[s+1].x,ptsTop[s+1].y,alSlab,R);
-        ST(ptsBot[s].x,ptsBot[s].y,ptsBot[s+1].x,ptsBot[s+1].y,alSlab*.7,R);}
-      // Soft internal texture
-      if(R()<p.den*.6)HT(cx+ox+(R()-.5)*w,y,Math.min(w*.3,h*2),R()*Math.PI,5,al*.15,R);
-      // Organic connectors to next ribbon
-      if(i>0){const mx=cx+ox+(R()-.5)*30,my=y-h-(R()*15);
-        SA(mx,my,10+R()*15,R()*Math.PI,R()*Math.PI+Math.PI*(.4+R()*.5),al*.1,R);}}
-    ST(cx,ancY,cx,fcy+bR*.5,al*.25,R);
+    // STRATA — interrupted horizontal lines at varying heights, like geological cuts
+    const nSlabs=6+Math.floor(p.cpx*1.2);
+    const spanH=Math.min(bR*1.3,zoneH*.8);
+    for(let i=0;i<nSlabs;i++){
+      const t=i/nSlabs;
+      const y=Math.max(zoneT+10,fcy-bR*.6)+t*spanH;
+      const ox=(R()-.5)*60;
+      const w=Math.min(bR*(.12+R()*.35),zoneHW*.7);
+      const alLine=al*(.7+t*.3);
+      const wav=2+R()*4;const freq=1+R()*2;
+      // Main wavy horizontal line — may be interrupted
+      const nSeg=12+Math.floor(R()*8);
+      let drawing=true;
+      for(let s=0;s<nSeg;s++){
+        const t1=s/nSeg,t2=(s+1)/nSeg;
+        if(R()<.12)drawing=!drawing; // interrupt or resume
+        if(!drawing)continue;
+        const x1=cx+ox-w+t1*w*2,x2=cx+ox-w+t2*w*2;
+        const y1=y+Math.sin(t1*freq*Math.PI)*wav+(R()-.5)*2;
+        const y2=y+Math.sin(t2*freq*Math.PI)*wav+(R()-.5)*2;
+        ST(x1,y1,x2,y2,alLine,R);
+      }
+      // Occasional parallel echo line (close, shorter)
+      if(R()<p.den*.6){
+        const ey=y+4+R()*6;const ew=w*(.3+R()*.4);const eox=ox+(R()-.5)*30;
+        ST(cx+eox-ew,ey+(R()-.5)*2,cx+eox+ew,ey+(R()-.5)*2,alLine*.5,R);}
+    }
+    ST(cx,ancY,cx,fcy+bR*.5,al*0.7,R);
   }
 
   // ==========================================
-  // GROW + LINEAR -> TREE
+  // GROW + LINEAR → TREE (single trunk, branching upward)
   // ==========================================
   else if(key==='grow_linear'){
-    const maxD=2+Math.floor(p.cpx*.7);const brN=p.mul<3?2:p.mul<6?3:4;
+    const maxD=Math.max(2,1+Math.floor(p.cpx*.4));const brN=Math.max(2,Math.min(3,p.mul<3?2:3));
     function br(bx2,by2,a,d,lm){if(d>maxD)return;
-      const len=(maxD-d+1)*(bR*0.09)*lm*(.8+R()*.4);
+      const len=(maxD-d+1)*(bR*0.22)*lm*(.8+R()*.4);
       const ex=bx2+Math.cos(a)*len,ey=by2+Math.sin(a)*len;
-      const th=(maxD-d)*1.5;
-      ST(bx2,by2,ex,ey,al*(.35+.35*(1-d/maxD)),R);
-      if(d<2){const nx=-Math.sin(a)*th,ny=Math.cos(a)*th;ST(bx2+nx,by2+ny,ex+nx,ey+ny,al*.18,R);}
-      if(d===maxD){if(p.den>.4){SA(ex,ey,5+R()*10,0,Math.PI*2,al*.35,R);}
-        else{const s=5;ST(ex-s,ey-s,ex+s,ey+s,al*.3,R);ST(ex+s,ey-s,ex-s,ey+s,al*.3,R);}}
-      for(let b=0;b<brN;b++){const na=a+(b-(brN-1)/2)*.25+(R()-.5)*.06;br(ex,ey,na,d+1,.75+R()*.1);}}
+      ST(bx2,by2,ex,ey,al*(.7+.3*(1-d/maxD)),R);
+      // Terminal details
+      if(d===maxD){if(p.den>.4){SA(ex,ey,5+R()*10,0,Math.PI*2,al*0.7,R);}
+        else{const s=5;ST(ex-s,ey-s,ex+s,ey+s,al*0.7,R);ST(ex+s,ey-s,ex-s,ey+s,al*0.7,R);}}
+      for(let b=0;b<brN;b++){const na=a+(b-(brN-1)/2)*.25+(R()-.5)*.06;br(ex,ey,na,d+1,.85+R()*.1);}}
     br(cx,ancY,-Math.PI/2+(R()-.5)*.1,0,1);
     if(p.cpx>2){br(cx-12,ancY,-Math.PI/2-.22,1,.5);br(cx+12,ancY,-Math.PI/2+.22,1,.5);}
   }
 
   // ==========================================
-  // GROW + SPIRAL -> FERN
+  // GROW + SPIRAL → FERN (curling fronds, organic spirals)
   // ==========================================
   else if(key==='grow_spiral'){
     const nFronds=2+Math.floor(p.mul/2);
@@ -550,20 +568,22 @@ function drawFormWith(p){
       for(let i=0;i<=30;i++){const t=i/30;
         const a=baseA+curl*t*t;const step=mainLen/30;
         px2+=Math.cos(a)*step;py2+=Math.sin(a)*step;pts.push({x:px2,y:py2});}
-      for(let i=0;i<pts.length-1;i++)ST(pts[i].x,pts[i].y,pts[i+1].x,pts[i+1].y,al*(.4+.3*(1-f/nFronds)),R);
+      for(let i=0;i<pts.length-1;i++)ST(pts[i].x,pts[i].y,pts[i+1].x,pts[i+1].y,al*(.9+.3*(1-f/nFronds)),R);
+      // Side leaflets — alternating
       for(let i=3;i<pts.length;i+=2){const pt=pts[i];const prev=pts[i-1];
         const da=Math.atan2(pt.y-prev.y,pt.x-prev.x);const side=(i%4<2)?1:-1;
         const la=da+side*.7;const ll=12+R()*25*(1-i/pts.length);
         const lx=pt.x+Math.cos(la)*ll,ly=pt.y+Math.sin(la)*ll;
-        ST(pt.x,pt.y,lx,ly,al*.3,R);
-        if(R()<p.den*.5)SA(lx,ly,3+R()*4,0,Math.PI*2,al*.2,R);}
+        ST(pt.x,pt.y,lx,ly,al*0.9,R);
+        if(R()<p.den*.5)SA(lx,ly,3+R()*4,0,Math.PI*2,al*0.7,R);}
+      // Spiral tip (fiddle-head)
       const tip=pts[pts.length-1];const tipA=baseA+curl;
-      SA(tip.x+Math.cos(tipA)*12,tip.y+Math.sin(tipA)*12,8+R()*8,0,Math.PI*1.5,al*.35,R);
+      SA(tip.x+Math.cos(tipA)*12,tip.y+Math.sin(tipA)*12,8+R()*8,0,Math.PI*1.5,al*0.9,R);
     }
   }
 
   // ==========================================
-  // GROW + PARALLEL -> GRASS FIELD
+  // GROW + PARALLEL → GRASS FIELD (many thin vertical stems, prairie)
   // ==========================================
   else if(key==='grow_parallel'){
     const nStems=12+p.mul*4;const fieldW=Math.min(bR*1.3,zoneW);
@@ -571,119 +591,95 @@ function drawFormWith(p){
       const sway=(R()-.5)*.25;const pts=[];
       for(let j=0;j<=10;j++){const t=j/10;
         pts.push({x:sx+Math.sin(t*Math.PI+sway)*sh*.06+sway*t*25,y:ancY-t*sh});}
-      for(let j=0;j<pts.length-1;j++)ST(pts[j].x,pts[j].y,pts[j+1].x,pts[j+1].y,al*(.2+R()*.3),R);
+      for(let j=0;j<pts.length-1;j++)ST(pts[j].x,pts[j].y,pts[j+1].x,pts[j+1].y,al*(.7+R()*.4),R);
+      // Top detail
       if(R()<p.den){const top=pts[pts.length-1];
-        ST(top.x,top.y,top.x+(R()-.5)*16,top.y-5-R()*12,al*.3,R);}
+        ST(top.x,top.y,top.x+(R()-.5)*16,top.y-5-R()*12,al*0.9,R);}
       if(sh>bR*.5&&R()<.5){const mid=pts[5];
-        ST(mid.x,mid.y,mid.x+12+R()*18,mid.y-8-R()*12,al*.2,R);}
-      if(R()<.3){const top=pts[pts.length-1];SA(top.x,top.y-5,4+R()*8,0,Math.PI*2,al*.25,R);}
-      if(R()<.15){const top=pts[pts.length-1];PG(top.x,top.y-8,5+R()*10,3+Math.floor(R()*3),R()*Math.PI,al*.2,R);}
+        ST(mid.x,mid.y,mid.x+12+R()*18,mid.y-8-R()*12,al*0.7,R);}
+      // Mixed top details: circles, polygons, hatches instead of just lines
+      if(R()<.3){const top=pts[pts.length-1];SA(top.x,top.y-5,4+R()*8,0,Math.PI*2,al*0.7,R);}
+      if(R()<.15){const top=pts[pts.length-1];PG(top.x,top.y-8,5+R()*10,3+Math.floor(R()*3),R()*Math.PI,al*0.7,R);}
     }
+    // Horizontal bridges connecting stems
     for(let i=0;i<Math.floor(p.den*3)+1;i++){const y=ancY-bR*(.2+R()*.5);const hw=fieldW*(.1+R()*.2);
-      SA(cx+(R()-.5)*fieldW*.3,y,hw,R()*.5,R()*.5+Math.PI*(.5+R()),al*.08,R);}
+      SA(cx+(R()-.5)*fieldW*.3,y,hw,R()*.5,R()*.5+Math.PI*(.5+R()),al*0.6,R);}
+    // Ground scatter: marks + tiny polygons
     for(let i=0;i<Math.floor(p.den*8)+2;i++){const gx=cx+(R()-.5)*fieldW;
-      if(R()<.6)ST(gx-4,ancY+R()*3,gx+4,ancY+R()*3,al*.12,R);
-      else PG(gx,ancY-2-R()*8,3+R()*5,3,R()*Math.PI,al*.1,R);}
-    ST(cx-fieldW/2,ancY,cx+fieldW/2,ancY,al*.12,R);
+      if(R()<.6)ST(gx-4,ancY+R()*3,gx+4,ancY+R()*3,al*0.6,R);
+      else PG(gx,ancY-2-R()*8,3+R()*5,3,R()*Math.PI,al*0.6,R);}
+    // Continuous baseline + horizontal connections to head
+    ST(cx-fieldW/2,ancY,cx+fieldW/2,ancY,al*0.6,R);
     rootH(cx-fieldW/2);rootH(cx+fieldW/2);
   }
 
   // ==========================================
-  // GROW + LEAP -> DANDELION
+  // GROW + LEAP → DANDELION (central burst + floating seed-puffs with wind trails)
   // ==========================================
   else if(key==='grow_leap'){
+    // Central starburst
     const nRays=8+Math.floor(p.mul*1.5);
     for(let i=0;i<nRays;i++){const a=(i/nRays)*Math.PI*2+R()*.15;
       const rl=bR*(.2+R()*.2);
-      ST(cx+Math.cos(a)*5,fcy+Math.sin(a)*5,cx+Math.cos(a)*rl,fcy+Math.sin(a)*rl,al*.35,R);}
-    SA(cx,fcy,bR*.08,0,Math.PI*2,al*.5,R);
+      ST(cx+Math.cos(a)*5,fcy+Math.sin(a)*5,cx+Math.cos(a)*rl,fcy+Math.sin(a)*rl,al*0.9,R);}
+    SA(cx,fcy,bR*.08,0,Math.PI*2,al*0.9,R);
+    // Floating seeds — round puffs with trailing curved lines
     const nSeeds=4+Math.floor(p.mul);
     for(let i=0;i<nSeeds;i++){const a=R()*Math.PI*2;const d=bR*(.35+R()*.45);
       const sx=cx+Math.cos(a)*d,sy=fcy+Math.sin(a)*d;
-      SA(sx,sy,5+R()*7,0,Math.PI*2,al*.4,R);
+      SA(sx,sy,5+R()*7,0,Math.PI*2,al*0.9,R);
+      // Tiny radiating filaments
       for(let f=0;f<4+Math.floor(R()*3);f++){const fa=R()*Math.PI*2;const fl=6+R()*10;
-        ST(sx+Math.cos(fa)*3,sy+Math.sin(fa)*3,sx+Math.cos(fa)*fl,sy+Math.sin(fa)*fl,al*.2,R);}
+        ST(sx+Math.cos(fa)*3,sy+Math.sin(fa)*3,sx+Math.cos(fa)*fl,sy+Math.sin(fa)*fl,al*0.7,R);}
+      // Wind trail — curved line back toward center
       const mx=sx+(cx-sx)*.4+(R()-.5)*40;const my=sy+(fcy-sy)*.4+(R()-.5)*40;
-      ST(sx,sy,mx,my,al*.1,R);ST(mx,my,cx+Math.cos(a)*bR*.15,fcy+Math.sin(a)*bR*.15,al*.08,R);}
-    ST(cx,ancY,cx,fcy+bR*.06,al*.4,R);
+      ST(sx,sy,mx,my,al*0.6,R);ST(mx,my,cx+Math.cos(a)*bR*.15,fcy+Math.sin(a)*bR*.15,al*0.6,R);}
+    // Stem
+    ST(cx,ancY,cx,fcy+bR*.06,al*0.9,R);
   }
 
   // ===== FALLBACK =====
   else{
-    PG(cx,fcy,bR*.6,5,R(),al*.5,R);PG(cx,fcy,bR*.3,4,R(),al*.35,R);
-    ST(cx,ancY,cx,fcy+bR*.4,al*.4,R);
+    PG(cx,fcy,bR*.6,5,R(),al*0.9,R);PG(cx,fcy,bR*.3,4,R(),al*0.9,R);
+    ST(cx,ancY,cx,fcy+bR*.4,al*0.9,R);
   }
 
-  // ===== HYBRID MIX =====
-  const mR=mkR(p.seed+777);
-  const nMix=3+Math.floor(p.den*5);
-  if(['classify_linear','classify_parallel','classify_leap','layer_parallel','layer_leap'].includes(key)){
-    for(let i=0;i<nMix;i++){const a=mR()*Math.PI*2,d=bR*(.15+mR()*.55);
-      SA(cx+Math.cos(a)*d,fcy+Math.sin(a)*d,12+mR()*25,mR()*Math.PI,mR()*Math.PI+1+mR()*2,al*.15,R);}
-  }
-  if(['connect_linear','connect_spiral','layer_spiral','grow_spiral','grow_parallel'].includes(key)){
-    for(let i=0;i<nMix;i++){const a=mR()*Math.PI*2,d=bR*(.15+mR()*.55);
-      PG(cx+Math.cos(a)*d,fcy+Math.sin(a)*d,8+mR()*18,3+Math.floor(mR()*2),mR()*Math.PI,al*.15,R);}
-  }
-  if(['classify_spiral','connect_parallel','connect_leap','grow_leap','layer_spiral'].includes(key)){
-    for(let i=0;i<Math.floor(nMix*.7);i++){const y=fcy-bR*.4+mR()*bR*.8;const hw=bR*(.1+mR()*.25);
-      ST(cx-hw,y,cx+hw,y,al*.08,R);}
-  }
-  if(['grow_linear','layer_linear','layer_parallel','grow_parallel'].includes(key)){
-    for(let i=0;i<nMix;i++){const ox=(mR()-.5)*bR*.8,oy=-bR*(.2+mR()*.5);
-      if(mR()<.5)SA(cx+ox,ancY+oy,10+mR()*20,mR()*Math.PI*2,mR()*Math.PI*2+Math.PI*(0.5+mR()),al*.12,R);
-      else PG(cx+ox,ancY+oy,8+mR()*15,3+Math.floor(mR()*3),mR()*Math.PI,al*.12,R);}
-  }
-  for(let i=0;i<Math.floor(nMix*.5);i++){
-    const a=mR()*Math.PI*2,d1=bR*(.1+mR()*.35),d2=bR*(.2+mR()*.45);const a2=a+(mR()-.5)*1.2;
-    ST(cx+Math.cos(a)*d1,fcy+Math.sin(a)*d1,cx+Math.cos(a2)*d2,fcy+Math.sin(a2)*d2,al*.08,R);}
-  for(let i=0;i<nMix*2;i++){const a=mR()*Math.PI*2,d=mR()*bR*.7;
-    const mx=cx+Math.cos(a)*d,my=fcy+Math.sin(a)*d;
-    if(mR()<.4){const s=2+mR()*5;ST(mx-s,my-s*.3,mx+s,my+s*.3,al*.12,R);}
-    else{ctx.beginPath();ctx.arc(mx,my,1+mR()*2.5,0,Math.PI*2);ctx.fillStyle=`rgba(${INK},${al*.15})`;ctx.fill();}}
-
-  // ===== ROOT CONNECTION =====
-  const headHW2=headHW;
-  ST(cx-headHW2,ancY,cx+headHW2,ancY,al*.35,R);
-  const fanW=Math.min(bR*.5,zoneHW);
-  if(fanW>headHW2){
-    ST(cx-headHW2,ancY,cx-fanW,ancY-bR*.12,al*.2,R);
-    ST(cx+headHW2,ancY,cx+fanW,ancY-bR*.12,al*.2,R);
-    ST(cx-headHW2*.6,ancY,cx-fanW*.7,ancY-bR*.2,al*.15,R);
-    ST(cx+headHW2*.6,ancY,cx+fanW*.7,ancY-bR*.2,al*.15,R);
+  // ===== ROOT CONNECTION — all lines trace back to head =====
+  if(key!=='layer_parallel'){
+    ST(cx-headHW,ancY,cx+headHW,ancY,al*0.7,R);
+    const fanW=Math.min(bR*.5,zoneHW);
+    if(fanW>headHW){
+      ST(cx-headHW,ancY,cx-fanW,ancY-bR*.12,al*0.6,R);
+      ST(cx+headHW,ancY,cx+fanW,ancY-bR*.12,al*0.6,R);
+    }
   }
 
-  // ===== FLIP-BASED OVERLAYS =====
-  if(f2){
-    for(let i=0;i<4;i++){const r=bR*(.25+i*.2);SA(cx,fcy,r,R()*Math.PI,R()*Math.PI+Math.PI*(.6+R()*.5),al*.1,R);}
-  }
-  if(f3){
-    const nDots=Math.floor(p.den*30)+12;
-    for(let i=0;i<nDots;i++){const a=R()*Math.PI*2,d=R()*bR*.75;
-      ctx.beginPath();ctx.arc(cx+Math.cos(a)*d,fcy+Math.sin(a)*d,1+R()*2.5,0,Math.PI*2);
-      ctx.fillStyle=`rgba(${INK},${al*.2})`;ctx.fill();}
-  }
-  if(f1&&f3){
-    for(let i=0;i<6+Math.floor(p.den*6);i++){const y=fcy-bR*.5+R()*bR;const w=bR*(.15+R()*.25);
-      ST(cx-w,y-w*.3,cx+w,y+w*.3,al*.07,R);}
-  }
+  // ===== FLIP-BASED OVERLAY =====
+  if(f2){for(let i=0;i<4;i++){const r=bR*(.25+i*.2);SA(cx,fcy,r,R()*Math.PI,R()*Math.PI+Math.PI*(.6+R()*.5),al*0.6,R);}}
 
   // ===== GLOBAL OVERLAYS (rhythm) =====
   if(p.rhy==='flash'){const n=5+Math.floor(R()*5);for(let i=0;i<n;i++){const a=R()*Math.PI*2;
-    ST(cx+Math.cos(a)*bR*.2,fcy+Math.sin(a)*bR*.2,cx+Math.cos(a)*bR*(.7+R()*.2),fcy+Math.sin(a)*bR*(.7+R()*.2),al*.18,R);}}
+    ST(cx+Math.cos(a)*bR*.2,fcy+Math.sin(a)*bR*.2,cx+Math.cos(a)*bR*(.7+R()*.2),fcy+Math.sin(a)*bR*(.7+R()*.2),al*0.6,R);}}
   if(p.rhy==='bounce'){for(let i=0;i<3+Math.floor(R()*3);i++){const a=R()*Math.PI*2;
-    SA(cx,fcy,bR*(.3+R()*.45),a,a+.5+R()*.6,al*.15,R);}}
-  if(p.rhy==='ferment'){HT(cx,fcy,bR*.15,R()*Math.PI,6,al*.18,R);}
+    SA(cx,fcy,bR*(.15+R()*.2),a,a+.5+R()*.6,al*0.6,R);}}
+  if(p.rhy==='ferment'){HT(cx,fcy,bR*.06,R()*Math.PI,6,al*0.6,R);}
   if(p.rhy==='accumulate'){for(let i=0;i<Math.floor(p.den*18)+6;i++){const a=R()*Math.PI*2,d=R()*bR*.6;
     ctx.beginPath();ctx.arc(cx+Math.cos(a)*d,fcy+Math.sin(a)*d,1.5+R()*1.2,0,Math.PI*2);
-    ctx.fillStyle=`rgba(${INK},${al*.25})`;ctx.fill();}}
+    ctx.fillStyle=`rgba(${INK},${al*0.6})`;ctx.fill();}}
   ctx.restore();
-}
 
-// ===== AGORA STATE =====
-const renderedSeeds=new Set();
-const allForms=[];      // {params, offscreen} — rendered miniatures
-let totalCount=0;
+  // POST-CLIP: draw connections to bust OUTSIDE the clip region
+  // For totems and any form that needs to visually touch ancY
+  if(key==='layer_parallel'&&p._totemXs){
+    const R2=mkR(p.seed+999);
+    p._totemXs.forEach(tx=>{
+      // Short vertical stub from ancY downward (into bust zone, visible)
+      ST(tx,ancY+10,tx,ancY-30,0.9,R2);
+      // Horizontal connection to head center if outside head width
+      if(tx<cx-headHW)ST(tx,ancY,cx-headHW,ancY,0.6,R2);
+      else if(tx>cx+headHW)ST(tx,ancY,cx+headHW,ancY,0.6,R2);
+    });
+  }
 
 // ===== CANOPY AGGREGATION LAYOUT =====
 // Dense organic cloud: narrow at bust, widens upward like a canopy.
