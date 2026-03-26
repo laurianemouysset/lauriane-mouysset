@@ -690,77 +690,74 @@ let totalCount=0;
 // Dense organic cloud: narrow at bust, widens upward like a canopy.
 // Forms overlap 20-40%. Sizes vary from simple to double.
 
-function getFormSizeForIndex(i,count,R){
-  // Sizes vary from 0.6x to 1.2x base size — organic variation
-  const base=count<50?140:count<=200?100:70;
-  return base*(0.6+R()*0.6);
+function getFormSize(i,count,R){
+  // Sizes vary widely: ratio 0.8x to 2.0x base
+  const base=count<50?180:count<=200?130:90;
+  return base*(0.8+R()*1.2);
 }
 
 function computeCanopyLayout(count){
   const placed=[]; // {x, y, size}
   const R=mkR(7777);
 
-  // Canopy shape: narrow at bust (width ~200px), widens toward top
-  const baseY=bustTop-10; // touches bust
-  const topY=MG+80;
+  // Canopy: narrow at bust, wide at top — like a tree crown
+  const baseY=bustTop-10;
+  const topY=MG+100;
   const totalH=baseY-topY;
 
   for(let i=0;i<count;i++){
-    const sz=getFormSizeForIndex(i,count,R);
+    const sz=getFormSize(i,count,R);
     let bestPos=null,bestScore=-1e9;
 
-    for(let attempt=0;attempt<120;attempt++){
-      // Pick a random height — bias toward filling from bottom up
+    for(let attempt=0;attempt<150;attempt++){
+      // Random height — slight bias toward bottom
       const tRaw=R();
-      const t=tRaw*tRaw; // quadratic bias: more forms near the base
+      const t=tRaw*tRaw*0.7+tRaw*0.3; // mixed bias
       const cy=baseY-t*totalH;
 
-      // Canopy width at this height: narrow at base, wide at top
-      const heightRatio=(baseY-cy)/totalH; // 0 at bust, 1 at top
-      const halfW=80+heightRatio*heightRatio*(CX-MG-80); // quadratic widening
+      // Canopy width: very narrow at bust, very wide at top
+      const heightRatio=(baseY-cy)/totalH; // 0=bust, 1=top
+      const halfW=40+heightRatio*(CX-MG-60); // linear widening, narrow start
       const cx2=CX+(R()-0.5)*2*halfW;
 
-      // Clamp
-      if(cx2<MG+sz/2||cx2>W-MG-sz/2||cy<topY+sz/2)continue;
+      if(cx2<MG+sz/3||cx2>W-MG-sz/3||cy<topY+sz/3)continue;
 
-      // Check overlap: want 30-40% overlap (dist ~60-70% of avgSz)
+      // Check overlap: want 30-40% (dist ~55-70% of avgSz)
       let touchesAny=false,tooClose=false;
       let closestDist=1e9;
       for(let j=0;j<placed.length;j++){
         const dx=cx2-placed[j].x,dy=cy-placed[j].y;
         const dist=Math.sqrt(dx*dx+dy*dy);
         const avgSz=(sz+placed[j].size)/2;
-        if(dist<avgSz*0.35)tooClose=true;  // >65% overlap — too much
-        if(dist<avgSz*0.75)touchesAny=true; // 25%+ overlap
+        if(dist<avgSz*0.3)tooClose=true;  // >70% overlap — too much
+        if(dist<avgSz*0.7)touchesAny=true; // 30%+ overlap
         if(dist<closestDist)closestDist=dist;
       }
 
       if(placed.length===0){
-        // First form: place just above bust center
-        bestPos={x:CX+(R()-0.5)*60, y:baseY-sz*0.4};
+        bestPos={x:CX+(R()-0.5)*40, y:baseY-sz*0.35};
         break;
       }
 
       if(touchesAny&&!tooClose){
-        // Score: prefer positions that are close to cluster (dense) and toward center
         const centerDist=Math.abs(cx2-CX)/(CX-MG);
-        const score=-closestDist-centerDist*50;
+        const score=-closestDist*0.5-centerDist*20;
         if(score>bestScore){bestScore=score;bestPos={x:cx2,y:cy};}
       }
     }
 
-    // Fallback: attach to a random existing form
+    // Fallback: attach to random existing form, bias upward and outward
     if(!bestPos&&placed.length>0){
       const parent=placed[Math.floor(R()*placed.length)];
-      const angle=-Math.PI/2+(R()-0.5)*Math.PI*0.8; // bias upward
-      const dist=(sz+parent.size)/2*0.55; // ~35% overlap
+      const angle=-Math.PI/2+(R()-0.5)*Math.PI; // bias upward, wide spread
+      const dist=(sz+parent.size)/2*0.5; // ~40% overlap
       let fx=parent.x+Math.cos(angle)*dist;
       let fy=parent.y+Math.sin(angle)*dist;
-      fx=Math.max(MG+sz/2,Math.min(W-MG-sz/2,fx));
-      fy=Math.max(topY+sz/2,Math.min(baseY-sz*0.3,fy));
+      fx=Math.max(MG+sz/3,Math.min(W-MG-sz/3,fx));
+      fy=Math.max(topY+sz/3,Math.min(baseY-sz*0.25,fy));
       bestPos={x:fx,y:fy};
     }
-    if(!bestPos)bestPos={x:CX+(R()-0.5)*100,y:baseY-sz*0.5-R()*totalH*0.3};
+    if(!bestPos)bestPos={x:CX+(R()-0.5)*150,y:baseY-sz*0.4-R()*totalH*0.4};
 
     placed.push({x:bestPos.x,y:bestPos.y,size:sz});
   }
@@ -821,9 +818,7 @@ function drawMainCanvas(){
   // Footer text
   ctx.textAlign='center';
   ctx.letterSpacing='8px';ctx.font='400 41px "DM Mono",monospace';ctx.fillStyle='rgba(42,39,37,0.6)';
-  ctx.fillText('VOLTE GESTE',CX,H-MG-120);
-  ctx.letterSpacing='6px';ctx.font='400 30px "DM Mono",monospace';ctx.fillStyle='rgba(122,117,108,0.6)';
-  ctx.fillText('COLLECTION AGORA',CX,H-MG-35);
+  ctx.fillText('LAURIANE MOUYSSET',CX,H-MG-45);
   ctx.letterSpacing='0px';ctx.textAlign='start';
 
 }
