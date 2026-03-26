@@ -118,7 +118,6 @@ function drawBust(){
 }
 
 // ===== STITCH PRIMITIVES — hand-drawn style =====
-const INK='0,0,0';
 function ST(x1,y1,x2,y2,al,R){
   const jt=2;
   x1+=(R()-.5)*jt;y1+=(R()-.5)*jt;x2+=(R()-.5)*jt;y2+=(R()-.5)*jt;
@@ -680,6 +679,7 @@ function drawFormWith(p){
       else if(tx>cx+headHW)ST(tx,ancY,cx+headHW,ancY,0.6,R2);
     });
   }
+}
 
 // ===== CANOPY AGGREGATION LAYOUT =====
 // Dense organic cloud: narrow at bust, widens upward like a canopy.
