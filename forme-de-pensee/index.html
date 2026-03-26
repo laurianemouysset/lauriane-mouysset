@@ -323,23 +323,20 @@ function drawForm(){
   // CLASSIFY + LINEAR → SKYLINE (wide rectangles, windows, antennas)
   // ==========================================
   if(key==='classify_linear'){
-    const nB=5+Math.floor(p.mul*1.2);const totalW=Math.min(bR*1.5,zoneW);
+    // VERTICAL BARS — hand-drawn bar chart, no closed rectangles
+    const nB=6+Math.floor(p.mul*1.5);const totalW=Math.min(bR*1.4,zoneW);
     for(let i=0;i<nB;i++){
-      const bw=totalW/nB*(.4+R()*.6);const bh=bR*(.3+R()*.7);
-      const bx2=cx-totalW/2+i*totalW/nB+R()*8;const by2=ancY-bh;
-      ST(bx2,ancY,bx2,by2,al*.65,R);ST(bx2,by2,bx2+bw,by2,al*.65,R);
-      ST(bx2+bw,by2,bx2+bw,ancY,al*.65,R);
-      rootH(bx2);rootH(bx2+bw);
-      const nF=2+Math.floor(bh/55);const nWi=1+Math.floor(bw/35);
-      for(let f=0;f<nF;f++){const fy=by2+bh*.08+f*(bh*.84/nF);
-        if(p.den>.4)ST(bx2+3,fy,bx2+bw-3,fy,al*.18,R);
-        for(let w=0;w<nWi;w++){const wx=bx2+bw*.12+w*(bw*.76/Math.max(1,nWi-1));
-          if(R()<p.den){const ws=6+R()*5;ctx.beginPath();ctx.rect(wx-ws/2,fy+3,ws,ws*1.2);
-            ctx.strokeStyle=`rgba(${INK},${al*.3})`;ctx.lineWidth=1.8;ctx.stroke();}}}
-      if(R()<.5){ST(bx2+bw/2,by2,bx2+bw/2,by2-15-R()*35,al*.45,R);
-        if(R()<.5)ST(bx2+bw/2-8,by2-8,bx2+bw/2+8,by2-8,al*.3,R);}
+      const bx2=cx-totalW/2+i*totalW/nB+(R()-.5)*12;
+      const bh=bR*(.15+R()*.75);
+      const alBar=al*(.3+R()*.35);
+      // Single vertical line per bar
+      ST(bx2,ancY,bx2,ancY-bh,alBar,R);
+      // Occasional second line close by (thickening effect)
+      if(R()<p.den*.5){const ox=2+R()*4;
+        ST(bx2+ox,ancY,bx2+ox,ancY-bh*(0.6+R()*.4),alBar*.6,R);}
+      rootH(bx2);
     }
-    // Continuous baseline across skyline
+    // Baseline
     ST(cx-totalW/2,ancY,cx+totalW/2,ancY,al*.15,R);
   }
 
@@ -378,17 +375,28 @@ function drawForm(){
   // CLASSIFY + PARALLEL → GRID (orthogonal lattice, filled cells)
   // ==========================================
   else if(key==='classify_parallel'){
-    const nC=3+Math.floor(p.mul/2);const nR=4+Math.floor(p.cpx);
-    const gW=Math.min(bR*1.2,zoneW);
-    const gH=Math.min(bR*1.2,zoneH*.9);
-    for(let r=0;r<=nR;r++){const y=fcy-gH/2+r*gH/nR;ST(cx-gW/2,y,cx+gW/2,y,al*(.3+.1*Math.sin(r)),R);}
-    for(let c=0;c<=nC;c++){const x=cx-gW/2+c*gW/nC;ST(x,fcy-gH/2,x,fcy+gH/2,al*(.3+.1*Math.sin(c)),R);}
-    for(let r=0;r<nR;r++){for(let c=0;c<nC;c++){
-      if(R()<p.den*.65){const cx2=cx-gW/2+(c+.5)*gW/nC;const cy2=fcy-gH/2+(r+.5)*gH/nR;
-        const cr=Math.min(gW/nC,gH/nR)*.3;
-        if(R()<.5)SA(cx2,cy2,cr,0,Math.PI*2,al*.3,R);else HT(cx2,cy2,cr,R()*Math.PI,5,al*.25,R);}}}
-    // Stem + horizontal connections to head
-    ST(cx,ancY,cx,fcy+gH/2,al*.35,R);
+    // ORGANIC WEB — irregular crossing lines like a net or weave
+    const nLines=6+Math.floor(p.mul*.8)+Math.floor(p.cpx*.5);
+    const gW=Math.min(bR*1.1,zoneW*.8);
+    const gH=Math.min(bR*1.1,zoneH*.8);
+    // Lines at irregular angles crossing the zone
+    for(let i=0;i<nLines;i++){
+      const a=R()*Math.PI; // angles from 0 to PI (not full circle, to avoid near-duplicates)
+      const drift=(R()-.5)*gW*.4;
+      const cos=Math.cos(a),sin=Math.sin(a);
+      const len=gW*(.3+R()*.5);
+      const ox=cx+drift,oy=fcy+(R()-.5)*gH*.5;
+      // Each line is slightly wavy
+      const pts=[];const nSeg=8+Math.floor(R()*6);
+      for(let s=0;s<=nSeg;s++){const t=s/nSeg-.5;
+        const wx=ox+cos*t*len+(R()-.5)*6;
+        const wy=oy+sin*t*len+(R()-.5)*6;
+        pts.push({x:wx,y:wy});}
+      const alLine=al*(.15+R()*.2);
+      for(let s=0;s<pts.length-1;s++)ST(pts[s].x,pts[s].y,pts[s+1].x,pts[s+1].y,alLine,R);
+    }
+    // Stem
+    ST(cx,ancY,cx,fcy+gH/2,al*.25,R);
     rootH(cx-gW/2);rootH(cx+gW/2);
   }
 
@@ -612,21 +620,34 @@ function drawForm(){
   // LAYER + LEAP → STRATA (horizontal offset slabs, tectonic)
   // ==========================================
   else if(key==='layer_leap'){
-    const nSlabs=5+Math.floor(p.cpx*1.5);
-    for(let i=0;i<nSlabs;i++){const t=i/nSlabs;const y=Math.max(zoneT+10,fcy-bR*.7)+t*Math.min(bR*1.3,zoneH*.8);
-      const ox=(R()-.5)*80;const w=Math.min(bR*(.15+R()*.3),zoneHW*.8);const h=bR*(.03+R()*.06);
-      // Rectangle
-      ST(cx+ox-w,y-h,cx+ox+w,y-h,al*(.35+t*.3),R);
-      ST(cx+ox+w,y-h,cx+ox+w,y+h,al*(.35+t*.3),R);
-      ST(cx+ox+w,y+h,cx+ox-w,y+h,al*(.35+t*.3),R);
-      ST(cx+ox-w,y+h,cx+ox-w,y-h,al*(.35+t*.3),R);
-      // Internal horizontal lines (strata texture)
-      for(let li=0;li<Math.floor(h/6);li++){const ly=y-h+4+li*6;
-        ST(cx+ox-w+3,ly,cx+ox+w-3,ly,al*.12,R);}
-      if(R()<p.den*.5)HT(cx+ox,y,Math.min(w*.3,h),R()*.2,5,al*.18,R);
-      // Offset connection to next
-      if(i>0)ST(cx+ox,y-h,cx+(R()-.5)*80,y-bR*1.3/nSlabs+bR*.06,al*.1,R);}
-    ST(cx,ancY,cx,fcy+bR*.5,al*.25,R);
+    // STRATA — interrupted horizontal lines at varying heights, like geological cuts
+    const nSlabs=6+Math.floor(p.cpx*1.2);
+    const spanH=Math.min(bR*1.3,zoneH*.8);
+    for(let i=0;i<nSlabs;i++){
+      const t=i/nSlabs;
+      const y=Math.max(zoneT+10,fcy-bR*.6)+t*spanH;
+      const ox=(R()-.5)*60;
+      const w=Math.min(bR*(.12+R()*.35),zoneHW*.7);
+      const alLine=al*(.2+t*.25);
+      const wav=2+R()*4;const freq=1+R()*2;
+      // Main wavy horizontal line — may be interrupted
+      const nSeg=12+Math.floor(R()*8);
+      let drawing=true;
+      for(let s=0;s<nSeg;s++){
+        const t1=s/nSeg,t2=(s+1)/nSeg;
+        if(R()<.12)drawing=!drawing; // interrupt or resume
+        if(!drawing)continue;
+        const x1=cx+ox-w+t1*w*2,x2=cx+ox-w+t2*w*2;
+        const y1=y+Math.sin(t1*freq*Math.PI)*wav+(R()-.5)*2;
+        const y2=y+Math.sin(t2*freq*Math.PI)*wav+(R()-.5)*2;
+        ST(x1,y1,x2,y2,alLine,R);
+      }
+      // Occasional parallel echo line (close, shorter)
+      if(R()<p.den*.6){
+        const ey=y+4+R()*6;const ew=w*(.3+R()*.4);const eox=ox+(R()-.5)*30;
+        ST(cx+eox-ew,ey+(R()-.5)*2,cx+eox+ew,ey+(R()-.5)*2,alLine*.5,R);}
+    }
+    ST(cx,ancY,cx,fcy+bR*.5,al*.2,R);
   }
 
   // ==========================================
