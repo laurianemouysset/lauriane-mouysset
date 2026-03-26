@@ -192,13 +192,18 @@ function makeParams(str,mov,intensity,f1,f2,f3){
     flip1:!!f1,flip2:!!f2,flip3:!!f3,seed};
 }
 
-// ===== 50 PRESETS =====
+// ===== 50 PRESETS — balanced distribution across 16 morphologies =====
 const _S=['classify','connect','layer','grow'];
 const _M=['linear','spiral','parallel','leap'];
 const _I=['light','anchored','dense','overflow'];
 const PRESETS=[];
 {const R=mkR(12345);
-for(let i=0;i<50;i++){
+// First 48: 3 of each morphology (16 types × 3 = 48)
+for(let si=0;si<4;si++)for(let mi=0;mi<4;mi++)for(let rep=0;rep<3;rep++){
+  PRESETS.push(makeParams(_S[si],_M[mi],_I[Math.floor(R()*4)],R()>.5,R()>.5,R()>.5));
+}
+// Last 2: random
+for(let i=0;i<2;i++){
   PRESETS.push(makeParams(_S[Math.floor(R()*4)],_M[Math.floor(R()*4)],_I[Math.floor(R()*4)],R()>.5,R()>.5,R()>.5));
 }}
 // ===== 16 DISTINCT MORPHOLOGIES =====
@@ -775,43 +780,33 @@ function computeCanopyLayout(count){
   return placed;
 }
 
-// ===== RENDER ONE FORM TO OFFSCREEN CANVAS =====
-function renderFormOffscreen(params){
-  const off=document.createElement('canvas');
-  off.width=W;off.height=H;
-  const savedCtx=ctx;
-  ctx=off.getContext('2d');
-  // Transparent background — cream is on main canvas only
-  ctx.clearRect(0,0,W,H);
-  // Draw form
-  drawFormWith(params);
-  ctx=savedCtx;
-  return off;
-}
-
 // ===== DRAW MAIN CANVAS =====
 function drawMainCanvas(){
-  // Clear
+  // Clear with cream background
   ctx.fillStyle=`rgb(${CR})`;ctx.fillRect(0,0,W,H);
   // Paper grain
   const GR=mkR(42);for(let i=0;i<8000;i++){ctx.fillStyle=`rgba(${180+GR()*30},${175+GR()*30},${168+GR()*30},0.012)`;
     ctx.beginPath();ctx.arc(GR()*W,GR()*H,.7+GR()*.5,0,Math.PI*2);ctx.fill();}
 
-  // Draw miniature forms in canopy layout
+  // Draw miniature forms DIRECTLY on main canvas using translate+scale
   const count=allForms.length;
   const layout=computeCanopyLayout(count);
 
   for(let i=0;i<count;i++){
-    const p=layout[i];
+    const lp=layout[i];
     const form=allForms[i];
-    if(!form||!form.offscreen||!p)continue;
-    const srcX=0,srcY=0,srcW=W,srcH=Math.floor(cutY);
-    const scale=p.size/W;
-    const dstW=p.size;
-    const dstH=Math.floor(cutY*scale);
-    const dstX=p.x-dstW/2;
-    const dstY=p.y-dstH/2;
-    ctx.drawImage(form.offscreen,srcX,srcY,srcW,srcH,dstX,dstY,dstW,dstH);
+    if(!form||!lp)continue;
+    const scale=lp.size/W;
+    // Translate so that (CX, cutY) maps to (lp.x, lp.y + height/2)
+    const dstH=cutY*scale;
+    ctx.save();
+    ctx.translate(lp.x, lp.y-dstH/2);
+    ctx.scale(scale,scale);
+    ctx.translate(-0, -0); // origin at (0,0) of full-res coords
+    // Clip to the form area only (no bust)
+    ctx.beginPath();ctx.rect(0,0,W,cutY+20);ctx.clip();
+    drawFormWith(form.params);
+    ctx.restore();
   }
 
   // Draw shared bust
@@ -843,8 +838,7 @@ function addForm(params){
   const key=params.seed;
   if(renderedSeeds.has(key))return;
   renderedSeeds.add(key);
-  const offscreen=renderFormOffscreen(params);
-  allForms.push({params,offscreen});
+  allForms.push({params});
 }
 
 // ===== PROGRESSIVE INITIAL RENDER =====
