@@ -243,21 +243,23 @@ function drawFormWith(p){
   // CLASSIFY + LINEAR -> SKYLINE
   // ==========================================
   if(key==='classify_linear'){
+    // SKYLINE — ondulating columns instead of rigid rectangles
     const nB=5+Math.floor(p.mul*1.2);const totalW=Math.min(bR*1.5,zoneW);
     for(let i=0;i<nB;i++){
       const bw=totalW/nB*(.4+R()*.6);const bh=bR*(.3+R()*.7);
-      const bx2=cx-totalW/2+i*totalW/nB+R()*8;const by2=ancY-bh;
-      ST(bx2,ancY,bx2,by2,al*.65,R);ST(bx2,by2,bx2+bw,by2,al*.65,R);
-      ST(bx2+bw,by2,bx2+bw,ancY,al*.65,R);
+      const bx2=cx-totalW/2+i*totalW/nB+R()*12;const by2=ancY-bh;
+      // Wavy verticals instead of straight
+      const wav=8+R()*12;const freq=2+R()*3;
+      for(let s=0;s<10;s++){const t1=s/10,t2=(s+1)/10;const y1=ancY-bh*t1,y2=ancY-bh*t2;
+        const ox1=Math.sin(t1*freq*Math.PI)*wav,ox2=Math.sin(t2*freq*Math.PI)*wav;
+        ST(bx2+ox1,y1,bx2+ox2,y2,al*.6,R);ST(bx2+bw+ox1*.7,y1,bx2+bw+ox2*.7,y2,al*.6,R);}
+      // Wobbly top
+      ST(bx2+(R()-.5)*wav,by2+(R()-.5)*8,bx2+bw+(R()-.5)*wav,by2+(R()-.5)*8,al*.55,R);
       rootH(bx2);rootH(bx2+bw);
-      const nF=2+Math.floor(bh/55);const nWi=1+Math.floor(bw/35);
-      for(let f=0;f<nF;f++){const fy=by2+bh*.08+f*(bh*.84/nF);
-        if(p.den>.4)ST(bx2+3,fy,bx2+bw-3,fy,al*.18,R);
-        for(let w=0;w<nWi;w++){const wx=bx2+bw*.12+w*(bw*.76/Math.max(1,nWi-1));
-          if(R()<p.den){const ws=6+R()*5;ctx.beginPath();ctx.rect(wx-ws/2,fy+3,ws,ws*1.2);
-            ctx.strokeStyle=`rgba(${INK},${al*.3})`;ctx.lineWidth=1.8;ctx.stroke();}}}
-      if(R()<.5){ST(bx2+bw/2,by2,bx2+bw/2,by2-15-R()*35,al*.45,R);
-        if(R()<.5)ST(bx2+bw/2-8,by2-8,bx2+bw/2+8,by2-8,al*.3,R);}
+      // Organic internal marks
+      for(let f=0;f<2+Math.floor(bh/80);f++){const fy=by2+bh*.1+f*(bh*.8/(2+Math.floor(bh/80)));
+        SA(bx2+bw/2+(R()-.5)*10,fy,bw*.3+R()*bw*.2,R()*Math.PI,R()*Math.PI+Math.PI*(.3+R()*.5),al*.15,R);}
+      if(R()<.4){SA(bx2+bw/2,by2-5,bw*.2+R()*10,0,Math.PI*2,al*.25,R);}
     }
     ST(cx-totalW/2,ancY,cx+totalW/2,ancY,al*.15,R);
   }
@@ -292,14 +294,23 @@ function drawFormWith(p){
   // CLASSIFY + PARALLEL -> GRID
   // ==========================================
   else if(key==='classify_parallel'){
-    const nC=3+Math.floor(p.mul/2);const nR=4+Math.floor(p.cpx);
-    const gW=Math.min(bR*1.2,zoneW);
-    const gH=Math.min(bR*1.2,zoneH*.9);
-    for(let r=0;r<=nR;r++){const y=fcy-gH/2+r*gH/nR;ST(cx-gW/2,y,cx+gW/2,y,al*(.3+.1*Math.sin(r)),R);}
-    for(let c=0;c<=nC;c++){const x=cx-gW/2+c*gW/nC;ST(x,fcy-gH/2,x,fcy+gH/2,al*(.3+.1*Math.sin(c)),R);}
-    for(let r=0;r<nR;r++){for(let c=0;c<nC;c++){
-      if(R()<p.den*.65){const cx2=cx-gW/2+(c+.5)*gW/nC;const cy2=fcy-gH/2+(r+.5)*gH/nR;
-        const cr=Math.min(gW/nC,gH/nR)*.3;
+    // GRID — organic web instead of rigid orthogonal lattice
+    const nC=3+Math.floor(p.mul/2);const nR2=4+Math.floor(p.cpx);
+    const gW=Math.min(bR*1.2,zoneW);const gH=Math.min(bR*1.2,zoneH*.9);
+    // Wavy horizontals
+    for(let r=0;r<=nR2;r++){const y=fcy-gH/2+r*gH/nR2;const wav=6+R()*10;
+      const pts=[];for(let s=0;s<=20;s++){const t=s/20;
+        pts.push({x:cx-gW/2+t*gW,y:y+Math.sin(t*Math.PI*(2+R()*2))*wav+(R()-.5)*4});}
+      for(let s=0;s<pts.length-1;s++)ST(pts[s].x,pts[s].y,pts[s+1].x,pts[s+1].y,al*(.25+.1*Math.sin(r)),R);}
+    // Wavy verticals
+    for(let c=0;c<=nC;c++){const x=cx-gW/2+c*gW/nC;const wav=6+R()*10;
+      const pts=[];for(let s=0;s<=20;s++){const t=s/20;
+        pts.push({x:x+Math.sin(t*Math.PI*(2+R()*2))*wav+(R()-.5)*4,y:fcy-gH/2+t*gH});}
+      for(let s=0;s<pts.length-1;s++)ST(pts[s].x,pts[s].y,pts[s+1].x,pts[s+1].y,al*(.25+.1*Math.sin(c)),R);}
+    // Cell fills: mixed organic shapes
+    for(let r=0;r<nR2;r++){for(let c=0;c<nC;c++){
+      if(R()<p.den*.65){const cx2=cx-gW/2+(c+.5)*gW/nC+(R()-.5)*8;const cy2=fcy-gH/2+(r+.5)*gH/nR2+(R()-.5)*8;
+        const cr=Math.min(gW/nC,gH/nR2)*.3;
         if(R()<.5)SA(cx2,cy2,cr,0,Math.PI*2,al*.3,R);else HT(cx2,cy2,cr,R()*Math.PI,5,al*.25,R);}}}
     ST(cx,ancY,cx,fcy+gH/2,al*.35,R);
     rootH(cx-gW/2);rootH(cx+gW/2);
@@ -467,20 +478,30 @@ function drawFormWith(p){
   // LAYER + PARALLEL -> TOTEMS
   // ==========================================
   else if(key==='layer_parallel'){
+    // TOTEMS — curving organic stems instead of rigid poles
     const nTot=2+Math.floor(p.mul/3);const totW=bR*.08;
     for(let ti=0;ti<nTot;ti++){
       const tx=cx+(ti-(nTot-1)/2)*totW*5;const totH=Math.min(bR*(.9+R()*.5),zoneH*.95);
-      ST(tx-totW,ancY,tx-totW,ancY-totH,al*.6,R);ST(tx+totW,ancY,tx+totW,ancY-totH,al*.6,R);
-      ST(tx-totW,ancY-totH,tx+totW,ancY-totH,al*.6,R);
+      const sway=(R()-.5)*15;const swayF=2+R()*2;
       rootH(tx-totW);rootH(tx+totW);
+      // Curved edges instead of straight verticals
+      for(let s=0;s<12;s++){const t1=s/12,t2=(s+1)/12;
+        const y1=ancY-totH*t1,y2=ancY-totH*t2;
+        const ox1=Math.sin(t1*swayF*Math.PI)*sway,ox2=Math.sin(t2*swayF*Math.PI)*sway;
+        ST(tx-totW+ox1,y1,tx-totW+ox2,y2,al*.55,R);
+        ST(tx+totW+ox1*.8,y1,tx+totW+ox2*.8,y2,al*.55,R);}
+      // Wobbly cap
+      SA(tx+(R()-.5)*5,ancY-totH,totW*1.2,Math.PI,Math.PI*2,al*.4,R);
+      // Organic internal carvings
       const nSec=3+Math.floor(p.cpx*1.2);
       for(let s=0;s<nSec;s++){const sy=ancY-totH*(s+1)/(nSec+1);
-        ST(tx-totW,sy,tx+totW,sy,al*.25,R);
-        if(s%3===0)SA(tx,sy+totH/(nSec+1)*.4,totW*.6,0,Math.PI*2,al*.35,R);
-        else if(s%3===1){PG(tx,sy+totH/(nSec+1)*.4,totW*.5,4,Math.PI/4,al*.35,R);}
-        else{ST(tx-totW*.5,sy+2,tx+totW*.5,sy+totH/(nSec+1)*.7,al*.3,R);
-          ST(tx+totW*.5,sy+2,tx-totW*.5,sy+totH/(nSec+1)*.7,al*.3,R);}}
-      if(R()<.7){PG(tx,ancY-totH-totW*1.2,totW*1.2,3,-Math.PI/2,al*.45,R);}
+        // Wavy horizontal separation
+        SA(tx,sy,totW*1.1,R()*.3,Math.PI-R()*.3,al*.2,R);
+        // Mixed symbols
+        if(s%3===0)SA(tx+(R()-.5)*4,sy+totH/(nSec+1)*.4,totW*.6,0,Math.PI*2,al*.35,R);
+        else if(s%3===1)PG(tx+(R()-.5)*4,sy+totH/(nSec+1)*.4,totW*.5,3+Math.floor(R()*3),R()*Math.PI,al*.3,R);
+        else HT(tx+(R()-.5)*6,sy+totH/(nSec+1)*.3,totW*.4,R()*Math.PI,5,al*.2,R);}
+      if(R()<.7)SA(tx,ancY-totH-totW,totW,0,Math.PI*2,al*.35,R);
     }
   }
 
@@ -488,17 +509,27 @@ function drawFormWith(p){
   // LAYER + LEAP -> STRATA
   // ==========================================
   else if(key==='layer_leap'){
+    // STRATA — flowing organic ribbons instead of rigid rectangles
     const nSlabs=5+Math.floor(p.cpx*1.5);
-    for(let i=0;i<nSlabs;i++){const t=i/nSlabs;const y=Math.max(zoneT+10,fcy-bR*.7)+t*Math.min(bR*1.3,zoneH*.8);
+    for(let i=0;i<nSlabs;i++){const t=i/nSlabs;
+      const y=Math.max(zoneT+10,fcy-bR*.7)+t*Math.min(bR*1.3,zoneH*.8);
       const ox=(R()-.5)*80;const w=Math.min(bR*(.15+R()*.3),zoneHW*.8);const h=bR*(.03+R()*.06);
-      ST(cx+ox-w,y-h,cx+ox+w,y-h,al*(.35+t*.3),R);
-      ST(cx+ox+w,y-h,cx+ox+w,y+h,al*(.35+t*.3),R);
-      ST(cx+ox+w,y+h,cx+ox-w,y+h,al*(.35+t*.3),R);
-      ST(cx+ox-w,y+h,cx+ox-w,y-h,al*(.35+t*.3),R);
-      for(let li=0;li<Math.floor(h/6);li++){const ly=y-h+4+li*6;
-        ST(cx+ox-w+3,ly,cx+ox+w-3,ly,al*.12,R);}
-      if(R()<p.den*.5)HT(cx+ox,y,Math.min(w*.3,h),R()*.2,5,al*.18,R);
-      if(i>0)ST(cx+ox,y-h,cx+(R()-.5)*80,y-bR*1.3/nSlabs+bR*.06,al*.1,R);}
+      const wav=5+R()*10;const freq=1.5+R()*2;
+      // Top and bottom edges as flowing curves
+      const alSlab=al*(.35+t*.3);
+      const ptsTop=[],ptsBot=[];
+      for(let s=0;s<=16;s++){const st=s/16;
+        const wobT=Math.sin(st*freq*Math.PI)*wav+(R()-.5)*4;
+        const wobB=Math.sin((st+.3)*freq*Math.PI)*wav*(0.7+R()*.3)+(R()-.5)*4;
+        ptsTop.push({x:cx+ox-w+st*w*2,y:y-h+wobT});
+        ptsBot.push({x:cx+ox-w+st*w*2,y:y+h+wobB});}
+      for(let s=0;s<ptsTop.length-1;s++){ST(ptsTop[s].x,ptsTop[s].y,ptsTop[s+1].x,ptsTop[s+1].y,alSlab,R);
+        ST(ptsBot[s].x,ptsBot[s].y,ptsBot[s+1].x,ptsBot[s+1].y,alSlab*.7,R);}
+      // Soft internal texture
+      if(R()<p.den*.6)HT(cx+ox+(R()-.5)*w,y,Math.min(w*.3,h*2),R()*Math.PI,5,al*.15,R);
+      // Organic connectors to next ribbon
+      if(i>0){const mx=cx+ox+(R()-.5)*30,my=y-h-(R()*15);
+        SA(mx,my,10+R()*15,R()*Math.PI,R()*Math.PI+Math.PI*(.4+R()*.5),al*.1,R);}}
     ST(cx,ancY,cx,fcy+bR*.5,al*.25,R);
   }
 
@@ -754,8 +785,8 @@ function renderFormOffscreen(params){
   off.width=W;off.height=H;
   const savedCtx=ctx;
   ctx=off.getContext('2d');
-  // Fill cream background
-  ctx.fillStyle=`rgb(${CR})`;ctx.fillRect(0,0,W,H);
+  // Transparent background — cream is on main canvas only
+  ctx.clearRect(0,0,W,H);
   // Draw form
   drawFormWith(params);
   ctx=savedCtx;
