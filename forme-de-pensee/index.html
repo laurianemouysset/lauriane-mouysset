@@ -427,28 +427,17 @@ function drawForm(){
   // CONNECT + LINEAR → RIVER (smooth horizontal sine waves, flowing)
   // ==========================================
   else if(key==='connect_linear'){
-    const nW=2+Math.floor(p.mul/2);const totalH=Math.min(bR*1.5,zoneH);
+    // RIVER — smooth flowing sinusoidal curves
+    const nW=Math.min(4,2+Math.floor(p.mul/4));
     for(let w=0;w<nW;w++){
-      const amp=bR*(.15+R()*.2);const freq=2+p.cpx*.5+R();
+      const amp=bR*(.15+R()*.2);const freq=1.5+p.cpx*.2+R()*.5;
       const yOff=(w-(nW-1)/2)*bR*.2;
       const pts=[];
-      for(let i=0;i<=80;i++){const t=i/80;
+      for(let i=0;i<=120;i++){const t=i/120;
         pts.push({x:cx-bR*.7+t*bR*1.4, y:fcy+yOff+Math.sin(t*freq*Math.PI)*amp});}
-      for(let i=0;i<pts.length-1;i++)ST(pts[i].x,pts[i].y,pts[i+1].x,pts[i+1].y,al*(.4+.25*(1-w/nW)),R);
-      // Small ripples perpendicular to flow
-      for(let i=5;i<pts.length;i+=4+Math.floor(R()*3)){
-        const pt=pts[i];const nx=0,ny=1;const rl=3+R()*8;
-        ST(pt.x,pt.y-rl,pt.x,pt.y+rl,al*.15,R);}
+      for(let i=0;i<pts.length-1;i++)ST(pts[i].x,pts[i].y,pts[i+1].x,pts[i+1].y,al*(.35+.2*(1-w/nW)),R);
     }
-    // Floating islands between waves
-    for(let h=0;h<2+Math.floor(p.den*3);h++){
-      const ix=cx+(R()-.5)*bR*1.1,iy=fcy+(R()-.5)*bR*.6;
-      if(R()<.5){SA(ix,iy,8+R()*18,0,Math.PI*2,al*.2,R);HT(ix,iy,6+R()*10,R()*Math.PI,5,al*.12,R);}
-      else{PG(ix,iy,10+R()*15,3+Math.floor(R()*3),R()*Math.PI,al*.18,R);}}
-    // Stray angular marks crossing the flow
-    for(let h=0;h<Math.floor(p.cpx*.5)+1;h++){
-      const y=fcy+(R()-.5)*bR*.5;ST(cx-bR*.3+R()*20,y-15-R()*20,cx+bR*.3-R()*20,y+15+R()*20,al*.07,R);}
-    const botPt=fcy+bR*.3;ST(cx,ancY,cx,botPt>ancY?ancY:botPt,al*.3,R);
+    const botPt=fcy+bR*.3;ST(cx,ancY,cx,botPt>ancY?ancY:botPt,al*.25,R);
   }
 
   // ==========================================
