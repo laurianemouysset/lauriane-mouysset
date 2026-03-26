@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Agora collective — Forme de pensée</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Mono:ital,wght@0,300;0,400;1,300&display=swap');
   :root{--cream:#f2ede4;--ink:#2a2725;--mid:#7a756c;--light:#b8b3aa;--faint:#d5d0c8;}
@@ -192,19 +193,15 @@ function makeParams(str,mov,intensity,f1,f2,f3){
     flip1:!!f1,flip2:!!f2,flip3:!!f3,seed};
 }
 
-// ===== 50 PRESETS — balanced distribution across 16 morphologies =====
+// ===== 80 PRESETS — balanced distribution across 16 morphologies =====
 const _S=['classify','connect','layer','grow'];
 const _M=['linear','spiral','parallel','leap'];
 const _I=['light','anchored','dense','overflow'];
 const PRESETS=[];
 {const R=mkR(12345);
-// First 48: 3 of each morphology (16 types × 3 = 48)
-for(let si=0;si<4;si++)for(let mi=0;mi<4;mi++)for(let rep=0;rep<3;rep++){
+// 80 forms: 5 of each morphology (16 × 5 = 80)
+for(let si=0;si<4;si++)for(let mi=0;mi<4;mi++)for(let rep=0;rep<5;rep++){
   PRESETS.push(makeParams(_S[si],_M[mi],_I[Math.floor(R()*4)],R()>.5,R()>.5,R()>.5));
-}
-// Last 2: random
-for(let i=0;i<2;i++){
-  PRESETS.push(makeParams(_S[Math.floor(R()*4)],_M[Math.floor(R()*4)],_I[Math.floor(R()*4)],R()>.5,R()>.5,R()>.5));
 }}
 // ===== 16 DISTINCT MORPHOLOGIES =====
 function drawFormWith(p){
@@ -869,8 +866,8 @@ let totalCount=0;
 // Forms overlap 20-40%. Sizes vary from simple to double.
 
 function getFormSize(i,count,R){
-  // Sizes vary widely: ratio 0.8x to 2.0x base
-  const base=count<50?180:count<=200?130:90;
+  // Large forms: 2x bigger than before, min 300px
+  const base=count<80?360:count<=200?280:200;
   return base*(0.8+R()*1.2);
 }
 
@@ -901,15 +898,15 @@ function computeCanopyLayout(count){
 
       if(cx2<MG+sz/3||cx2>W-MG-sz/3||cy<topY+sz/3)continue;
 
-      // Check overlap: want 30-40% (dist ~55-70% of avgSz)
+      // Check overlap: want 40-50% (dist ~50-60% of avgSz) — dense mass
       let touchesAny=false,tooClose=false;
       let closestDist=1e9;
       for(let j=0;j<placed.length;j++){
         const dx=cx2-placed[j].x,dy=cy-placed[j].y;
         const dist=Math.sqrt(dx*dx+dy*dy);
         const avgSz=(sz+placed[j].size)/2;
-        if(dist<avgSz*0.3)tooClose=true;  // >70% overlap — too much
-        if(dist<avgSz*0.7)touchesAny=true; // 30%+ overlap
+        if(dist<avgSz*0.2)tooClose=true;  // >80% overlap — too much
+        if(dist<avgSz*0.6)touchesAny=true; // 40%+ overlap
         if(dist<closestDist)closestDist=dist;
       }
 
@@ -929,7 +926,7 @@ function computeCanopyLayout(count){
     if(!bestPos&&placed.length>0){
       const parent=placed[Math.floor(R()*placed.length)];
       const angle=-Math.PI/2+(R()-0.5)*Math.PI; // bias upward, wide spread
-      const dist=(sz+parent.size)/2*0.5; // ~40% overlap
+      const dist=(sz+parent.size)/2*0.4; // ~50% overlap
       let fx=parent.x+Math.cos(angle)*dist;
       let fy=parent.y+Math.sin(angle)*dist;
       fx=Math.max(MG+sz/3,Math.min(W-MG-sz/3,fx));
@@ -971,14 +968,17 @@ function drawMainCanvas(){
     const form=allForms[i];
     if(!form||!lp)continue;
     const scale=lp.size/W;
-    // Translate so that (CX, cutY) maps to (lp.x, lp.y + height/2)
     const dstH=cutY*scale;
+    // Random rotation per form: most +-30°, 20% up to +-90°
+    const rotR=mkR(form.params.seed+333);
+    const bigRotate=rotR()<0.2;
+    const angle=bigRotate?(rotR()-.5)*Math.PI:(rotR()-.5)*1.0;
     ctx.save();
-    ctx.translate(lp.x, lp.y-dstH/2);
+    ctx.translate(lp.x, lp.y);
+    ctx.rotate(angle);
+    ctx.translate(0, -dstH/2);
     ctx.scale(scale,scale);
-    ctx.translate(-0, -0); // origin at (0,0) of full-res coords
-    // Clip to the form area only (no bust)
-    ctx.beginPath();ctx.rect(0,0,W,cutY+20);ctx.clip();
+    ctx.beginPath();ctx.rect(-W*.2,-cutY*.2,W*1.4,cutY*1.4);ctx.clip();
     drawFormSimplified(form.params);
     ctx.restore();
   }
