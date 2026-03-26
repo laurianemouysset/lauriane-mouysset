@@ -223,7 +223,7 @@ function ST(x1,y1,x2,y2,al,R){
   const bow=(R()-.5)*4;
   const tremFreq=3+R()*5;
   const tremAmp=0.5+R()*1;
-  const pressure=0.8+R()*0.4;
+  const pressure=0.9+R()*0.1;
   const alBase=al*pressure;
   let d=0;
   while(d<len){
@@ -245,7 +245,7 @@ function ST(x1,y1,x2,y2,al,R){
 }
 function SA(cx,cy,r,a1,a2,al,R){
   const rBase=r*(0.95+R()*0.1);
-  const pressure=0.8+R()*0.4;const alBase=al*pressure;
+  const pressure=0.9+R()*0.1;const alBase=al*pressure;
   const wobbleAmp=r*0.03+1;
   const wobbleFreq=4+R()*6;
   const steps=Math.max(10,Math.floor(Math.abs(a2-a1)*rBase/6));
@@ -311,7 +311,7 @@ function drawForm(){
   const rawBR=Math.min(700+p.mul*60+p.cpx*55,1400)*(p.flip1?1.15:.88);
   const bR=Math.min(rawBR,zoneHW,zoneH*.47);
   const fcy=Math.max(zoneT+bR,Math.min(ancY-bR,zoneT+zoneH*(p.flip2?.45:.55)));
-  const al=.82+p.den*.15;
+  const al=.92+p.den*.08;
   const f1=p.flip1,f2=p.flip2,f3=p.flip3;
   // Helper: draw horizontal line from x at ancY back to head edge if outside head
   const rootH=(x)=>{
