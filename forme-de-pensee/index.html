@@ -223,7 +223,7 @@ function ST(x1,y1,x2,y2,al,R){
   const bow=(R()-.5)*4;
   const tremFreq=3+R()*5;
   const tremAmp=0.5+R()*1;
-  const pressure=0.9+R()*0.1;
+  const pressure=0.95+R()*0.05;
   const alBase=al*pressure;
   let d=0;
   while(d<len){
@@ -245,7 +245,7 @@ function ST(x1,y1,x2,y2,al,R){
 }
 function SA(cx,cy,r,a1,a2,al,R){
   const rBase=r*(0.95+R()*0.1);
-  const pressure=0.9+R()*0.1;const alBase=al*pressure;
+  const pressure=0.95+R()*0.05;const alBase=al*pressure;
   const wobbleAmp=r*0.03+1;
   const wobbleFreq=4+R()*6;
   const steps=Math.max(10,Math.floor(Math.abs(a2-a1)*rBase/6));
@@ -311,7 +311,7 @@ function drawForm(){
   const rawBR=Math.min(700+p.mul*60+p.cpx*55,1400)*(p.flip1?1.15:.88);
   const bR=Math.min(rawBR,zoneHW,zoneH*.47);
   const fcy=Math.max(zoneT+bR,Math.min(ancY-bR,zoneT+zoneH*(p.flip2?.45:.55)));
-  const al=.92+p.den*.08;
+  const al=1.0;
   const f1=p.flip1,f2=p.flip2,f3=p.flip3;
   // Helper: draw horizontal line from x at ancY back to head edge if outside head
   const rootH=(x)=>{
@@ -330,7 +330,7 @@ function drawForm(){
       const bx2=cx-totalW/2+i*totalW/nB+(R()-.5)*25;
       const bh=bR*(.05+Math.pow(R(),0.6)*.9); // power curve: some very short, some very tall
       const tilt=(R()-.5)*0.09; // +-~5 degrees in radians
-      const alBar=al*(.25+R()*.35);
+      const alBar=al*(.5+R()*.35);
       // Tilted vertical
       const topX=bx2+Math.sin(tilt)*bh;
       ST(bx2,ancY,topX,ancY-bh,alBar,R);
@@ -352,18 +352,18 @@ function drawForm(){
       const drift=t*bR*0.08;
       const lcx=cx+(R()-.5)*drift*2,lcy=fcy+(R()-.5)*drift*2;
       const lArms=arms+Math.floor((R()-.5)*2.5); // vary sides per layer
-      PG(lcx,lcy,lr,Math.max(3,lArms),l*.35+(R()-.5)*.3,al*(.3+t*.35),R);}
+      PG(lcx,lcy,lr,Math.max(3,lArms),l*.35+(R()-.5)*.3,al*(.5+t*.4),R);}
     // Star diagonals — connect every-other vertex of outer polygon (no radial spokes)
     const outerR=bR*.92;
     for(let i=0;i<arms;i++){const a1=(i/arms)*Math.PI*2;const a2=((i+Math.floor(arms/2))/arms)*Math.PI*2;
-      ST(cx+Math.cos(a1)*outerR,fcy+Math.sin(a1)*outerR,cx+Math.cos(a2)*outerR,fcy+Math.sin(a2)*outerR,al*.25,R);}
+      ST(cx+Math.cos(a1)*outerR,fcy+Math.sin(a1)*outerR,cx+Math.cos(a2)*outerR,fcy+Math.sin(a2)*outerR,al*0.5,R);}
     // Scattered inner details
     for(let z=0;z<Math.floor(p.den*4)+1;z++){const a=R()*Math.PI*2;const d=R()*bR*.4;
       const zx=cx+Math.cos(a)*d,zy=fcy+Math.sin(a)*d;
-      if(R()<.4)HT(zx,zy,bR*(.06+R()*.08),R()*Math.PI,5,al*.2,R);
-      else if(R()<.6)SA(zx,zy,bR*(.05+R()*.1),R()*Math.PI,R()*Math.PI+1.5+R(),al*.15,R);
-      else{const s=5+R()*10;ST(zx-s,zy+(R()-.5)*s,zx+s,zy+(R()-.5)*s,al*.15,R);}}
-    ST(cx,ancY,cx,fcy+bR*.5,al*.3,R);
+      if(R()<.4)HT(zx,zy,bR*(.06+R()*.08),R()*Math.PI,5,al*0.4,R);
+      else if(R()<.6)SA(zx,zy,bR*(.05+R()*.1),R()*Math.PI,R()*Math.PI+1.5+R(),al*0.3,R);
+      else{const s=5+R()*10;ST(zx-s,zy+(R()-.5)*s,zx+s,zy+(R()-.5)*s,al*0.3,R);}}
+    ST(cx,ancY,cx,fcy+bR*.5,al*0.6,R);
   }
 
   // ==========================================
@@ -387,11 +387,11 @@ function drawForm(){
         const wx=ox+cos*t*len+(R()-.5)*6;
         const wy=oy+sin*t*len+(R()-.5)*6;
         pts.push({x:wx,y:wy});}
-      const alLine=al*(.15+R()*.2);
+      const alLine=al*(.3+R()*.3);
       for(let s=0;s<pts.length-1;s++)ST(pts[s].x,pts[s].y,pts[s+1].x,pts[s+1].y,alLine,R);
     }
     // Stem
-    ST(cx,ancY,cx,fcy+gH/2,al*.25,R);
+    ST(cx,ancY,cx,fcy+gH/2,al*0.5,R);
     rootH(cx-gW/2);rootH(cx+gW/2);
   }
 
@@ -403,19 +403,19 @@ function drawForm(){
     for(let i=0;i<n;i++){const a=R()*Math.PI*2;const d=15+R()*bR*.7;
       const px=cx+Math.cos(a)*d,py=fcy+Math.sin(a)*d;const pr=15+R()*bR*.16;
       const sides=3+Math.floor(R()*2); // triangles and diamonds only
-      const vs=PG(px,py,pr,sides,R()*Math.PI,al*(.5+R()*.3),R);
+      const vs=PG(px,py,pr,sides,R()*Math.PI,al*(.7+R()*.25),R);
       // Mixed internal details: fracture lines + arcs + hatches
-      if(vs.length>2){ST(vs[0].x,vs[0].y,vs[Math.floor(vs.length/2)].x,vs[Math.floor(vs.length/2)].y,al*.25,R);}
-      if(R()<.35)HT(px,py,pr*.4,R()*Math.PI,5,al*.2,R);
-      else if(R()<.5)SA(px,py,pr*.5,R()*Math.PI,R()*Math.PI+Math.PI*(0.5+R()),al*.2,R);
-      else if(R()<.3){const s=pr*.3;ST(px-s,py,px+s,py,al*.2,R);ST(px,py-s,px,py+s,al*.2,R);}
+      if(vs.length>2){ST(vs[0].x,vs[0].y,vs[Math.floor(vs.length/2)].x,vs[Math.floor(vs.length/2)].y,al*0.5,R);}
+      if(R()<.35)HT(px,py,pr*.4,R()*Math.PI,5,al*0.4,R);
+      else if(R()<.5)SA(px,py,pr*.5,R()*Math.PI,R()*Math.PI+Math.PI*(0.5+R()),al*0.4,R);
+      else if(R()<.3){const s=pr*.3;ST(px-s,py,px+s,py,al*0.4,R);ST(px,py-s,px,py+s,al*0.4,R);}
       pieces.push({x:px,y:py});}
     // Thin fracture lines between nearby shards
     for(let i=0;i<n;i++){for(let j=i+1;j<n;j++){
       const d=Math.sqrt((pieces[i].x-pieces[j].x)**2+(pieces[i].y-pieces[j].y)**2);
-      if(d<bR*.5&&R()<.4){ST(pieces[i].x,pieces[i].y,pieces[j].x,pieces[j].y,al*.12,R);}}}
+      if(d<bR*.5&&R()<.4){ST(pieces[i].x,pieces[i].y,pieces[j].x,pieces[j].y,al*0.24,R);}}}
     let cl=pieces[0],cd=1e9;pieces.forEach(p2=>{const d=Math.abs(p2.y-ancY);if(d<cd){cd=d;cl=p2;}});
-    ST(cx,ancY,cl.x,cl.y,al*.3,R);
+    ST(cx,ancY,cl.x,cl.y,al*0.6,R);
   }
 
   // ==========================================
@@ -430,9 +430,9 @@ function drawForm(){
       const pts=[];
       for(let i=0;i<=120;i++){const t=i/120;
         pts.push({x:cx-bR*.7+t*bR*1.4, y:fcy+yOff+Math.sin(t*freq*Math.PI)*amp});}
-      for(let i=0;i<pts.length-1;i++)ST(pts[i].x,pts[i].y,pts[i+1].x,pts[i+1].y,al*(.35+.2*(1-w/nW)),R);
+      for(let i=0;i<pts.length-1;i++)ST(pts[i].x,pts[i].y,pts[i+1].x,pts[i+1].y,al*(.55+.3*(1-w/nW)),R);
     }
-    const botPt=fcy+bR*.3;ST(cx,ancY,cx,botPt>ancY?ancY:botPt,al*.25,R);
+    const botPt=fcy+bR*.3;ST(cx,ancY,cx,botPt>ancY?ancY:botPt,al*0.5,R);
   }
 
   // ==========================================
@@ -454,20 +454,20 @@ function drawForm(){
     // Draw both arms
     for(let arm=0;arm<2;arm++){
       for(let i=0;i<arms[arm].length-1;i++)
-        ST(arms[arm][i].x,arms[arm][i].y,arms[arm][i+1].x,arms[arm][i+1].y,al*(.4-.1*arm),R);
+        ST(arms[arm][i].x,arms[arm][i].y,arms[arm][i+1].x,arms[arm][i+1].y,al*(.65-.15*arm),R);
     }
     // Rungs (transversal bars connecting the two arms at regular intervals)
     const rungStep=Math.max(3,Math.floor(nPts/8));
     for(let i=rungStep;i<arms[0].length;i+=rungStep+Math.floor(R()*2)){
-      ST(arms[0][i].x,arms[0][i].y,arms[1][i].x,arms[1][i].y,al*.2,R);
+      ST(arms[0][i].x,arms[0][i].y,arms[1][i].x,arms[1][i].y,al*0.4,R);
     }
     // Small marks at rung intersections
     for(let i=rungStep;i<arms[0].length;i+=rungStep*2){
       const mx=(arms[0][i].x+arms[1][i].x)/2,my=(arms[0][i].y+arms[1][i].y)/2;
-      if(R()<.5)SA(mx,my,4+R()*6,0,Math.PI*2,al*.2,R);
-      else{const s=3+R()*4;ST(mx-s,my,mx+s,my,al*.15,R);ST(mx,my-s,mx,my+s,al*.15,R);}
+      if(R()<.5)SA(mx,my,4+R()*6,0,Math.PI*2,al*0.4,R);
+      else{const s=3+R()*4;ST(mx-s,my,mx+s,my,al*0.3,R);ST(mx,my-s,mx,my+s,al*0.3,R);}
     }
-    ST(cx,ancY,cx,fcy+bR*.35,al*.3,R);
+    ST(cx,ancY,cx,fcy+bR*.35,al*0.6,R);
   }
 
   // ==========================================
@@ -481,16 +481,16 @@ function drawForm(){
     for(let i=0;i<n;i++){const sorted=nds.map((nd,j)=>({j,d:Math.sqrt((nd.x-nds[i].x)**2+(nd.y-nds[i].y)**2)}))
       .filter(x=>x.j!==i).sort((a,b)=>a.d-b.d);
       for(let c=0;c<Math.min(3,sorted.length);c++){if(sorted[c].d<bR*.7)
-        ST(nds[i].x,nds[i].y,nds[sorted[c].j].x,nds[sorted[c].j].y,al*.2,R);}}
+        ST(nds[i].x,nds[i].y,nds[sorted[c].j].x,nds[sorted[c].j].y,al*0.4,R);}}
     // Mixed node details: circles, polygons, hatches, crosses — different per node
     nds.forEach(nd=>{const t=R();
-      if(t<.3){SA(nd.x,nd.y,5+R()*6,0,Math.PI*2,al*.55,R);const s=3+R()*4;ST(nd.x-s,nd.y,nd.x+s,nd.y,al*.4,R);ST(nd.x,nd.y-s,nd.x,nd.y+s,al*.4,R);}
-      else if(t<.55){PG(nd.x,nd.y,6+R()*10,3+Math.floor(R()*3),R()*Math.PI,al*.4,R);}
-      else if(t<.75){HT(nd.x,nd.y,6+R()*8,R()*Math.PI,4,al*.25,R);}
-      else{SA(nd.x,nd.y,4+R()*8,R()*Math.PI,R()*Math.PI+Math.PI*(0.6+R()*.8),al*.4,R);
-        const s=5+R()*6;ST(nd.x-s,nd.y-(R()-.5)*s,nd.x+s,nd.y+(R()-.5)*s,al*.25,R);}});
+      if(t<.3){SA(nd.x,nd.y,5+R()*6,0,Math.PI*2,al*0.95,R);const s=3+R()*4;ST(nd.x-s,nd.y,nd.x+s,nd.y,al*0.8,R);ST(nd.x,nd.y-s,nd.x,nd.y+s,al*0.8,R);}
+      else if(t<.55){PG(nd.x,nd.y,6+R()*10,3+Math.floor(R()*3),R()*Math.PI,al*0.8,R);}
+      else if(t<.75){HT(nd.x,nd.y,6+R()*8,R()*Math.PI,4,al*0.5,R);}
+      else{SA(nd.x,nd.y,4+R()*8,R()*Math.PI,R()*Math.PI+Math.PI*(0.6+R()*.8),al*0.8,R);
+        const s=5+R()*6;ST(nd.x-s,nd.y-(R()-.5)*s,nd.x+s,nd.y+(R()-.5)*s,al*0.5,R);}});
     let cl=nds[0],cd=1e9;nds.forEach(nd=>{const d=Math.abs(nd.y-ancY);if(d<cd){cd=d;cl=nd;}});
-    ST(cx,ancY,cl.x,cl.y,al*.3,R);
+    ST(cx,ancY,cl.x,cl.y,al*0.6,R);
   }
 
   // ==========================================
@@ -502,13 +502,13 @@ function drawForm(){
       const cr=25+R()*bR*.14;const ccx=cx+Math.cos(a)*d,ccy=fcy+Math.sin(a)*d;
       // Double concentric circles
       // Mixed island shapes: some circular, some angular, some hatched
-      if(R()<.6){SA(ccx,ccy,cr,0,Math.PI*2,al*(.45+R()*.2),R);SA(ccx,ccy,cr*.6,0,Math.PI*2,al*.2,R);}
-      else{PG(ccx,ccy,cr,4+Math.floor(R()*3),R()*Math.PI,al*(.4+R()*.2),R);}
+      if(R()<.6){SA(ccx,ccy,cr,0,Math.PI*2,al*(.7+R()*.2),R);SA(ccx,ccy,cr*.6,0,Math.PI*2,al*0.4,R);}
+      else{PG(ccx,ccy,cr,4+Math.floor(R()*3),R()*Math.PI,al*(.65+R()*.2),R);}
       // Mixed internal fill
       if(p.den>.4){for(let j=0;j<3+Math.floor(R()*3);j++){
         const ia=R()*Math.PI*2;const ir=R()*cr*.4;const fx=ccx+Math.cos(ia)*ir,fy=ccy+Math.sin(ia)*ir;
-        if(R()<.5){ctx.beginPath();ctx.arc(fx,fy,2+R()*3,0,Math.PI*2);ctx.fillStyle=`rgba(${INK},${al*.25})`;ctx.fill();}
-        else{ST(fx-3-R()*4,fy,fx+3+R()*4,fy,al*.18,R);}}}
+        if(R()<.5){ctx.beginPath();ctx.arc(fx,fy,2+R()*3,0,Math.PI*2);ctx.fillStyle=`rgba(${INK},${al*0.5})`;ctx.fill();}
+        else{ST(fx-3-R()*4,fy,fx+3+R()*4,fy,al*0.36,R);}}}
       cells.push({x:ccx,y:ccy,r:cr});}
     // Curved arcs connecting nearby islands
     for(let i=0;i<cells.length;i++){for(let j=i+1;j<cells.length;j++){
@@ -516,8 +516,8 @@ function drawForm(){
       if(d<cells[i].r+cells[j].r+80){
         const mx=(cells[i].x+cells[j].x)/2+(R()-.5)*40;
         const my=(cells[i].y+cells[j].y)/2+(R()-.5)*40;
-        ST(cells[i].x,cells[i].y,mx,my,al*.15,R);ST(mx,my,cells[j].x,cells[j].y,al*.15,R);}}}
-    ST(cx,ancY,cx,fcy+bR*.35,al*.3,R);
+        ST(cells[i].x,cells[i].y,mx,my,al*0.3,R);ST(mx,my,cells[j].x,cells[j].y,al*0.3,R);}}}
+    ST(cx,ancY,cx,fcy+bR*.35,al*0.6,R);
   }
 
   // ==========================================
@@ -536,15 +536,15 @@ function drawForm(){
         if(pk<nPeaks-1)pts.push({x:peakX+w/nPeaks*(.3+R()*.4),y:baseY-peakH*.2-R()*20});}
       pts.push({x:cx+w,y:baseY});
       // Draw mountain silhouette
-      for(let i=0;i<pts.length-1;i++)ST(pts[i].x,pts[i].y,pts[i+1].x,pts[i+1].y,al*(.3+t*.4),R);
+      for(let i=0;i<pts.length-1;i++)ST(pts[i].x,pts[i].y,pts[i+1].x,pts[i+1].y,al*(.5+t*.4),R);
       // Hatching inside mountain bodies
       if(p.den>.3&&R()<.6){const mid=pts[Math.floor(pts.length/2)];
-        HT(mid.x,baseY-20-R()*30,bR*(.05+R()*.1),R()*.3,5,al*.2,R);}
+        HT(mid.x,baseY-20-R()*30,bR*(.05+R()*.1),R()*.3,5,al*0.4,R);}
     }
     // Snow caps: tiny hatches at the very top peaks
     for(let i=0;i<2+Math.floor(R()*2);i++){
       const px=cx+(R()-.5)*bR*.6;const py=fcy-bR*.2+R()*bR*.3;
-      ST(px-4,py,px+4,py,al*.15,R);}
+      ST(px-4,py,px+4,py,al*0.3,R);}
     // Horizontal connections from base mountain edges to head
     const baseW=bR*.6;
     rootH(cx-baseW);rootH(cx+baseW);
@@ -559,20 +559,20 @@ function drawForm(){
       const pts=[];for(let j=0;j<=60;j++){const a=(j/60)*Math.PI*2;
         const wr=r+Math.sin(a*(3+i%3))*wobble+Math.cos(a*(5+i%2))*wobble*.5;
         pts.push({x:cx+Math.cos(a)*wr,y:fcy+Math.sin(a)*wr});}
-      for(let j=0;j<pts.length-1;j++)ST(pts[j].x,pts[j].y,pts[j+1].x,pts[j+1].y,al*(.15+.03*i),R);}
+      for(let j=0;j<pts.length-1;j++)ST(pts[j].x,pts[j].y,pts[j+1].x,pts[j+1].y,al*(.3+.05*i),R);}
     // Angular interruptions — break the pure ring pattern
     for(let i=0;i<2+Math.floor(p.cpx*.5);i++){const a=R()*Math.PI*2,d=bR*(.15+R()*.5);
       const px=cx+Math.cos(a)*d,py=fcy+Math.sin(a)*d;
-      PG(px,py,12+R()*25,3+Math.floor(R()*3),R()*Math.PI,al*.2,R);}
+      PG(px,py,12+R()*25,3+Math.floor(R()*3),R()*Math.PI,al*0.4,R);}
     // Scattered elevation marks + hatched zones
     for(let i=0;i<3+Math.floor(p.den*3);i++){const a=R()*Math.PI*2,d=R()*bR*.5;
       const ex=cx+Math.cos(a)*d,ey=fcy+Math.sin(a)*d;
-      if(R()<.5){ST(ex-3,ey,ex+3,ey,al*.35,R);ST(ex,ey-3,ex,ey+3,al*.35,R);}
-      else{HT(ex,ey,8+R()*12,R()*Math.PI,5,al*.15,R);}}
+      if(R()<.5){ST(ex-3,ey,ex+3,ey,al*0.7,R);ST(ex,ey-3,ex,ey+3,al*0.7,R);}
+      else{HT(ex,ey,8+R()*12,R()*Math.PI,5,al*0.3,R);}}
     // Stray radial lines that cut across rings
     for(let i=0;i<Math.floor(p.den*2)+1;i++){const a=R()*Math.PI*2;
-      ST(cx+Math.cos(a)*bR*.1,fcy+Math.sin(a)*bR*.1,cx+Math.cos(a)*bR*(.5+R()*.3),fcy+Math.sin(a)*bR*(.5+R()*.3),al*.1,R);}
-    ST(cx,ancY,cx,fcy+bR*.6,al*.3,R);
+      ST(cx+Math.cos(a)*bR*.1,fcy+Math.sin(a)*bR*.1,cx+Math.cos(a)*bR*(.5+R()*.3),fcy+Math.sin(a)*bR*(.5+R()*.3),al*0.2,R);}
+    ST(cx,ancY,cx,fcy+bR*.6,al*0.6,R);
   }
 
   // ==========================================
@@ -584,13 +584,13 @@ function drawForm(){
     for(let ti=0;ti<nTot;ti++){
       const tx=cx+(ti-(nTot-1)/2)*totW*8;const totH=Math.min(bR*(.9+R()*.5),zoneH*.95);
       // Single central vertical line only — no edges, no horizontal connections
-      ST(tx,ancY,tx,ancY-totH,al*.4,R);
+      ST(tx,ancY,tx,ancY-totH,al*0.8,R);
       // Internal textures along the line
       const nSec=3+Math.floor(p.cpx*.8);
       for(let s=0;s<nSec;s++){const sy=ancY-totH*(s+1)/(nSec+1);
         const secH=totH/(nSec+1);
-        if(R()<.5){HT(tx+(R()-.5)*3,sy+secH*.3,totW*.8,R()*Math.PI,4,al*.1,R);}
-        else{SA(tx+(R()-.5)*4,sy+secH*.35,totW*.6,R()*Math.PI,R()*Math.PI+Math.PI*(.4+R()*.4),al*.12,R);}}
+        if(R()<.5){HT(tx+(R()-.5)*3,sy+secH*.3,totW*.8,R()*Math.PI,4,al*0.2,R);}
+        else{SA(tx+(R()-.5)*4,sy+secH*.35,totW*.6,R()*Math.PI,R()*Math.PI+Math.PI*(.4+R()*.4),al*0.24,R);}}
     }
   }
 
@@ -606,7 +606,7 @@ function drawForm(){
       const y=Math.max(zoneT+10,fcy-bR*.6)+t*spanH;
       const ox=(R()-.5)*60;
       const w=Math.min(bR*(.12+R()*.35),zoneHW*.7);
-      const alLine=al*(.2+t*.25);
+      const alLine=al*(.4+t*.3);
       const wav=2+R()*4;const freq=1+R()*2;
       // Main wavy horizontal line — may be interrupted
       const nSeg=12+Math.floor(R()*8);
@@ -625,7 +625,7 @@ function drawForm(){
         const ey=y+4+R()*6;const ew=w*(.3+R()*.4);const eox=ox+(R()-.5)*30;
         ST(cx+eox-ew,ey+(R()-.5)*2,cx+eox+ew,ey+(R()-.5)*2,alLine*.5,R);}
     }
-    ST(cx,ancY,cx,fcy+bR*.5,al*.2,R);
+    ST(cx,ancY,cx,fcy+bR*.5,al*0.4,R);
   }
 
   // ==========================================
@@ -636,10 +636,10 @@ function drawForm(){
     function br(bx2,by2,a,d,lm){if(d>maxD)return;
       const len=(maxD-d+1)*(bR*0.22)*lm*(.8+R()*.4);
       const ex=bx2+Math.cos(a)*len,ey=by2+Math.sin(a)*len;
-      ST(bx2,by2,ex,ey,al*(.2+.2*(1-d/maxD)),R);
+      ST(bx2,by2,ex,ey,al*(.4+.3*(1-d/maxD)),R);
       // Terminal details
-      if(d===maxD){if(p.den>.4){SA(ex,ey,5+R()*10,0,Math.PI*2,al*.25,R);}
-        else{const s=5;ST(ex-s,ey-s,ex+s,ey+s,al*.2,R);ST(ex+s,ey-s,ex-s,ey+s,al*.2,R);}}
+      if(d===maxD){if(p.den>.4){SA(ex,ey,5+R()*10,0,Math.PI*2,al*0.5,R);}
+        else{const s=5;ST(ex-s,ey-s,ex+s,ey+s,al*0.4,R);ST(ex+s,ey-s,ex-s,ey+s,al*0.4,R);}}
       for(let b=0;b<brN;b++){const na=a+(b-(brN-1)/2)*.25+(R()-.5)*.06;br(ex,ey,na,d+1,.85+R()*.1);}}
     br(cx,ancY,-Math.PI/2+(R()-.5)*.1,0,1);
     if(p.cpx>2){br(cx-12,ancY,-Math.PI/2-.22,1,.5);br(cx+12,ancY,-Math.PI/2+.22,1,.5);}
@@ -657,17 +657,17 @@ function drawForm(){
       for(let i=0;i<=30;i++){const t=i/30;
         const a=baseA+curl*t*t;const step=mainLen/30;
         px2+=Math.cos(a)*step;py2+=Math.sin(a)*step;pts.push({x:px2,y:py2});}
-      for(let i=0;i<pts.length-1;i++)ST(pts[i].x,pts[i].y,pts[i+1].x,pts[i+1].y,al*(.4+.3*(1-f/nFronds)),R);
+      for(let i=0;i<pts.length-1;i++)ST(pts[i].x,pts[i].y,pts[i+1].x,pts[i+1].y,al*(.6+.3*(1-f/nFronds)),R);
       // Side leaflets — alternating
       for(let i=3;i<pts.length;i+=2){const pt=pts[i];const prev=pts[i-1];
         const da=Math.atan2(pt.y-prev.y,pt.x-prev.x);const side=(i%4<2)?1:-1;
         const la=da+side*.7;const ll=12+R()*25*(1-i/pts.length);
         const lx=pt.x+Math.cos(la)*ll,ly=pt.y+Math.sin(la)*ll;
-        ST(pt.x,pt.y,lx,ly,al*.3,R);
-        if(R()<p.den*.5)SA(lx,ly,3+R()*4,0,Math.PI*2,al*.2,R);}
+        ST(pt.x,pt.y,lx,ly,al*0.6,R);
+        if(R()<p.den*.5)SA(lx,ly,3+R()*4,0,Math.PI*2,al*0.4,R);}
       // Spiral tip (fiddle-head)
       const tip=pts[pts.length-1];const tipA=baseA+curl;
-      SA(tip.x+Math.cos(tipA)*12,tip.y+Math.sin(tipA)*12,8+R()*8,0,Math.PI*1.5,al*.35,R);
+      SA(tip.x+Math.cos(tipA)*12,tip.y+Math.sin(tipA)*12,8+R()*8,0,Math.PI*1.5,al*0.7,R);
     }
   }
 
@@ -680,25 +680,25 @@ function drawForm(){
       const sway=(R()-.5)*.25;const pts=[];
       for(let j=0;j<=10;j++){const t=j/10;
         pts.push({x:sx+Math.sin(t*Math.PI+sway)*sh*.06+sway*t*25,y:ancY-t*sh});}
-      for(let j=0;j<pts.length-1;j++)ST(pts[j].x,pts[j].y,pts[j+1].x,pts[j+1].y,al*(.2+R()*.3),R);
+      for(let j=0;j<pts.length-1;j++)ST(pts[j].x,pts[j].y,pts[j+1].x,pts[j+1].y,al*(.4+R()*.4),R);
       // Top detail
       if(R()<p.den){const top=pts[pts.length-1];
-        ST(top.x,top.y,top.x+(R()-.5)*16,top.y-5-R()*12,al*.3,R);}
+        ST(top.x,top.y,top.x+(R()-.5)*16,top.y-5-R()*12,al*0.6,R);}
       if(sh>bR*.5&&R()<.5){const mid=pts[5];
-        ST(mid.x,mid.y,mid.x+12+R()*18,mid.y-8-R()*12,al*.2,R);}
+        ST(mid.x,mid.y,mid.x+12+R()*18,mid.y-8-R()*12,al*0.4,R);}
       // Mixed top details: circles, polygons, hatches instead of just lines
-      if(R()<.3){const top=pts[pts.length-1];SA(top.x,top.y-5,4+R()*8,0,Math.PI*2,al*.25,R);}
-      if(R()<.15){const top=pts[pts.length-1];PG(top.x,top.y-8,5+R()*10,3+Math.floor(R()*3),R()*Math.PI,al*.2,R);}
+      if(R()<.3){const top=pts[pts.length-1];SA(top.x,top.y-5,4+R()*8,0,Math.PI*2,al*0.5,R);}
+      if(R()<.15){const top=pts[pts.length-1];PG(top.x,top.y-8,5+R()*10,3+Math.floor(R()*3),R()*Math.PI,al*0.4,R);}
     }
     // Horizontal bridges connecting stems
     for(let i=0;i<Math.floor(p.den*3)+1;i++){const y=ancY-bR*(.2+R()*.5);const hw=fieldW*(.1+R()*.2);
-      SA(cx+(R()-.5)*fieldW*.3,y,hw,R()*.5,R()*.5+Math.PI*(.5+R()),al*.08,R);}
+      SA(cx+(R()-.5)*fieldW*.3,y,hw,R()*.5,R()*.5+Math.PI*(.5+R()),al*0.16,R);}
     // Ground scatter: marks + tiny polygons
     for(let i=0;i<Math.floor(p.den*8)+2;i++){const gx=cx+(R()-.5)*fieldW;
-      if(R()<.6)ST(gx-4,ancY+R()*3,gx+4,ancY+R()*3,al*.12,R);
-      else PG(gx,ancY-2-R()*8,3+R()*5,3,R()*Math.PI,al*.1,R);}
+      if(R()<.6)ST(gx-4,ancY+R()*3,gx+4,ancY+R()*3,al*0.24,R);
+      else PG(gx,ancY-2-R()*8,3+R()*5,3,R()*Math.PI,al*0.2,R);}
     // Continuous baseline + horizontal connections to head
-    ST(cx-fieldW/2,ancY,cx+fieldW/2,ancY,al*.12,R);
+    ST(cx-fieldW/2,ancY,cx+fieldW/2,ancY,al*0.24,R);
     rootH(cx-fieldW/2);rootH(cx+fieldW/2);
   }
 
@@ -710,51 +710,51 @@ function drawForm(){
     const nRays=8+Math.floor(p.mul*1.5);
     for(let i=0;i<nRays;i++){const a=(i/nRays)*Math.PI*2+R()*.15;
       const rl=bR*(.2+R()*.2);
-      ST(cx+Math.cos(a)*5,fcy+Math.sin(a)*5,cx+Math.cos(a)*rl,fcy+Math.sin(a)*rl,al*.35,R);}
-    SA(cx,fcy,bR*.08,0,Math.PI*2,al*.5,R);
+      ST(cx+Math.cos(a)*5,fcy+Math.sin(a)*5,cx+Math.cos(a)*rl,fcy+Math.sin(a)*rl,al*0.7,R);}
+    SA(cx,fcy,bR*.08,0,Math.PI*2,al*0.95,R);
     // Floating seeds — round puffs with trailing curved lines
     const nSeeds=4+Math.floor(p.mul);
     for(let i=0;i<nSeeds;i++){const a=R()*Math.PI*2;const d=bR*(.35+R()*.45);
       const sx=cx+Math.cos(a)*d,sy=fcy+Math.sin(a)*d;
-      SA(sx,sy,5+R()*7,0,Math.PI*2,al*.4,R);
+      SA(sx,sy,5+R()*7,0,Math.PI*2,al*0.8,R);
       // Tiny radiating filaments
       for(let f=0;f<4+Math.floor(R()*3);f++){const fa=R()*Math.PI*2;const fl=6+R()*10;
-        ST(sx+Math.cos(fa)*3,sy+Math.sin(fa)*3,sx+Math.cos(fa)*fl,sy+Math.sin(fa)*fl,al*.2,R);}
+        ST(sx+Math.cos(fa)*3,sy+Math.sin(fa)*3,sx+Math.cos(fa)*fl,sy+Math.sin(fa)*fl,al*0.4,R);}
       // Wind trail — curved line back toward center
       const mx=sx+(cx-sx)*.4+(R()-.5)*40;const my=sy+(fcy-sy)*.4+(R()-.5)*40;
-      ST(sx,sy,mx,my,al*.1,R);ST(mx,my,cx+Math.cos(a)*bR*.15,fcy+Math.sin(a)*bR*.15,al*.08,R);}
+      ST(sx,sy,mx,my,al*0.2,R);ST(mx,my,cx+Math.cos(a)*bR*.15,fcy+Math.sin(a)*bR*.15,al*0.16,R);}
     // Stem
-    ST(cx,ancY,cx,fcy+bR*.06,al*.4,R);
+    ST(cx,ancY,cx,fcy+bR*.06,al*0.8,R);
   }
 
   // ===== FALLBACK =====
   else{
-    PG(cx,fcy,bR*.6,5,R(),al*.5,R);PG(cx,fcy,bR*.3,4,R(),al*.35,R);
-    ST(cx,ancY,cx,fcy+bR*.4,al*.4,R);
+    PG(cx,fcy,bR*.6,5,R(),al*0.95,R);PG(cx,fcy,bR*.3,4,R(),al*0.7,R);
+    ST(cx,ancY,cx,fcy+bR*.4,al*0.8,R);
   }
 
   // ===== ROOT CONNECTION — all lines trace back to head =====
   if(key!=='layer_parallel'){
-    ST(cx-headHW,ancY,cx+headHW,ancY,al*.2,R);
+    ST(cx-headHW,ancY,cx+headHW,ancY,al*0.4,R);
     const fanW=Math.min(bR*.5,zoneHW);
     if(fanW>headHW){
-      ST(cx-headHW,ancY,cx-fanW,ancY-bR*.12,al*.08,R);
-      ST(cx+headHW,ancY,cx+fanW,ancY-bR*.12,al*.08,R);
+      ST(cx-headHW,ancY,cx-fanW,ancY-bR*.12,al*0.16,R);
+      ST(cx+headHW,ancY,cx+fanW,ancY-bR*.12,al*0.16,R);
     }
   }
 
   // ===== FLIP-BASED OVERLAY =====
-  if(f2){for(let i=0;i<4;i++){const r=bR*(.25+i*.2);SA(cx,fcy,r,R()*Math.PI,R()*Math.PI+Math.PI*(.6+R()*.5),al*.05,R);}}
+  if(f2){for(let i=0;i<4;i++){const r=bR*(.25+i*.2);SA(cx,fcy,r,R()*Math.PI,R()*Math.PI+Math.PI*(.6+R()*.5),al*0.1,R);}}
 
   // ===== GLOBAL OVERLAYS (rhythm) =====
   if(p.rhy==='flash'){const n=5+Math.floor(R()*5);for(let i=0;i<n;i++){const a=R()*Math.PI*2;
-    ST(cx+Math.cos(a)*bR*.2,fcy+Math.sin(a)*bR*.2,cx+Math.cos(a)*bR*(.7+R()*.2),fcy+Math.sin(a)*bR*(.7+R()*.2),al*.09,R);}}
+    ST(cx+Math.cos(a)*bR*.2,fcy+Math.sin(a)*bR*.2,cx+Math.cos(a)*bR*(.7+R()*.2),fcy+Math.sin(a)*bR*(.7+R()*.2),al*0.18,R);}}
   if(p.rhy==='bounce'){for(let i=0;i<3+Math.floor(R()*3);i++){const a=R()*Math.PI*2;
-    SA(cx,fcy,bR*(.15+R()*.2),a,a+.5+R()*.6,al*.05,R);}}
-  if(p.rhy==='ferment'){HT(cx,fcy,bR*.06,R()*Math.PI,6,al*.09,R);}
+    SA(cx,fcy,bR*(.15+R()*.2),a,a+.5+R()*.6,al*0.1,R);}}
+  if(p.rhy==='ferment'){HT(cx,fcy,bR*.06,R()*Math.PI,6,al*0.18,R);}
   if(p.rhy==='accumulate'){for(let i=0;i<Math.floor(p.den*18)+6;i++){const a=R()*Math.PI*2,d=R()*bR*.6;
     ctx.beginPath();ctx.arc(cx+Math.cos(a)*d,fcy+Math.sin(a)*d,1.5+R()*1.2,0,Math.PI*2);
-    ctx.fillStyle=`rgba(${INK},${al*.125})`;ctx.fill();}}
+    ctx.fillStyle=`rgba(${INK},${al*0.25})`;ctx.fill();}}
   ctx.restore();
 }
 
