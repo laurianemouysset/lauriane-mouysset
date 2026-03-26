@@ -576,11 +576,12 @@ function drawForm(){
   else if(key==='layer_parallel'){
     // TEXTURED VERTICALS — single central lines with internal textures, no rectangular contours
     const nTot=Math.min(4,2+Math.floor(p.mul/3));const totW=bR*.04;
+    const totemXs=[];
     for(let ti=0;ti<nTot;ti++){
       const tx=cx+(ti-(nTot-1)/2)*totW*8;const totH=Math.min(bR*(.9+R()*.5),zoneH*.95);
-      // Single central vertical line — connected to head
+      totemXs.push(tx);
+      // Single central vertical line
       ST(tx,ancY,tx,ancY-totH,al*0.9,R);
-      rootH(tx);
       // Internal textures along the line
       const nSec=3+Math.floor(p.cpx*.8);
       for(let s=0;s<nSec;s++){const sy=ancY-totH*(s+1)/(nSec+1);
@@ -588,6 +589,8 @@ function drawForm(){
         if(R()<.5){HT(tx+(R()-.5)*3,sy+secH*.3,totW*.8,R()*Math.PI,4,al*0.6,R);}
         else{SA(tx+(R()-.5)*4,sy+secH*.35,totW*.6,R()*Math.PI,R()*Math.PI+Math.PI*(.4+R()*.4),al*0.6,R);}}
     }
+    // Store totem positions for post-clip connection
+    p._totemXs=totemXs;
   }
 
   // ==========================================
@@ -752,6 +755,19 @@ function drawForm(){
     ctx.beginPath();ctx.arc(cx+Math.cos(a)*d,fcy+Math.sin(a)*d,1.5+R()*1.2,0,Math.PI*2);
     ctx.fillStyle=`rgba(${INK},${al*0.6})`;ctx.fill();}}
   ctx.restore();
+
+  // POST-CLIP: draw connections to bust OUTSIDE the clip region
+  // For totems and any form that needs to visually touch ancY
+  if(key==='layer_parallel'&&p._totemXs){
+    const R2=mkR(p.seed+999);
+    p._totemXs.forEach(tx=>{
+      // Short vertical stub from ancY downward (into bust zone, visible)
+      ST(tx,ancY+10,tx,ancY-30,0.9,R2);
+      // Horizontal connection to head center if outside head width
+      if(tx<cx-headHW)ST(tx,ancY,cx-headHW,ancY,0.6,R2);
+      else if(tx>cx+headHW)ST(tx,ancY,cx+headHW,ancY,0.6,R2);
+    });
+  }
 }
 
 // ===== ANIMATION =====
