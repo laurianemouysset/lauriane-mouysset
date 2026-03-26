@@ -583,9 +583,8 @@ function drawForm(){
     const nTot=Math.min(4,2+Math.floor(p.mul/3));const totW=bR*.04;
     for(let ti=0;ti<nTot;ti++){
       const tx=cx+(ti-(nTot-1)/2)*totW*8;const totH=Math.min(bR*(.9+R()*.5),zoneH*.95);
-      // Single central vertical line only — no edges
+      // Single central vertical line only — no edges, no horizontal connections
       ST(tx,ancY,tx,ancY-totH,al*.4,R);
-      rootH(tx);
       // Internal textures along the line
       const nSec=3+Math.floor(p.cpx*.8);
       for(let s=0;s<nSec;s++){const sy=ancY-totH*(s+1)/(nSec+1);
