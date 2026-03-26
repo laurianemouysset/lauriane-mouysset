@@ -346,29 +346,23 @@ function drawForm(){
   else if(key==='classify_spiral'){
     const arms=5+Math.floor(R()*4);const nLay=4+Math.floor(p.cpx*1.5);
     // Concentric polygons with alternating rotation
+    // Offset concentric polygons — each layer drifts from center
     for(let l=0;l<nLay;l++){const t=(l+1)/(nLay+1);const lr=bR*t;
-      PG(cx,fcy,lr,arms,l*.35,al*(.3+t*.35),R);}
-    // Star diagonals — connect every-other vertex of outer polygon
+      const drift=t*bR*0.08;
+      const lcx=cx+(R()-.5)*drift*2,lcy=fcy+(R()-.5)*drift*2;
+      const lArms=arms+Math.floor((R()-.5)*2.5); // vary sides per layer
+      PG(lcx,lcy,lr,Math.max(3,lArms),l*.35+(R()-.5)*.3,al*(.3+t*.35),R);}
+    // Star diagonals — connect every-other vertex of outer polygon (no radial spokes)
     const outerR=bR*.92;
     for(let i=0;i<arms;i++){const a1=(i/arms)*Math.PI*2;const a2=((i+Math.floor(arms/2))/arms)*Math.PI*2;
-      ST(cx+Math.cos(a1)*outerR,fcy+Math.sin(a1)*outerR,cx+Math.cos(a2)*outerR,fcy+Math.sin(a2)*outerR,al*.3,R);}
-    // Radial spokes
-    for(let i=0;i<arms*2;i++){const a=(i/(arms*2))*Math.PI*2;
-      ST(cx+Math.cos(a)*bR*.05,fcy+Math.sin(a)*bR*.05,cx+Math.cos(a)*bR*.95,fcy+Math.sin(a)*bR*.95,al*.2,R);}
-    // Mixed inner details: hatches + organic curves + floating fragments
+      ST(cx+Math.cos(a1)*outerR,fcy+Math.sin(a1)*outerR,cx+Math.cos(a2)*outerR,fcy+Math.sin(a2)*outerR,al*.25,R);}
+    // Scattered inner details
     for(let z=0;z<Math.floor(p.den*4)+1;z++){const a=R()*Math.PI*2;const d=R()*bR*.4;
       const zx=cx+Math.cos(a)*d,zy=fcy+Math.sin(a)*d;
-      if(R()<.4)HT(zx,zy,bR*(.06+R()*.08),R()*Math.PI,5,al*.25,R);
-      else if(R()<.6){SA(zx,zy,bR*(.05+R()*.1),R()*Math.PI,R()*Math.PI+1.5+R(),al*.18,R);}
-      else{const s=5+R()*12;ST(zx-s,zy+(R()-.5)*s,zx+s,zy+(R()-.5)*s,al*.2,R);
-        ST(zx+(R()-.5)*s,zy-s,zx+(R()-.5)*s,zy+s,al*.2,R);}}
-    // Asymmetric organic interruptions between rings
-    for(let i=0;i<2+Math.floor(R()*2);i++){const a=R()*Math.PI*2,r=bR*(.3+R()*.4);
-      const px=cx+Math.cos(a)*r,py=fcy+Math.sin(a)*r;
-      const len=20+R()*40;const da=a+Math.PI/2+(R()-.5)*.5;
-      ST(px,py,px+Math.cos(da)*len,py+Math.sin(da)*len,al*.15,R);}
-    ST(cx-bR*.1,fcy,cx+bR*.1,fcy,al*.5,R);ST(cx,fcy-bR*.1,cx,fcy+bR*.1,al*.5,R);
-    ST(cx,ancY,cx,fcy+bR*.5,al*.4,R);
+      if(R()<.4)HT(zx,zy,bR*(.06+R()*.08),R()*Math.PI,5,al*.2,R);
+      else if(R()<.6)SA(zx,zy,bR*(.05+R()*.1),R()*Math.PI,R()*Math.PI+1.5+R(),al*.15,R);
+      else{const s=5+R()*10;ST(zx-s,zy+(R()-.5)*s,zx+s,zy+(R()-.5)*s,al*.15,R);}}
+    ST(cx,ancY,cx,fcy+bR*.5,al*.3,R);
   }
 
   // ==========================================
