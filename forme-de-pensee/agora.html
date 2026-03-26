@@ -938,13 +938,13 @@ function computeCanopyLayout(count){
     placed.push({x:bestPos.x,y:bestPos.y,size:sz});
   }
 
-  // Add 3 small satellite forms that escape the main cloud on the sides
+  // Add 3 small satellite forms — slightly outside the main mass but inside the frame
   for(let s=0;s<3;s++){
     const side=s===0?-1:s===1?1:(R()>.5?1:-1);
-    const satSz=placed.length>0?placed[0].size*0.5:80;
+    const satSz=placed.length>0?placed[0].size*0.4:80;
     const satY=topY+totalH*(0.1+R()*0.4);
-    const satX=CX+side*(maxHalfW*0.85+R()*maxHalfW*0.3);
-    const clampedX=Math.max(MG+satSz/2,Math.min(W-MG-satSz/2,satX));
+    const satX=CX+side*(maxHalfW*0.6+R()*maxHalfW*0.2);
+    const clampedX=Math.max(MG+satSz,Math.min(W-MG-satSz,satX));
     placed.push({x:clampedX,y:satY,size:satSz});
   }
 
@@ -958,6 +958,10 @@ function drawMainCanvas(){
   // Paper grain
   const GR=mkR(42);for(let i=0;i<8000;i++){ctx.fillStyle=`rgba(${180+GR()*30},${175+GR()*30},${168+GR()*30},0.012)`;
     ctx.beginPath();ctx.arc(GR()*W,GR()*H,.7+GR()*.5,0,Math.PI*2);ctx.fill();}
+
+  // Clip to frame — no form can escape the border
+  ctx.save();
+  ctx.beginPath();ctx.rect(MG,MG,W-MG*2,H-MG*2);ctx.clip();
 
   // Draw miniature forms DIRECTLY on main canvas using translate+scale
   const count=allForms.length;
@@ -982,6 +986,7 @@ function drawMainCanvas(){
     drawFormSimplified(form.params);
     ctx.restore();
   }
+  ctx.restore(); // end frame clip
 
   // Draw shared bust
   drawBust();
