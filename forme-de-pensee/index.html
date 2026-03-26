@@ -938,6 +938,8 @@ if (paramSeed && paramAnswers && paramAnswers.length >= 3) {
 // ===== WEBHOOK =====
 function buildPayload(email) {
   const p = computeParams();
+  const baseUrl = window.location.origin + window.location.pathname;
+  const regenUrl = baseUrl + '?a=' + answers.join(',') + '&seed=' + p.seed + (userName ? '&n=' + encodeURIComponent(userName) : '');
   return {
     timestamp: new Date().toISOString(),
     prenom: userName,
@@ -945,7 +947,16 @@ function buildPayload(email) {
     q1_structure: answers[0] || '',
     q2_mouvement: answers[1] || '',
     q3_intensite: answers[2] || '',
+    morphologie: p.str + '_' + p.mov,
     seed: p.seed,
+    flip1: p.flip1,
+    flip2: p.flip2,
+    flip3: p.flip3,
+    rythme: p.rhy,
+    complexite: p.cpx,
+    densite: p.den,
+    multiplicite: p.mul,
+    lien_regeneration: regenUrl,
     source: KIOSK ? 'installation' : 'web'
   };
 }
