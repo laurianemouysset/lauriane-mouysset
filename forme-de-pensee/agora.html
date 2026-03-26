@@ -28,12 +28,8 @@
 <div class="overlay top-left">
   <div class="ov-title">Agora collective</div>
 </div>
-<div class="overlay top-right">
-  <div class="ov-count" id="counter">0 formes de pensee</div>
-</div>
 <div class="overlay bottom-center">
   <div class="ov-footer">Lauriane Mouysset · Collection Agora</div>
-  <div class="ov-refresh" id="refreshInfo"></div>
 </div>
 <script>
 // ===== CONSTANTS =====
@@ -46,7 +42,6 @@ let ctx=cv.getContext('2d');
 // ===== URL PARAMS =====
 const urlParams=new URLSearchParams(window.location.search);
 const REFRESH_MIN=parseInt(urlParams.get('refresh')||'5');
-document.getElementById('refreshInfo').textContent='actualisation toutes les '+REFRESH_MIN+' min';
 
 // ===== API =====
 const API_URL='https://script.google.com/macros/s/AKfycbw1LKhlopH5hTxful2B0DoxvI0pgst3bOHB2hr-gt67f7qQ5I9x-A3IeWtcOAwP_ROQ/exec?action=list';
@@ -214,19 +209,15 @@ function makeParams(str,mov,intensity,f1,f2,f3){
     flip1:!!f1,flip2:!!f2,flip3:!!f3,seed};
 }
 
-// ===== 10 PRESETS =====
-const PRESETS=[
-  makeParams('classify','linear','dense',true,false,true),
-  makeParams('classify','spiral','light',false,true,false),
-  makeParams('connect','parallel','overflow',true,true,false),
-  makeParams('connect','leap','anchored',false,false,true),
-  makeParams('layer','linear','dense',true,false,false),
-  makeParams('layer','spiral','light',false,true,true),
-  makeParams('grow','linear','overflow',true,true,true),
-  makeParams('grow','spiral','anchored',false,false,false),
-  makeParams('grow','parallel','dense',true,false,true),
-  makeParams('layer','leap','light',false,true,false),
-];
+// ===== 50 PRESETS =====
+const _S=['classify','connect','layer','grow'];
+const _M=['linear','spiral','parallel','leap'];
+const _I=['light','anchored','dense','overflow'];
+const PRESETS=[];
+{const R=mkR(12345);
+for(let i=0;i<50;i++){
+  PRESETS.push(makeParams(_S[Math.floor(R()*4)],_M[Math.floor(R()*4)],_I[Math.floor(R()*4)],R()>.5,R()>.5,R()>.5));
+}}
 
 // ===== 16 DISTINCT MORPHOLOGIES =====
 function drawFormWith(p){
@@ -676,37 +667,71 @@ const renderedSeeds=new Set();
 const allForms=[];      // {params, offscreen} — rendered miniatures
 let totalCount=0;
 
-// ===== GOLDEN ANGLE SPIRAL LAYOUT =====
-const GOLDEN_ANGLE=Math.PI*(3-Math.sqrt(5)); // ~137.5 degrees
+// ===== OVAL AGGREGATION LAYOUT =====
+// Forms aggregate into a vertical oval whose base touches the bust.
+// Forms overlap 0-30% (they must at least touch).
 
-function getFormScale(count){
-  if(count<50)return 180;
-  if(count<=200)return 120;
-  return 80;
+function getFormSize(count){
+  if(count<50)return 160;
+  if(count<=200)return 110;
+  return 75;
 }
 
-function getSpiralPositions(count){
+function computeOvalPositions(count){
   const positions=[];
-  // Bust head center in canvas coords
-  const headCX=CX;
-  const headTopY=bustTop; // top of bust
-  // Plume emanates upward from just above bust head
-  const originY=headTopY-20;
-  const originX=headCX;
-  // Scale factor for spiral spread
-  const spread=count<50?28:count<=200?22:16;
+  const fS=getFormSize(count);
+  // Oval zone: base = just above bust head, top = near top margin
+  const baseY=bustTop-fS*0.3; // base of oval touches bust
+  const topY=MG+fS*0.6;
+  const ovalH=baseY-topY;
+  const ovalW=Math.min(W-2*MG-fS, ovalH*0.65); // vertical oval: width < height
+  const ovalCX=CX;
+  const ovalCY=(topY+baseY)/2;
 
-  for(let i=0;i<count;i++){
-    const angle=i*GOLDEN_ANGLE;
-    const r=spread*Math.sqrt(i+1);
-    // Bias upward: compress Y below origin, expand above
-    let x=originX+Math.cos(angle)*r;
-    let y=originY-Math.abs(Math.sin(angle)*r)-r*0.5; // always go up
-    // Clamp inside canvas with margins
-    const formSize=getFormScale(count);
-    x=Math.max(MG+formSize/2,Math.min(W-MG-formSize/2,x));
-    y=Math.max(MG+formSize/2,Math.min(originY-formSize/2,y));
-    positions.push({x,y});
+  // Place first form directly above bust head (touching)
+  const R=mkR(7777);
+  if(count>0) positions.push({x:ovalCX,y:baseY-fS*0.35});
+
+  // Place remaining forms by trying random positions inside the oval,
+  // keeping only those that touch or overlap (up to 30%) an existing form.
+  for(let i=1;i<count;i++){
+    let bestPos=null,bestDist=1e9;
+    // Try many candidates, pick the one closest to existing cluster
+    for(let attempt=0;attempt<80;attempt++){
+      // Random point inside the oval
+      const angle=R()*Math.PI*2;
+      const rNorm=Math.sqrt(R()); // sqrt for uniform distribution inside circle
+      const cx2=ovalCX+Math.cos(angle)*rNorm*ovalW/2;
+      const cy2=ovalCY+Math.sin(angle)*rNorm*ovalH/2;
+      // Must be inside oval: check (cx-ovalCX)^2/(w/2)^2 + (cy-ovalCY)^2/(h/2)^2 <= 1
+      const ex=(cx2-ovalCX)/(ovalW/2), ey=(cy2-ovalCY)/(ovalH/2);
+      if(ex*ex+ey*ey>1)continue;
+      // Check overlap with existing forms: must touch (dist < fS) but not overlap >30% (dist > fS*0.7)
+      let touchesAny=false,tooMuchOverlap=false;
+      let minDist=1e9;
+      for(let j=0;j<positions.length;j++){
+        const dx=cx2-positions[j].x,dy=cy2-positions[j].y;
+        const dist=Math.sqrt(dx*dx+dy*dy);
+        if(dist<fS*0.7)tooMuchOverlap=true; // >30% overlap
+        if(dist<fS*1.05)touchesAny=true; // touching or slightly overlapping
+        if(dist<minDist)minDist=dist;
+      }
+      if(touchesAny&&!tooMuchOverlap&&minDist<bestDist){
+        bestDist=minDist;
+        bestPos={x:cx2,y:cy2};
+      }
+    }
+    // Fallback: if no valid touching position found, place at edge of cluster
+    if(!bestPos){
+      // Find the topmost/outermost form and place just beyond it
+      const angle=R()*Math.PI*2;
+      let fx=ovalCX+Math.cos(angle)*fS*(0.5+Math.sqrt(i)*0.3);
+      let fy=ovalCY+Math.sin(angle)*fS*(0.3+Math.sqrt(i)*0.2);
+      fx=Math.max(MG+fS/2,Math.min(W-MG-fS/2,fx));
+      fy=Math.max(topY,Math.min(baseY-fS*0.3,fy));
+      bestPos={x:fx,y:fy};
+    }
+    positions.push(bestPos);
   }
   return positions;
 }
@@ -733,20 +758,18 @@ function drawMainCanvas(){
   const GR=mkR(42);for(let i=0;i<8000;i++){ctx.fillStyle=`rgba(${180+GR()*30},${175+GR()*30},${168+GR()*30},0.012)`;
     ctx.beginPath();ctx.arc(GR()*W,GR()*H,.7+GR()*.5,0,Math.PI*2);ctx.fill();}
 
-  // Draw miniature forms
+  // Draw miniature forms in oval layout
   const count=allForms.length;
-  const positions=getSpiralPositions(count);
-  const formSize=getFormScale(count);
-  const scale=formSize/W; // scale from 1920-wide offscreen to miniature
+  const positions=computeOvalPositions(count);
+  const fS=getFormSize(count);
+  const scale=fS/W;
 
   for(let i=0;i<count;i++){
     const pos=positions[i];
     const form=allForms[i];
-    if(!form.offscreen)continue;
-    // Source: only the drawing zone (above cutY)
+    if(!form.offscreen||!pos)continue;
     const srcX=0,srcY=0,srcW=W,srcH=Math.floor(cutY);
-    // Destination: centered at position
-    const dstW=formSize;
+    const dstW=fS;
     const dstH=Math.floor(cutY*scale);
     const dstX=pos.x-dstW/2;
     const dstY=pos.y-dstH/2;
@@ -775,8 +798,6 @@ function drawMainCanvas(){
   ctx.fillText('COLLECTION AGORA',CX,H-MG-55);
   ctx.letterSpacing='0px';ctx.textAlign='start';
 
-  // Update counter
-  document.getElementById('counter').textContent=totalCount+' forme'+(totalCount!==1?'s':'')+' de pensee';
 }
 
 // ===== ADD FORMS =====
