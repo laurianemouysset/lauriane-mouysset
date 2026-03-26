@@ -639,13 +639,13 @@ function drawForm(){
   else if(key==='grow_linear'){
     const maxD=Math.max(2,1+Math.floor(p.cpx*.4));const brN=Math.max(2,Math.min(3,p.mul<3?2:3));
     function br(bx2,by2,a,d,lm){if(d>maxD)return;
-      const len=(maxD-d+1)*(bR*0.14)*lm*(.8+R()*.4);
+      const len=(maxD-d+1)*(bR*0.22)*lm*(.8+R()*.4);
       const ex=bx2+Math.cos(a)*len,ey=by2+Math.sin(a)*len;
       ST(bx2,by2,ex,ey,al*(.2+.2*(1-d/maxD)),R);
       // Terminal details
       if(d===maxD){if(p.den>.4){SA(ex,ey,5+R()*10,0,Math.PI*2,al*.25,R);}
         else{const s=5;ST(ex-s,ey-s,ex+s,ey+s,al*.2,R);ST(ex+s,ey-s,ex-s,ey+s,al*.2,R);}}
-      for(let b=0;b<brN;b++){const na=a+(b-(brN-1)/2)*.25+(R()-.5)*.06;br(ex,ey,na,d+1,.75+R()*.1);}}
+      for(let b=0;b<brN;b++){const na=a+(b-(brN-1)/2)*.25+(R()-.5)*.06;br(ex,ey,na,d+1,.85+R()*.1);}}
     br(cx,ancY,-Math.PI/2+(R()-.5)*.1,0,1);
     if(p.cpx>2){br(cx-12,ancY,-Math.PI/2-.22,1,.5);br(cx+12,ancY,-Math.PI/2+.22,1,.5);}
   }
@@ -753,7 +753,7 @@ function drawForm(){
   if(p.rhy==='flash'){const n=5+Math.floor(R()*5);for(let i=0;i<n;i++){const a=R()*Math.PI*2;
     ST(cx+Math.cos(a)*bR*.2,fcy+Math.sin(a)*bR*.2,cx+Math.cos(a)*bR*(.7+R()*.2),fcy+Math.sin(a)*bR*(.7+R()*.2),al*.09,R);}}
   if(p.rhy==='bounce'){for(let i=0;i<3+Math.floor(R()*3);i++){const a=R()*Math.PI*2;
-    SA(cx,fcy,bR*(.3+R()*.45),a,a+.5+R()*.6,al*.075,R);}}
+    SA(cx,fcy,bR*(.15+R()*.2),a,a+.5+R()*.6,al*.05,R);}}
   if(p.rhy==='ferment'){HT(cx,fcy,bR*.06,R()*Math.PI,6,al*.09,R);}
   if(p.rhy==='accumulate'){for(let i=0;i<Math.floor(p.den*18)+6;i++){const a=R()*Math.PI*2,d=R()*bR*.6;
     ctx.beginPath();ctx.arc(cx+Math.cos(a)*d,fcy+Math.sin(a)*d,1.5+R()*1.2,0,Math.PI*2);
