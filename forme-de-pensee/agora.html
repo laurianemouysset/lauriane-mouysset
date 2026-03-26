@@ -722,15 +722,15 @@ function computeCanopyLayout(count){
       // Clamp
       if(cx2<MG+sz/2||cx2>W-MG-sz/2||cy<topY+sz/2)continue;
 
-      // Check overlap with existing: want 20-40% overlap (dist between 0.6*avgSz and 0.8*avgSz)
+      // Check overlap: want 30-40% overlap (dist ~60-70% of avgSz)
       let touchesAny=false,tooClose=false;
       let closestDist=1e9;
       for(let j=0;j<placed.length;j++){
         const dx=cx2-placed[j].x,dy=cy-placed[j].y;
         const dist=Math.sqrt(dx*dx+dy*dy);
         const avgSz=(sz+placed[j].size)/2;
-        if(dist<avgSz*0.45)tooClose=true;  // >55% overlap — too much
-        if(dist<avgSz*0.85)touchesAny=true; // overlapping or touching
+        if(dist<avgSz*0.35)tooClose=true;  // >65% overlap — too much
+        if(dist<avgSz*0.75)touchesAny=true; // 25%+ overlap
         if(dist<closestDist)closestDist=dist;
       }
 
@@ -752,7 +752,7 @@ function computeCanopyLayout(count){
     if(!bestPos&&placed.length>0){
       const parent=placed[Math.floor(R()*placed.length)];
       const angle=-Math.PI/2+(R()-0.5)*Math.PI*0.8; // bias upward
-      const dist=(sz+parent.size)/2*0.7; // 30% overlap
+      const dist=(sz+parent.size)/2*0.55; // ~35% overlap
       let fx=parent.x+Math.cos(angle)*dist;
       let fy=parent.y+Math.sin(angle)*dist;
       fx=Math.max(MG+sz/2,Math.min(W-MG-sz/2,fx));
@@ -802,9 +802,7 @@ function drawMainCanvas(){
     const dstH=Math.floor(cutY*scale);
     const dstX=p.x-dstW/2;
     const dstY=p.y-dstH/2;
-    ctx.globalAlpha=0.8+Math.random()*0.15;
     ctx.drawImage(form.offscreen,srcX,srcY,srcW,srcH,dstX,dstY,dstW,dstH);
-    ctx.globalAlpha=1;
   }
 
   // Draw shared bust

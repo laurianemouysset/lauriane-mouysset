@@ -308,7 +308,7 @@ function drawForm(){
   const zoneW=zoneR-zoneL,zoneH=ancY-zoneT,zoneHW=zoneW/2;
   ctx.beginPath();ctx.rect(zoneL,zoneT,zoneW,zoneH);ctx.clip();
   // bR capped to fit zone
-  const rawBR=Math.min(600+p.mul*56+p.cpx*50,1200)*(p.flip1?1.15:.88);
+  const rawBR=Math.min(700+p.mul*60+p.cpx*55,1400)*(p.flip1?1.15:.88);
   const bR=Math.min(rawBR,zoneHW,zoneH*.47);
   const fcy=Math.max(zoneT+bR,Math.min(ancY-bR,zoneT+zoneH*(p.flip2?.45:.55)));
   const al=.82+p.den*.15;
@@ -725,15 +725,11 @@ function drawForm(){
   }
 
   // ===== ROOT CONNECTION — all lines trace back to head =====
-  // Horizontal base across head top
-  ST(cx-headHW,ancY,cx+headHW,ancY,al*.35,R);
-  // Fan-out braces from head to form width
+  ST(cx-headHW,ancY,cx+headHW,ancY,al*.2,R);
   const fanW=Math.min(bR*.5,zoneHW);
   if(fanW>headHW){
-    ST(cx-headHW,ancY,cx-fanW,ancY-bR*.12,al*.2,R);
-    ST(cx+headHW,ancY,cx+fanW,ancY-bR*.12,al*.2,R);
-    ST(cx-headHW*.6,ancY,cx-fanW*.7,ancY-bR*.2,al*.15,R);
-    ST(cx+headHW*.6,ancY,cx+fanW*.7,ancY-bR*.2,al*.15,R);
+    ST(cx-headHW,ancY,cx-fanW,ancY-bR*.12,al*.08,R);
+    ST(cx+headHW,ancY,cx+fanW,ancY-bR*.12,al*.08,R);
   }
 
   // ===== FLIP-BASED OVERLAY =====
