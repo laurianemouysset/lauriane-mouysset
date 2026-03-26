@@ -685,6 +685,180 @@ function drawFormWith(p){
   }
 }
 
+// ===== SIMPLIFIED MORPHOLOGIES FOR AGORA — silhouettes only =====
+function drawFormSimplified(p){
+  ctx.save();
+  const R=mkR(p.seed+500),cx=CX;
+  const ancY=cutY+4;
+  const headHW=110*bustScale;
+  const zM=0.03,innerW=W-2*MG,innerH=H-2*MG;
+  const zoneT=MG+innerH*zM,zoneL=MG+innerW*zM,zoneR=W-MG-innerW*zM;
+  const zoneW=zoneR-zoneL,zoneH=ancY-zoneT,zoneHW=zoneW/2;
+  ctx.beginPath();ctx.rect(zoneL,zoneT,zoneW,zoneH+20);ctx.clip();
+  const rawBR=Math.min(700+p.mul*60+p.cpx*55,1400)*(p.flip1?1.15:.88);
+  const bR=Math.min(rawBR,zoneHW,zoneH*.47);
+  const fcy=Math.max(zoneT+bR,Math.min(ancY-bR,zoneT+zoneH*(p.flip2?.45:.55)));
+  const al=1.0;
+  const key=p.str+'_'+p.mov;
+
+  // --- CLASSIFY_LINEAR: line of crests connecting bar tops ---
+  if(key==='classify_linear'){
+    const nB=6+Math.floor(p.mul*1.5);const totalW=Math.min(bR*1.4,zoneW);
+    const pts=[];
+    for(let i=0;i<nB;i++){
+      const bx2=cx-totalW/2+i*totalW/nB+(R()-.5)*20;
+      const bh=bR*(.1+Math.pow(R(),0.6)*.8);
+      pts.push({x:bx2,y:ancY-bh});}
+    for(let i=0;i<pts.length-1;i++)ST(pts[i].x,pts[i].y,pts[i+1].x,pts[i+1].y,al*0.8,R);
+    ST(cx,ancY,pts[Math.floor(pts.length/2)].x,pts[Math.floor(pts.length/2)].y,al*0.5,R);
+  }
+  // --- CLASSIFY_SPIRAL: outer polygon only ---
+  else if(key==='classify_spiral'){
+    const arms=5+Math.floor(R()*4);
+    PG(cx+(R()-.5)*bR*0.06,fcy+(R()-.5)*bR*0.06,bR*0.9,arms,R()*0.5,al*0.8,R);
+    ST(cx,ancY,cx,fcy+bR*.5,al*0.5,R);
+  }
+  // --- CLASSIFY_PARALLEL: 4-5 main crossing lines ---
+  else if(key==='classify_parallel'){
+    const gW=Math.min(bR*1.0,zoneW*.7);
+    for(let i=0;i<5;i++){
+      const a=R()*Math.PI;const len=gW*(.3+R()*.4);
+      const ox=cx+(R()-.5)*gW*.3,oy=fcy+(R()-.5)*bR*.4;
+      ST(ox-Math.cos(a)*len/2,oy-Math.sin(a)*len/2,ox+Math.cos(a)*len/2,oy+Math.sin(a)*len/2,al*0.6,R);}
+    ST(cx,ancY,cx,fcy+bR*.4,al*0.4,R);
+  }
+  // --- CLASSIFY_LEAP: contours of 3-4 largest fragments ---
+  else if(key==='classify_leap'){
+    const n=3+Math.floor(p.mul*.3);
+    for(let i=0;i<n;i++){const a=R()*Math.PI*2;const d=15+R()*bR*.6;
+      const px=cx+Math.cos(a)*d,py=fcy+Math.sin(a)*d;const pr=20+R()*bR*.14;
+      PG(px,py,pr,3+Math.floor(R()*2),R()*Math.PI,al*0.7,R);}
+    ST(cx,ancY,cx,fcy+bR*.3,al*0.5,R);
+  }
+  // --- CONNECT_LINEAR: 1-2 sinusoidal curves ---
+  else if(key==='connect_linear'){
+    const nW=1+Math.floor(R()*1.5);
+    for(let w=0;w<nW;w++){
+      const amp=bR*(.15+R()*.15);const freq=1.5+R()*.5;const yOff=(w-(nW-1)/2)*bR*.15;
+      const pts=[];for(let i=0;i<=80;i++){const t=i/80;
+        pts.push({x:cx-bR*.65+t*bR*1.3,y:fcy+yOff+Math.sin(t*freq*Math.PI)*amp});}
+      for(let i=0;i<pts.length-1;i++)ST(pts[i].x,pts[i].y,pts[i+1].x,pts[i+1].y,al*0.7,R);}
+    ST(cx,ancY,cx,fcy+bR*.3,al*0.4,R);
+  }
+  // --- CONNECT_SPIRAL: two main spiral arms ---
+  else if(key==='connect_spiral'){
+    const turns=1+p.cpx*.12;const nPts=Math.floor(turns*30);
+    for(let arm=0;arm<2;arm++){const pts=[];
+      for(let i=0;i<=nPts;i++){const t=i/nPts;const a=t*turns*Math.PI*2+arm*Math.PI;
+        const r=15+t*bR*.8;pts.push({x:cx+Math.cos(a)*r,y:fcy+Math.sin(a)*r});}
+      for(let i=0;i<pts.length-1;i++)ST(pts[i].x,pts[i].y,pts[i+1].x,pts[i+1].y,al*(0.7-arm*0.15),R);}
+    ST(cx,ancY,cx,fcy+bR*.3,al*0.4,R);
+  }
+  // --- CONNECT_PARALLEL: nodes + connecting lines, no node detail ---
+  else if(key==='connect_parallel'){
+    const n=6+Math.floor(p.mul);const nds=[];
+    for(let i=0;i<n;i++){const a=(i/n)*Math.PI*2+R()*.5;const d=20+R()*bR*.6;
+      nds.push({x:cx+Math.cos(a)*d,y:fcy+Math.sin(a)*d});}
+    for(let i=0;i<n;i++){for(let j=i+1;j<n;j++){
+      const d=Math.sqrt((nds[i].x-nds[j].x)**2+(nds[i].y-nds[j].y)**2);
+      if(d<bR*.6&&R()<.5)ST(nds[i].x,nds[i].y,nds[j].x,nds[j].y,al*0.4,R);}}
+    // Small dots at nodes
+    nds.forEach(nd=>{ctx.beginPath();ctx.arc(nd.x,nd.y,3+R()*4,0,Math.PI*2);
+      ctx.fillStyle='rgba(0,0,0,0.6)';ctx.fill();});
+    ST(cx,ancY,cx,fcy+bR*.3,al*0.4,R);
+  }
+  // --- CONNECT_LEAP: island contours only ---
+  else if(key==='connect_leap'){
+    const n=4+Math.floor(p.mul*.5);
+    for(let i=0;i<n;i++){const a=R()*Math.PI*2;const d=R()*bR*.6;
+      const cr=20+R()*bR*.12;const ccx=cx+Math.cos(a)*d,ccy=fcy+Math.sin(a)*d;
+      SA(ccx,ccy,cr,0,Math.PI*2,al*0.6,R);}
+    ST(cx,ancY,cx,fcy+bR*.3,al*0.4,R);
+  }
+  // --- LAYER_LINEAR: only the highest crest line ---
+  else if(key==='layer_linear'){
+    const nPeaks=3+Math.floor(R()*3);const w=Math.min(bR*.8,zoneHW);
+    const pts=[{x:cx-w,y:fcy+bR*.1}];
+    for(let pk=0;pk<nPeaks;pk++){
+      const peakX=cx-w+(pk+.5)*w*2/nPeaks+(R()-.5)*30;
+      const peakH=bR*(.2+R()*.35);
+      pts.push({x:peakX,y:fcy-peakH});
+      if(pk<nPeaks-1)pts.push({x:peakX+w/nPeaks*(.4+R()*.3),y:fcy+bR*.05-R()*15});}
+    pts.push({x:cx+w,y:fcy+bR*.1});
+    for(let i=0;i<pts.length-1;i++)ST(pts[i].x,pts[i].y,pts[i+1].x,pts[i+1].y,al*0.7,R);
+    ST(cx,ancY,cx,fcy+bR*.3,al*0.4,R);
+  }
+  // --- LAYER_SPIRAL: 2-3 outer contour rings ---
+  else if(key==='layer_spiral'){
+    const nRings=2+Math.floor(R()*2);
+    for(let i=0;i<nRings;i++){const r=bR*(.5+(i/nRings)*.45);const wobble=3+R()*4;
+      const pts=[];for(let j=0;j<=50;j++){const a=(j/50)*Math.PI*2;
+        const wr=r+Math.sin(a*(3+i%3))*wobble+Math.cos(a*(5+i%2))*wobble*.4;
+        pts.push({x:cx+Math.cos(a)*wr,y:fcy+Math.sin(a)*wr});}
+      for(let j=0;j<pts.length-1;j++)ST(pts[j].x,pts[j].y,pts[j+1].x,pts[j+1].y,al*(0.5+i*0.15),R);}
+    ST(cx,ancY,cx,fcy+bR*.5,al*0.4,R);
+  }
+  // --- LAYER_PARALLEL: vertical lines only ---
+  else if(key==='layer_parallel'){
+    const nTot=Math.min(4,2+Math.floor(p.mul/3));const totW=bR*.04;
+    for(let ti=0;ti<nTot;ti++){
+      const tx=cx+(ti-(nTot-1)/2)*totW*8;const totH=Math.min(bR*(.8+R()*.4),zoneH*.9);
+      ST(tx,ancY,tx,ancY-totH,al*0.7,R);}
+  }
+  // --- LAYER_LEAP: 3-4 wavy horizontal lines ---
+  else if(key==='layer_leap'){
+    const nSlabs=3+Math.floor(p.cpx*.4);const spanH=Math.min(bR*1.2,zoneH*.7);
+    for(let i=0;i<nSlabs;i++){const t=i/nSlabs;
+      const y=fcy-bR*.4+t*spanH;const ox=(R()-.5)*50;
+      const w=Math.min(bR*(.15+R()*.3),zoneHW*.6);const wav=2+R()*3;const freq=1+R()*1.5;
+      const pts=[];for(let s=0;s<=12;s++){const st=s/12;
+        pts.push({x:cx+ox-w+st*w*2,y:y+Math.sin(st*freq*Math.PI)*wav+(R()-.5)*2});}
+      for(let s=0;s<pts.length-1;s++)ST(pts[s].x,pts[s].y,pts[s+1].x,pts[s+1].y,al*(0.5+t*0.3),R);}
+    ST(cx,ancY,cx,fcy+bR*.4,al*0.4,R);
+  }
+  // --- GROW_LINEAR: trunk + main branches only ---
+  else if(key==='grow_linear'){
+    const maxD=Math.min(2,1+Math.floor(p.cpx*.3));const brN=2;
+    function br(bx2,by2,a,d,lm){if(d>maxD)return;
+      const len=(maxD-d+1)*(bR*0.2)*lm*(.8+R()*.3);
+      const ex=bx2+Math.cos(a)*len,ey=by2+Math.sin(a)*len;
+      ST(bx2,by2,ex,ey,al*(0.6+0.2*(1-d/maxD)),R);
+      for(let b=0;b<brN;b++){const na=a+(b-(brN-1)/2)*.3+(R()-.5)*.08;br(ex,ey,na,d+1,.8);}}
+    br(cx,ancY,-Math.PI/2+(R()-.5)*.1,0,1);
+  }
+  // --- GROW_SPIRAL: main fronds without leaflets ---
+  else if(key==='grow_spiral'){
+    const nFronds=2+Math.floor(p.mul/3);
+    for(let f=0;f<nFronds;f++){
+      const baseA=-Math.PI/2+(f-(nFronds-1)/2)*.35+(R()-.5)*.1;
+      const mainLen=Math.min(bR*(.6+R()*.3),zoneH*.8);const curl=(R()>.5?1:-1)*.5;
+      const pts=[];let px2=cx,py2=ancY;
+      for(let i=0;i<=25;i++){const t=i/25;const a=baseA+curl*t*t;const step=mainLen/25;
+        px2+=Math.cos(a)*step;py2+=Math.sin(a)*step;pts.push({x:px2,y:py2});}
+      for(let i=0;i<pts.length-1;i++)ST(pts[i].x,pts[i].y,pts[i+1].x,pts[i+1].y,al*(0.6+0.2*(1-f/nFronds)),R);}
+  }
+  // --- GROW_PARALLEL: stems only ---
+  else if(key==='grow_parallel'){
+    const nStems=8+Math.floor(p.mul*2);const fieldW=Math.min(bR*1.2,zoneW);
+    for(let i=0;i<nStems;i++){const sx=cx-fieldW/2+R()*fieldW;
+      const sh=Math.min(bR*(.2+R()*.7),zoneH*.9);const sway=(R()-.5)*.2;
+      ST(sx,ancY,sx+sway*sh,ancY-sh,al*(0.4+R()*0.3),R);}
+  }
+  // --- GROW_LEAP: central circle + main rays ---
+  else if(key==='grow_leap'){
+    const nRays=6+Math.floor(p.mul);
+    SA(cx,fcy,bR*.08,0,Math.PI*2,al*0.6,R);
+    for(let i=0;i<nRays;i++){const a=(i/nRays)*Math.PI*2+R()*.15;
+      const rl=bR*(.15+R()*.2);
+      ST(cx+Math.cos(a)*5,fcy+Math.sin(a)*5,cx+Math.cos(a)*rl,fcy+Math.sin(a)*rl,al*0.5,R);}
+    ST(cx,ancY,cx,fcy+bR*.1,al*0.5,R);
+  }
+  // --- FALLBACK ---
+  else{PG(cx,fcy,bR*.5,5,R(),al*0.6,R);ST(cx,ancY,cx,fcy+bR*.4,al*0.4,R);}
+
+  ctx.restore();
+}
+
 // ===== STATE =====
 const renderedSeeds=new Set();
 const allForms=[];
@@ -805,7 +979,7 @@ function drawMainCanvas(){
     ctx.translate(-0, -0); // origin at (0,0) of full-res coords
     // Clip to the form area only (no bust)
     ctx.beginPath();ctx.rect(0,0,W,cutY+20);ctx.clip();
-    drawFormWith(form.params);
+    drawFormSimplified(form.params);
     ctx.restore();
   }
 
