@@ -29,7 +29,7 @@
   <div class="ov-title">Agora collective</div>
 </div>
 <div class="overlay bottom-center">
-  <div class="ov-footer">Lauriane Mouysset · Collection Agora</div>
+  <div class="ov-footer">Volte Geste · Lauriane Mouysset</div>
 </div>
 <script>
 // ===== CONSTANTS =====
@@ -667,73 +667,85 @@ const renderedSeeds=new Set();
 const allForms=[];      // {params, offscreen} — rendered miniatures
 let totalCount=0;
 
-// ===== OVAL AGGREGATION LAYOUT =====
-// Forms aggregate into a vertical oval whose base touches the bust.
-// Forms overlap 0-30% (they must at least touch).
+// ===== CANOPY AGGREGATION LAYOUT =====
+// Dense organic cloud: narrow at bust, widens upward like a canopy.
+// Forms overlap 20-40%. Sizes vary from simple to double.
 
-function getFormSize(count){
-  if(count<50)return 160;
-  if(count<=200)return 110;
-  return 75;
+function getFormSizeForIndex(i,count,R){
+  // Sizes vary from 0.6x to 1.2x base size — organic variation
+  const base=count<50?140:count<=200?100:70;
+  return base*(0.6+R()*0.6);
 }
 
-function computeOvalPositions(count){
-  const positions=[];
-  const fS=getFormSize(count);
-  // Oval zone: base = just above bust head, top = near top margin
-  const baseY=bustTop-fS*0.3; // base of oval touches bust
-  const topY=MG+fS*0.6;
-  const ovalH=baseY-topY;
-  const ovalW=Math.min(W-2*MG-fS, ovalH*0.65); // vertical oval: width < height
-  const ovalCX=CX;
-  const ovalCY=(topY+baseY)/2;
-
-  // Place first form directly above bust head (touching)
+function computeCanopyLayout(count){
+  const placed=[]; // {x, y, size}
   const R=mkR(7777);
-  if(count>0) positions.push({x:ovalCX,y:baseY-fS*0.35});
 
-  // Place remaining forms by trying random positions inside the oval,
-  // keeping only those that touch or overlap (up to 30%) an existing form.
-  for(let i=1;i<count;i++){
-    let bestPos=null,bestDist=1e9;
-    // Try many candidates, pick the one closest to existing cluster
-    for(let attempt=0;attempt<80;attempt++){
-      // Random point inside the oval
-      const angle=R()*Math.PI*2;
-      const rNorm=Math.sqrt(R()); // sqrt for uniform distribution inside circle
-      const cx2=ovalCX+Math.cos(angle)*rNorm*ovalW/2;
-      const cy2=ovalCY+Math.sin(angle)*rNorm*ovalH/2;
-      // Must be inside oval: check (cx-ovalCX)^2/(w/2)^2 + (cy-ovalCY)^2/(h/2)^2 <= 1
-      const ex=(cx2-ovalCX)/(ovalW/2), ey=(cy2-ovalCY)/(ovalH/2);
-      if(ex*ex+ey*ey>1)continue;
-      // Check overlap with existing forms: must touch (dist < fS) but not overlap >30% (dist > fS*0.7)
-      let touchesAny=false,tooMuchOverlap=false;
-      let minDist=1e9;
-      for(let j=0;j<positions.length;j++){
-        const dx=cx2-positions[j].x,dy=cy2-positions[j].y;
+  // Canopy shape: narrow at bust (width ~200px), widens toward top
+  const baseY=bustTop-10; // touches bust
+  const topY=MG+80;
+  const totalH=baseY-topY;
+
+  for(let i=0;i<count;i++){
+    const sz=getFormSizeForIndex(i,count,R);
+    let bestPos=null,bestScore=-1e9;
+
+    for(let attempt=0;attempt<120;attempt++){
+      // Pick a random height — bias toward filling from bottom up
+      const tRaw=R();
+      const t=tRaw*tRaw; // quadratic bias: more forms near the base
+      const cy=baseY-t*totalH;
+
+      // Canopy width at this height: narrow at base, wide at top
+      const heightRatio=(baseY-cy)/totalH; // 0 at bust, 1 at top
+      const halfW=80+heightRatio*heightRatio*(CX-MG-80); // quadratic widening
+      const cx2=CX+(R()-0.5)*2*halfW;
+
+      // Clamp
+      if(cx2<MG+sz/2||cx2>W-MG-sz/2||cy<topY+sz/2)continue;
+
+      // Check overlap with existing: want 20-40% overlap (dist between 0.6*avgSz and 0.8*avgSz)
+      let touchesAny=false,tooClose=false;
+      let closestDist=1e9;
+      for(let j=0;j<placed.length;j++){
+        const dx=cx2-placed[j].x,dy=cy-placed[j].y;
         const dist=Math.sqrt(dx*dx+dy*dy);
-        if(dist<fS*0.7)tooMuchOverlap=true; // >30% overlap
-        if(dist<fS*1.05)touchesAny=true; // touching or slightly overlapping
-        if(dist<minDist)minDist=dist;
+        const avgSz=(sz+placed[j].size)/2;
+        if(dist<avgSz*0.45)tooClose=true;  // >55% overlap — too much
+        if(dist<avgSz*0.85)touchesAny=true; // overlapping or touching
+        if(dist<closestDist)closestDist=dist;
       }
-      if(touchesAny&&!tooMuchOverlap&&minDist<bestDist){
-        bestDist=minDist;
-        bestPos={x:cx2,y:cy2};
+
+      if(placed.length===0){
+        // First form: place just above bust center
+        bestPos={x:CX+(R()-0.5)*60, y:baseY-sz*0.4};
+        break;
+      }
+
+      if(touchesAny&&!tooClose){
+        // Score: prefer positions that are close to cluster (dense) and toward center
+        const centerDist=Math.abs(cx2-CX)/(CX-MG);
+        const score=-closestDist-centerDist*50;
+        if(score>bestScore){bestScore=score;bestPos={x:cx2,y:cy};}
       }
     }
-    // Fallback: if no valid touching position found, place at edge of cluster
-    if(!bestPos){
-      // Find the topmost/outermost form and place just beyond it
-      const angle=R()*Math.PI*2;
-      let fx=ovalCX+Math.cos(angle)*fS*(0.5+Math.sqrt(i)*0.3);
-      let fy=ovalCY+Math.sin(angle)*fS*(0.3+Math.sqrt(i)*0.2);
-      fx=Math.max(MG+fS/2,Math.min(W-MG-fS/2,fx));
-      fy=Math.max(topY,Math.min(baseY-fS*0.3,fy));
+
+    // Fallback: attach to a random existing form
+    if(!bestPos&&placed.length>0){
+      const parent=placed[Math.floor(R()*placed.length)];
+      const angle=-Math.PI/2+(R()-0.5)*Math.PI*0.8; // bias upward
+      const dist=(sz+parent.size)/2*0.7; // 30% overlap
+      let fx=parent.x+Math.cos(angle)*dist;
+      let fy=parent.y+Math.sin(angle)*dist;
+      fx=Math.max(MG+sz/2,Math.min(W-MG-sz/2,fx));
+      fy=Math.max(topY+sz/2,Math.min(baseY-sz*0.3,fy));
       bestPos={x:fx,y:fy};
     }
-    positions.push(bestPos);
+    if(!bestPos)bestPos={x:CX+(R()-0.5)*100,y:baseY-sz*0.5-R()*totalH*0.3};
+
+    placed.push({x:bestPos.x,y:bestPos.y,size:sz});
   }
-  return positions;
+  return placed;
 }
 
 // ===== RENDER ONE FORM TO OFFSCREEN CANVAS =====
@@ -758,22 +770,21 @@ function drawMainCanvas(){
   const GR=mkR(42);for(let i=0;i<8000;i++){ctx.fillStyle=`rgba(${180+GR()*30},${175+GR()*30},${168+GR()*30},0.012)`;
     ctx.beginPath();ctx.arc(GR()*W,GR()*H,.7+GR()*.5,0,Math.PI*2);ctx.fill();}
 
-  // Draw miniature forms in oval layout
+  // Draw miniature forms in canopy layout
   const count=allForms.length;
-  const positions=computeOvalPositions(count);
-  const fS=getFormSize(count);
-  const scale=fS/W;
+  const layout=computeCanopyLayout(count);
 
   for(let i=0;i<count;i++){
-    const pos=positions[i];
+    const p=layout[i];
     const form=allForms[i];
-    if(!form.offscreen||!pos)continue;
+    if(!form||!form.offscreen||!p)continue;
     const srcX=0,srcY=0,srcW=W,srcH=Math.floor(cutY);
-    const dstW=fS;
+    const scale=p.size/W;
+    const dstW=p.size;
     const dstH=Math.floor(cutY*scale);
-    const dstX=pos.x-dstW/2;
-    const dstY=pos.y-dstH/2;
-    ctx.globalAlpha=0.85;
+    const dstX=p.x-dstW/2;
+    const dstY=p.y-dstH/2;
+    ctx.globalAlpha=0.8+Math.random()*0.15;
     ctx.drawImage(form.offscreen,srcX,srcY,srcW,srcH,dstX,dstY,dstW,dstH);
     ctx.globalAlpha=1;
   }
@@ -793,9 +804,9 @@ function drawMainCanvas(){
   // Footer text
   ctx.textAlign='center';
   ctx.letterSpacing='8px';ctx.font='400 41px "DM Mono",monospace';ctx.fillStyle='rgba(42,39,37,0.6)';
-  ctx.fillText('LAURIANE MOUYSSET',CX,H-MG-120);
+  ctx.fillText('VOLTE GESTE',CX,H-MG-120);
   ctx.letterSpacing='6px';ctx.font='400 30px "DM Mono",monospace';ctx.fillStyle='rgba(122,117,108,0.6)';
-  ctx.fillText('COLLECTION AGORA',CX,H-MG-55);
+  ctx.fillText('LAURIANE MOUYSSET',CX,H-MG-55);
   ctx.letterSpacing='0px';ctx.textAlign='start';
 
 }
