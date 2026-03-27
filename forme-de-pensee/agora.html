@@ -35,7 +35,7 @@
 <script>
 // ===== CONSTANTS =====
 const W=1920, H=2400, MG=72, CX=W/2, CR=[242,237,228], INK='0,0,0';
-const bustScale=0.567; // 2/3 minus 15%
+const bustScale=0.533; // 2/3 minus 20%
 
 const cv=document.getElementById('cv');cv.width=W;cv.height=H;
 let ctx=cv.getContext('2d');
@@ -874,8 +874,8 @@ function computeCanopyLayout(count){
     const horizontalSpread=0.3+heightRatio*0.7; // wider as we go up
     const angle=-Math.PI/2+(R()-0.5)*Math.PI*horizontalSpread;
 
-    // Distance: forms touch but don't overlap much (~10% overlap)
-    const dist=sz*0.85+(R()-0.5)*sz*0.2;
+    // Distance: forms collées, 0-20% superposition aléatoire, 60% sans superposition
+    const dist=sz*(0.8+R()*0.2);
 
     let fx=parent.x+Math.cos(angle)*dist;
     let fy=parent.y+Math.sin(angle)*dist;
