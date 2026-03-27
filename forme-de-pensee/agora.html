@@ -850,87 +850,48 @@ let totalCount=0;
 // Dense organic cloud: narrow at bust, widens upward like a canopy.
 // Forms overlap 20-40%. Sizes vary from simple to double.
 
-function getFormSize(i,count,R){
-  // Uniform sizes: ratio 0.8 to 1.4 (not wider)
-  const base=count<80?360:count<=200?280:200;
-  return base*(0.8+R()*0.6);
-}
-
 function computeCanopyLayout(count){
-  const placed=[]; // {x, y, size}
+  const placed=[];
   const R=mkR(31415);
-
-  // Canopy: narrow at bust, wide at top — like a tree crown
-  const baseY=bustTop-10;
+  const ancY=cutY+4;
   const topY=MG+100;
-  const totalH=baseY-topY;
-  const maxHalfW=(W-2*MG)*0.4; // 80% of frame width / 2
+  const sz=300; // fixed size
 
-  for(let i=0;i<count;i++){
-    const sz=getFormSize(i,count,R);
-    let bestPos=null,bestScore=-1e9;
+  // First form: touches the top of the bust
+  placed.push({x:CX+(R()-0.5)*20, y:ancY-sz*0.35, size:sz});
 
-    for(let attempt=0;attempt<150;attempt++){
-      // Random height — slight bias toward bottom
-      const tRaw=R();
-      const t=tRaw*tRaw*0.7+tRaw*0.3; // mixed bias
-      const cy=baseY-t*totalH;
+  // Each subsequent form: attach to a random existing form, biased UPWARD
+  // with progressive horizontal widening
+  for(let i=1;i<count;i++){
+    // Pick a parent — bias toward recent (higher) forms
+    const parentIdx=Math.floor(placed.length*(1-Math.pow(R(),2)));
+    const parent=placed[Math.min(parentIdx,placed.length-1)];
 
-      // Canopy width: very narrow at bust, very wide at top (80% of frame width at top)
-      const heightRatio=(baseY-cy)/totalH; // 0=bust, 1=top
-      const halfW=40+heightRatio*maxHalfW; // linear widening, narrow start
-      const cx2=CX+(R()-0.5)*2*halfW;
+    // How high is this parent? 0=bust, 1=top
+    const heightRatio=Math.max(0,Math.min(1,(ancY-parent.y)/(ancY-topY)));
 
-      if(cx2<MG+sz/3||cx2>W-MG-sz/3||cy<topY+sz/3)continue;
+    // Direction: strongly biased upward, with increasing horizontal spread
+    const horizontalSpread=0.3+heightRatio*0.7; // wider as we go up
+    const angle=-Math.PI/2+(R()-0.5)*Math.PI*horizontalSpread;
 
-      // Check overlap: want 40-50% (dist ~50-60% of avgSz) — dense mass
-      let touchesAny=false,tooClose=false;
-      let closestDist=1e9;
-      for(let j=0;j<placed.length;j++){
-        const dx=cx2-placed[j].x,dy=cy-placed[j].y;
-        const dist=Math.sqrt(dx*dx+dy*dy);
-        const avgSz=(sz+placed[j].size)/2;
-        if(dist<avgSz*0.3)tooClose=true;  // >70% overlap — too much
-        if(dist<avgSz*0.5)touchesAny=true; // 50%+ overlap → ~20-30% visual overlap
-        if(dist<closestDist)closestDist=dist;
-      }
+    // Distance: forms touch but don't overlap much (~10% overlap)
+    const dist=sz*0.85+(R()-0.5)*sz*0.2;
 
-      if(placed.length===0){
-        bestPos={x:CX+(R()-0.5)*30, y:baseY-20};
-        break;
-      }
+    let fx=parent.x+Math.cos(angle)*dist;
+    let fy=parent.y+Math.sin(angle)*dist;
 
-      if(touchesAny&&!tooClose){
-        const centerDist=Math.abs(cx2-CX)/(CX-MG);
-        const score=-closestDist*0.5-centerDist*20;
-        if(score>bestScore){bestScore=score;bestPos={x:cx2,y:cy};}
-      }
-    }
+    // Clamp inside canvas
+    fx=Math.max(MG+sz/2,Math.min(W-MG-sz/2,fx));
+    fy=Math.max(topY+sz/2,Math.min(ancY-sz*0.3,fy));
 
-    // Fallback: attach to random existing form, bias upward and outward
-    if(!bestPos&&placed.length>0){
-      const parent=placed[Math.floor(R()*placed.length)];
-      const angle=-Math.PI/2+(R()-0.5)*Math.PI; // bias upward, wide spread
-      const dist=(sz+parent.size)/2*0.4; // ~50% overlap
-      let fx=parent.x+Math.cos(angle)*dist;
-      let fy=parent.y+Math.sin(angle)*dist;
-      fx=Math.max(MG+sz/3,Math.min(W-MG-sz/3,fx));
-      fy=Math.max(topY+sz/3,Math.min(baseY-sz*0.25,fy));
-      bestPos={x:fx,y:fy};
-    }
-    if(!bestPos)bestPos={x:CX+(R()-0.5)*150,y:baseY-sz*0.4-R()*totalH*0.4};
-
-    placed.push({x:bestPos.x,y:bestPos.y,size:sz});
+    placed.push({x:fx,y:fy,size:sz});
   }
 
-  // Add 3 small satellite forms — slightly outside the main mass but inside the frame
-  for(let s=0;s<3;s++){
-    const side=s===0?-1:s===1?1:(R()>.5?1:-1);
-    const satSz=placed.length>0?placed[0].size*0.4:80;
-    const satY=topY+totalH*(0.1+R()*0.4);
-    const satX=CX+side*(maxHalfW*0.6+(R()-0.5)*maxHalfW*0.3);
-    const clampedX=Math.max(MG+satSz,Math.min(W-MG-satSz,satX));
-    placed.push({x:clampedX,y:satY,size:satSz});
+  // Recentrage si déport > 40px
+  const meanX=placed.reduce((s,p)=>s+p.x,0)/placed.length;
+  if(Math.abs(meanX-CX)>40){
+    const shift=CX-meanX;
+    placed.forEach(p=>{p.x=Math.max(MG+sz/2,Math.min(W-MG-sz/2,p.x+shift));});
   }
 
   return placed;
