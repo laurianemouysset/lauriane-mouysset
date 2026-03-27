@@ -856,33 +856,59 @@ function computeCanopyLayout(count){
   const ancY=cutY+4;
   const topY=MG+100;
   const sz=270;
+  // 5-15% overlap = distance between 0.85*sz and 0.95*sz
+  const distMin=sz*0.85;
+  const distMax=sz*0.95;
 
   // Form 1: just above the bust, centered
   placed.push({x:CX, y:ancY-sz*0.4, size:sz});
 
   for(let i=1;i<count;i++){
-    // Pick a parent from existing forms — bias toward the highest (most recent)
+    // Pick parent — bias toward recent (higher) forms
     const parentIdx=Math.floor(placed.length*(1-Math.pow(R(),2)));
     const parent=placed[Math.min(parentIdx,placed.length-1)];
 
-    // Height determines horizontal spread (narrow at bust, wider up)
     const heightRatio=Math.max(0,Math.min(1,(ancY-parent.y)/(ancY-topY)));
     const horizontalSpread=0.3+heightRatio*0.7;
 
-    // Distance: 5-20% overlap means dist = sz * (0.8 to 0.95)
-    const dist=sz*(0.8+R()*0.15);
+    // Try multiple angles, pick the one with valid distance to nearest neighbor
+    let bestPos=null;
+    for(let attempt=0;attempt<100;attempt++){
+      const angle=-Math.PI/2+(R()-0.5)*Math.PI*horizontalSpread;
+      const targetDist=distMin+R()*(distMax-distMin);
 
-    // Direction: biased upward, spread increases with height
-    const angle=-Math.PI/2+(R()-0.5)*Math.PI*horizontalSpread;
+      let fx=parent.x+Math.cos(angle)*targetDist;
+      let fy=parent.y+Math.sin(angle)*targetDist;
 
-    let fx=parent.x+Math.cos(angle)*dist;
-    let fy=parent.y+Math.sin(angle)*dist;
+      // Clamp
+      fx=Math.max(MG+sz/2,Math.min(W-MG-sz/2,fx));
+      fy=Math.max(topY+sz/2,Math.min(ancY-sz*0.3,fy));
 
-    // Clamp
-    fx=Math.max(MG+sz/2,Math.min(W-MG-sz/2,fx));
-    fy=Math.max(topY+sz/2,Math.min(ancY-sz*0.3,fy));
+      // Verify: distance to nearest placed form must be in [distMin, distMax]
+      let nearestDist=1e9;
+      for(let j=0;j<placed.length;j++){
+        const dx=fx-placed[j].x,dy=fy-placed[j].y;
+        const d=Math.sqrt(dx*dx+dy*dy);
+        if(d<nearestDist)nearestDist=d;
+      }
 
-    placed.push({x:fx,y:fy,size:sz});
+      if(nearestDist>=distMin*0.95 && nearestDist<=distMax*1.05){
+        bestPos={x:fx,y:fy};
+        break;
+      }
+    }
+
+    // Fallback: place at exact distMin from parent, upward
+    if(!bestPos){
+      const angle=-Math.PI/2+(R()-0.5)*0.8;
+      let fx=parent.x+Math.cos(angle)*distMin;
+      let fy=parent.y+Math.sin(angle)*distMin;
+      fx=Math.max(MG+sz/2,Math.min(W-MG-sz/2,fx));
+      fy=Math.max(topY+sz/2,Math.min(ancY-sz*0.3,fy));
+      bestPos={x:fx,y:fy};
+    }
+
+    placed.push({x:bestPos.x,y:bestPos.y,size:sz});
   }
 
   // Recentrage systématique sur CX
