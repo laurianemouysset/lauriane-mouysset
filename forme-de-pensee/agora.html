@@ -35,7 +35,7 @@
 <script>
 // ===== CONSTANTS =====
 const W=1920, H=2400, MG=72, CX=W/2, CR=[242,237,228], INK='0,0,0';
-const bustScale=2/3;
+const bustScale=0.567; // 2/3 minus 15%
 
 const cv=document.getElementById('cv');cv.width=W;cv.height=H;
 let ctx=cv.getContext('2d');
@@ -855,10 +855,10 @@ function computeCanopyLayout(count){
   const R=mkR(31415);
   const ancY=cutY+4;
   const topY=MG+100;
-  const sz=300; // fixed size
+  const sz=270; // fixed size (300 minus 10%)
 
-  // First form: touches the top of the bust
-  placed.push({x:CX+(R()-0.5)*20, y:ancY-sz*0.35, size:sz});
+  // First form: centered on bust
+  placed.push({x:CX, y:ancY-sz*0.35, size:sz});
 
   // Each subsequent form: attach to a random existing form, biased UPWARD
   // with progressive horizontal widening
@@ -887,12 +887,10 @@ function computeCanopyLayout(count){
     placed.push({x:fx,y:fy,size:sz});
   }
 
-  // Recentrage si déport > 40px
+  // Recentrage systématique
   const meanX=placed.reduce((s,p)=>s+p.x,0)/placed.length;
-  if(Math.abs(meanX-CX)>40){
-    const shift=CX-meanX;
-    placed.forEach(p=>{p.x=Math.max(MG+sz/2,Math.min(W-MG-sz/2,p.x+shift));});
-  }
+  const shift=CX-meanX;
+  placed.forEach(p=>{p.x=Math.max(MG+sz/2,Math.min(W-MG-sz/2,p.x+shift));});
 
   return placed;
 }
