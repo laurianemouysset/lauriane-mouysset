@@ -35,7 +35,7 @@
 <script>
 // ===== CONSTANTS =====
 const W=1920, H=2400, MG=72, CX=W/2, CR=[242,237,228], INK='0,0,0';
-const bustScale=1/3;
+const bustScale=2/3;
 
 const cv=document.getElementById('cv');cv.width=W;cv.height=H;
 let ctx=cv.getContext('2d');
@@ -158,7 +158,7 @@ function SA(cx,cy,r,a1,a2,al,R){
     ctx.moveTo(cx+Math.cos(t1)*r1,cy+Math.sin(t1)*r1);
     ctx.lineTo(cx+Math.cos(t2)*r2,cy+Math.sin(t2)*r2);
     ctx.strokeStyle='rgba(0,0,0,0.75)';
-    ctx.lineWidth=4+R()*2;ctx.lineCap='round';ctx.stroke();
+    ctx.lineWidth=3.5+R()*2;ctx.lineCap='round';ctx.stroke();
   }
 }
 function PG(cx,cy,r,sides,rot,al,R){
@@ -850,20 +850,87 @@ let totalCount=0;
 // Dense organic cloud: narrow at bust, widens upward like a canopy.
 // Forms overlap 20-40%. Sizes vary from simple to double.
 
-function computeCanopyLayout(count){
-  const placed=[];
-  const R=mkR(31415);
-  const N=count;
-  const centerX=CX;
-  const centerY=bustTop-(bustTop-MG-100)*0.45;
+function getFormSize(i,count,R){
+  // Uniform sizes: ratio 0.8 to 1.4 (not wider)
+  const base=count<80?360:count<=200?280:200;
+  return base*(0.8+R()*0.6);
+}
 
-  for(let i=0;i<N;i++){
-    const angle=i*2.4; // golden angle in radians
-    const radius=18*Math.sqrt(i);
-    const fx=centerX+Math.cos(angle)*radius+(R()-0.5)*40;
-    const fy=centerY+Math.sin(angle)*radius*1.3+(R()-0.5)*40;
-    const sz=Math.max(200,Math.min(350,280-radius*0.15));
-    placed.push({x:fx,y:fy,size:sz});
+function computeCanopyLayout(count){
+  const placed=[]; // {x, y, size}
+  const R=mkR(31415);
+
+  // Canopy: narrow at bust, wide at top — like a tree crown
+  const baseY=bustTop-10;
+  const topY=MG+100;
+  const totalH=baseY-topY;
+  const maxHalfW=(W-2*MG)*0.4; // 80% of frame width / 2
+
+  for(let i=0;i<count;i++){
+    const sz=getFormSize(i,count,R);
+    let bestPos=null,bestScore=-1e9;
+
+    for(let attempt=0;attempt<150;attempt++){
+      // Random height — slight bias toward bottom
+      const tRaw=R();
+      const t=tRaw*tRaw*0.7+tRaw*0.3; // mixed bias
+      const cy=baseY-t*totalH;
+
+      // Canopy width: very narrow at bust, very wide at top (80% of frame width at top)
+      const heightRatio=(baseY-cy)/totalH; // 0=bust, 1=top
+      const halfW=40+heightRatio*maxHalfW; // linear widening, narrow start
+      const cx2=CX+(R()-0.5)*2*halfW;
+
+      if(cx2<MG+sz/3||cx2>W-MG-sz/3||cy<topY+sz/3)continue;
+
+      // Check overlap: want 40-50% (dist ~50-60% of avgSz) — dense mass
+      let touchesAny=false,tooClose=false;
+      let closestDist=1e9;
+      for(let j=0;j<placed.length;j++){
+        const dx=cx2-placed[j].x,dy=cy-placed[j].y;
+        const dist=Math.sqrt(dx*dx+dy*dy);
+        const avgSz=(sz+placed[j].size)/2;
+        if(dist<avgSz*0.3)tooClose=true;  // >70% overlap — too much
+        if(dist<avgSz*0.5)touchesAny=true; // 50%+ overlap → ~20-30% visual overlap
+        if(dist<closestDist)closestDist=dist;
+      }
+
+      if(placed.length===0){
+        bestPos={x:CX+(R()-0.5)*30, y:baseY-20};
+        break;
+      }
+
+      if(touchesAny&&!tooClose){
+        const centerDist=Math.abs(cx2-CX)/(CX-MG);
+        const score=-closestDist*0.5-centerDist*20;
+        if(score>bestScore){bestScore=score;bestPos={x:cx2,y:cy};}
+      }
+    }
+
+    // Fallback: attach to random existing form, bias upward and outward
+    if(!bestPos&&placed.length>0){
+      const parent=placed[Math.floor(R()*placed.length)];
+      const angle=-Math.PI/2+(R()-0.5)*Math.PI; // bias upward, wide spread
+      const dist=(sz+parent.size)/2*0.4; // ~50% overlap
+      let fx=parent.x+Math.cos(angle)*dist;
+      let fy=parent.y+Math.sin(angle)*dist;
+      fx=Math.max(MG+sz/3,Math.min(W-MG-sz/3,fx));
+      fy=Math.max(topY+sz/3,Math.min(baseY-sz*0.25,fy));
+      bestPos={x:fx,y:fy};
+    }
+    if(!bestPos)bestPos={x:CX+(R()-0.5)*150,y:baseY-sz*0.4-R()*totalH*0.4};
+
+    placed.push({x:bestPos.x,y:bestPos.y,size:sz});
+  }
+
+  // Add 3 small satellite forms — slightly outside the main mass but inside the frame
+  for(let s=0;s<3;s++){
+    const side=s===0?-1:s===1?1:(R()>.5?1:-1);
+    const satSz=placed.length>0?placed[0].size*0.4:80;
+    const satY=topY+totalH*(0.1+R()*0.4);
+    const satX=CX+side*(maxHalfW*0.6+(R()-0.5)*maxHalfW*0.3);
+    const clampedX=Math.max(MG+satSz,Math.min(W-MG-satSz,satX));
+    placed.push({x:clampedX,y:satY,size:satSz});
   }
 
   return placed;
@@ -891,9 +958,10 @@ function drawMainCanvas(){
     if(!form||!lp)continue;
     const scale=lp.size/W;
     const dstH=cutY*scale;
-    // Subtle rotation +-17 degrees
+    // Random rotation per form: most +-30°, 20% up to +-90°
     const rotR=mkR(form.params.seed+333);
-    const angle=(rotR()-0.5)*0.6;
+    const bigRotate=rotR()<0.2;
+    const angle=bigRotate?(rotR()-.5)*Math.PI:(rotR()-.5)*1.0;
     ctx.save();
     ctx.translate(lp.x, lp.y);
     ctx.rotate(angle);
