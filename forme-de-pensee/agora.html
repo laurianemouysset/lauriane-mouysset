@@ -857,56 +857,32 @@ function computeCanopyLayout(count){
   const topY=MG+100;
   const sz=270;
 
-  // First form: centered exactly on CX, touching bust
-  placed.push({x:CX, y:ancY-sz*0.35, size:sz});
+  // Form 1: just above the bust, centered
+  placed.push({x:CX, y:ancY-sz*0.4, size:sz});
 
   for(let i=1;i<count;i++){
-    // Pick parent — bias toward recent (higher) forms
+    // Pick a parent from existing forms — bias toward the highest (most recent)
     const parentIdx=Math.floor(placed.length*(1-Math.pow(R(),2)));
     const parent=placed[Math.min(parentIdx,placed.length-1)];
 
+    // Height determines horizontal spread (narrow at bust, wider up)
     const heightRatio=Math.max(0,Math.min(1,(ancY-parent.y)/(ancY-topY)));
     const horizontalSpread=0.3+heightRatio*0.7;
 
-    let bestPos=null,bestDist=1e9;
+    // Distance: 5-20% overlap means dist = sz * (0.8 to 0.95)
+    const dist=sz*(0.8+R()*0.15);
 
-    // Try to place touching the parent
-    for(let attempt=0;attempt<80;attempt++){
-      const angle=-Math.PI/2+(R()-0.5)*Math.PI*horizontalSpread;
-      const dist=sz*(0.8+R()*0.2); // 0-20% overlap
+    // Direction: biased upward, spread increases with height
+    const angle=-Math.PI/2+(R()-0.5)*Math.PI*horizontalSpread;
 
-      let fx=parent.x+Math.cos(angle)*dist;
-      let fy=parent.y+Math.sin(angle)*dist;
-      fx=Math.max(MG+sz/2,Math.min(W-MG-sz/2,fx));
-      fy=Math.max(topY+sz/2,Math.min(ancY-sz*0.3,fy));
+    let fx=parent.x+Math.cos(angle)*dist;
+    let fy=parent.y+Math.sin(angle)*dist;
 
-      // Check it touches at least one existing form
-      let touchesAny=false;
-      for(let j=0;j<placed.length;j++){
-        const dx=fx-placed[j].x,dy=fy-placed[j].y;
-        const d=Math.sqrt(dx*dx+dy*dy);
-        if(d<sz*1.05)touchesAny=true; // within touching distance
-      }
-      if(touchesAny){
-        // Prefer positions closer to parent (tighter cluster)
-        const dx=fx-parent.x,dy=fy-parent.y;
-        const d=Math.sqrt(dx*dx+dy*dy);
-        if(d<bestDist){bestDist=d;bestPos={x:fx,y:fy};}
-      }
-    }
+    // Clamp
+    fx=Math.max(MG+sz/2,Math.min(W-MG-sz/2,fx));
+    fy=Math.max(topY+sz/2,Math.min(ancY-sz*0.3,fy));
 
-    // Fallback: force attachment to parent (no orphan)
-    if(!bestPos){
-      const angle=-Math.PI/2+(R()-0.5)*Math.PI*0.5;
-      const dist=sz*0.85;
-      let fx=parent.x+Math.cos(angle)*dist;
-      let fy=parent.y+Math.sin(angle)*dist;
-      fx=Math.max(MG+sz/2,Math.min(W-MG-sz/2,fx));
-      fy=Math.max(topY+sz/2,Math.min(ancY-sz*0.3,fy));
-      bestPos={x:fx,y:fy};
-    }
-
-    placed.push({x:bestPos.x,y:bestPos.y,size:sz});
+    placed.push({x:fx,y:fy,size:sz});
   }
 
   // Recentrage systématique sur CX
