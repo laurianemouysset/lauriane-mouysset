@@ -35,7 +35,7 @@
 <script>
 // ===== CONSTANTS =====
 const W=1920, H=2400, MG=72, CX=W/2, CR=[242,237,228], INK='0,0,0';
-const bustScale=2/3;
+const bustScale=1/3;
 
 const cv=document.getElementById('cv');cv.width=W;cv.height=H;
 let ctx=cv.getContext('2d');
@@ -850,96 +850,19 @@ let totalCount=0;
 // Dense organic cloud: narrow at bust, widens upward like a canopy.
 // Forms overlap 20-40%. Sizes vary from simple to double.
 
-function getFormSize(i,count,R){
-  // Uniform sizes: ratio 0.8 to 1.4 (not wider)
-  const base=count<80?500:count<=200?380:260;
-  return base*(0.8+R()*0.6);
-}
-
 function computeCanopyLayout(count){
   const placed=[];
   const R=mkR(31415);
-  const ancY=cutY+4;
-  const baseY=bustTop-10;
-  const topY=MG+100;
-  const totalH=baseY-topY;
+  const N=count;
+  const sz=120; // fixed size for all forms
 
-  for(let i=0;i<count;i++){
-    const sz=getFormSize(i,count,R);
-    let bestPos=null,bestScore=-1e9;
-
-    // First form: forced close to bust
-    if(placed.length===0){
-      bestPos={x:CX+(R()-0.5)*20, y:ancY-sz*0.3};
-      placed.push({x:bestPos.x,y:bestPos.y,size:sz});
-      continue;
-    }
-
-    for(let attempt=0;attempt<150;attempt++){
-      const tRaw=R();
-      const t=tRaw*tRaw*0.7+tRaw*0.3;
-      const fy=baseY-t*totalH;
-      const heightRatio=(ancY-fy)/(ancY-MG);
-      const spreadX=(1-heightRatio)*0.15+heightRatio*0.4;
-      const fx=CX+(R()-0.5)*2*(W/2-MG)*spreadX;
-
-      if(fx<MG+sz/3||fx>W-MG-sz/3||fy<topY+sz/3)continue;
-
-      let touchesAny=false,tooClose=false;
-      let closestDist=1e9;
-      for(let j=0;j<placed.length;j++){
-        const dx=fx-placed[j].x,dy=fy-placed[j].y;
-        const dist=Math.sqrt(dx*dx+dy*dy);
-        const avgSz=(sz+placed[j].size)/2;
-        if(dist<avgSz*0.25)tooClose=true;
-        if(dist<avgSz*0.45)touchesAny=true;
-        if(dist<closestDist)closestDist=dist;
-      }
-
-      if(touchesAny&&!tooClose){
-        const centerDist=Math.abs(fx-CX)/(CX-MG);
-        const score=-closestDist*0.5-centerDist*20;
-        if(score>bestScore){bestScore=score;bestPos={x:fx,y:fy};}
-      }
-    }
-
-    // Fallback
-    if(!bestPos&&placed.length>0){
-      const parent=placed[Math.floor(R()*placed.length)];
-      const angle=-Math.PI/2+(R()-0.5)*Math.PI;
-      const dist=(sz+parent.size)/2*0.35;
-      let fx=parent.x+Math.cos(angle)*dist;
-      let fy=parent.y+Math.sin(angle)*dist;
-      fx=Math.max(MG+sz/3,Math.min(W-MG-sz/3,fx));
-      fy=Math.max(topY+sz/3,Math.min(baseY-sz*0.25,fy));
-      bestPos={x:fx,y:fy};
-    }
-    if(!bestPos)bestPos={x:CX+(R()-0.5)*100,y:baseY-sz*0.3-R()*totalH*0.3};
-
-    placed.push({x:bestPos.x,y:bestPos.y,size:sz});
+  for(let i=0;i<N;i++){
+    const t=i/N; // 0=bottom, 1=top
+    const fy=bustTop-30-t*(bustTop-MG-100);
+    const spread=0.15+t*0.35;
+    const fx=CX+(R()-0.5)*2*(W-2*MG)*spread;
+    placed.push({x:fx,y:fy,size:sz});
   }
-
-  // Add 3 satellites
-  for(let s=0;s<3;s++){
-    const side=s===0?-1:s===1?1:(R()>.5?1:-1);
-    const satSz=placed.length>0?placed[0].size*0.4:80;
-    const satY=topY+totalH*(0.1+R()*0.4);
-    const satX=CX+side*(W/2-MG)*0.35+(R()-0.5)*60;
-    const clampedX=Math.max(MG+satSz,Math.min(W-MG-satSz,satX));
-    placed.push({x:clampedX,y:satY,size:satSz});
-  }
-
-  // Recentrage si déport > 30px
-  const meanX=placed.reduce((s,p)=>s+p.x,0)/placed.length;
-  if(Math.abs(meanX-CX)>30){
-    const shift=CX-meanX;
-    placed.forEach(p=>{p.x+=shift;});
-  }
-
-  // Forcer la forme la plus basse à ancY - avgSz*0.4 max
-  const avgSz=placed.reduce((s,p)=>s+p.size,0)/placed.length;
-  const lowest=placed.reduce((a,b)=>a.y>b.y?a:b);
-  if(lowest.y<ancY-avgSz*0.4) lowest.y=ancY-avgSz*0.3;
 
   return placed;
 }
@@ -979,19 +902,6 @@ function drawMainCanvas(){
     drawFormSimplified(form.params);
     ctx.restore();
   }
-
-  // Draw 5 thin root lines from bust to lowest forms
-  const ancY2=cutY+4;
-  const sortedByY=[...layout].sort((a,b)=>b.y-a.y).slice(0,5);
-  sortedByY.forEach(f=>{
-    ctx.beginPath();
-    ctx.moveTo(CX+(f.x-CX)*0.3, ancY2);
-    ctx.lineTo(f.x, f.y+f.size*0.3);
-    ctx.strokeStyle='rgba(0,0,0,0.15)';
-    ctx.lineWidth=0.8;
-    ctx.stroke();
-  });
-
   ctx.restore(); // end frame clip
 
   // Draw shared bust
