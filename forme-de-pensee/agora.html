@@ -854,12 +854,12 @@ function computeCanopyLayout(count){
   const placed=[];
   const R=mkR(31415);
   const N=count;
-  const sz=120; // fixed size for all forms
+  const sz=280; // fixed size for all forms
 
   for(let i=0;i<N;i++){
     const t=i/N; // 0=bottom, 1=top
     const fy=bustTop-30-t*(bustTop-MG-100);
-    const spread=0.15+t*0.35;
+    const spread=0.08+t*0.25;
     const fx=CX+(R()-0.5)*2*(W-2*MG)*spread;
     placed.push({x:fx,y:fy,size:sz});
   }
