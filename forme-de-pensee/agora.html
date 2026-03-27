@@ -858,7 +858,7 @@ function getFormSize(i,count,R){
 
 function computeCanopyLayout(count){
   const placed=[]; // {x, y, size}
-  const R=mkR(7777);
+  const R=mkR(31415);
 
   // Canopy: narrow at bust, wide at top — like a tree crown
   const baseY=bustTop-10;
@@ -890,8 +890,8 @@ function computeCanopyLayout(count){
         const dx=cx2-placed[j].x,dy=cy-placed[j].y;
         const dist=Math.sqrt(dx*dx+dy*dy);
         const avgSz=(sz+placed[j].size)/2;
-        if(dist<avgSz*0.1)tooClose=true;  // >90% overlap — too much
-        if(dist<avgSz*0.35)touchesAny=true; // 65%+ overlap
+        if(dist<avgSz*0.3)tooClose=true;  // >70% overlap — too much
+        if(dist<avgSz*0.5)touchesAny=true; // 50%+ overlap → ~20-30% visual overlap
         if(dist<closestDist)closestDist=dist;
       }
 
@@ -928,7 +928,7 @@ function computeCanopyLayout(count){
     const side=s===0?-1:s===1?1:(R()>.5?1:-1);
     const satSz=placed.length>0?placed[0].size*0.4:80;
     const satY=topY+totalH*(0.1+R()*0.4);
-    const satX=CX+side*(maxHalfW*0.6+R()*maxHalfW*0.2);
+    const satX=CX+side*(maxHalfW*0.6+(R()-0.5)*maxHalfW*0.3);
     const clampedX=Math.max(MG+satSz,Math.min(W-MG-satSz,satX));
     placed.push({x:clampedX,y:satY,size:satSz});
   }
