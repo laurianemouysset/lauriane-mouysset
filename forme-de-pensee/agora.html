@@ -200,9 +200,14 @@ const _I=['light','anchored','dense','overflow'];
 const PRESETS=[];
 {const R=mkR(12345);
 // 80 forms: 5 of each morphology (16 × 5 = 80)
+// Each rep gets unique flips so seeds differ even with same str/mov/int
 for(let si=0;si<4;si++)for(let mi=0;mi<4;mi++)for(let rep=0;rep<5;rep++){
-  PRESETS.push(makeParams(_S[si],_M[mi],_I[Math.floor(R()*4)],R()>.5,R()>.5,R()>.5));
-}}
+  const p=makeParams(_S[si],_M[mi],_I[Math.floor(R()*4)],R()>.5,R()>.5,R()>.5);
+  // Make seed unique per rep by mixing in rep index
+  p.seed=(p.seed*31+rep*137+si*17+mi*53)%2147483647;
+  PRESETS.push(p);
+}
+console.log('PRESETS generated:',PRESETS.length);}
 // ===== 16 DISTINCT MORPHOLOGIES =====
 function drawFormWith(p){
   ctx.save();
@@ -880,9 +885,10 @@ function packEllipse(cx,cy,a,b,r,gap,maxCount){
 // BUILD OVAL — Phase 1 (seed) + Phase 2 (growth by niches)
 // ================================================================
 function computeCanopyLayout(count){
+  console.log('Layout called with count=',count);
   const sz=270;
-  const r=65;       // increased for more spacing
-  const gap=-10;    // -7 × (65/46)
+  const r=65;
+  const gap=-10;
   const seedCount=Math.min(count,20);
   const hwRatio=1.6;
   const spacing=r*2+gap; // 85
@@ -1031,6 +1037,7 @@ function computeCanopyLayout(count){
     }
   }
 
+  console.log('Layout produced',res.length,'positions (seed=',seedCount,')');
   return res;
 }
 
