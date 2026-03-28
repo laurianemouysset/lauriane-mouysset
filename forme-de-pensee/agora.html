@@ -974,6 +974,10 @@ function drawMainCanvas(){
 
     ctx.save();
     ctx.translate(lp.x, lp.y);
+    // Clip to placement circle
+    ctx.beginPath();
+    ctx.arc(0,0,PLACE_R,0,Math.PI*2);
+    ctx.clip();
     ctx.rotate(angle);
     ctx.scale(scale, scale);
     ctx.translate(-CX, -fcy_f);
