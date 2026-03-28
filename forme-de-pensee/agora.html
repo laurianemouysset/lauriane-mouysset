@@ -881,8 +881,8 @@ function packEllipse(cx,cy,a,b,r,gap,maxCount){
 // ================================================================
 function computeCanopyLayout(count){
   const sz=270;
-  const r=46;       // proto 19 × 2.4
-  const gap=-7;     // proto -3 × 2.4
+  const r=65;       // increased for more spacing
+  const gap=-10;    // -7 × (65/46)
   const seedCount=Math.min(count,20);
   const hwRatio=1.6;
   const spacing=r*2+gap; // 85
@@ -966,6 +966,15 @@ function drawMainCanvas(){
     ctx.restore();
   }
 
+  // DEBUG: red circles + numbers
+  for(let i=0;i<count;i++){
+    const lp=layout[i];if(!lp)continue;
+    ctx.beginPath();ctx.arc(lp.x,lp.y,65,0,Math.PI*2);
+    ctx.strokeStyle='rgba(200,50,50,0.5)';ctx.lineWidth=2;ctx.stroke();
+    ctx.fillStyle='rgba(200,50,50,0.1)';ctx.fill();
+    ctx.fillStyle='rgba(200,50,50,0.9)';ctx.font='bold 20px monospace';
+    ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(String(i),lp.x,lp.y);
+  }
   ctx.restore(); // end frame clip
 
   // Draw shared bust
