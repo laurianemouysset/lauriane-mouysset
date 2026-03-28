@@ -947,16 +947,16 @@ function drawMainCanvas(){
   const count=allForms.length;
   const layout=computeCanopyLayout(count);
 
+  const PLACE_R=65; // placement radius
   for(let i=0;i<count;i++){
     const lp=layout[i];
     const form=allForms[i];
     if(!form||!lp)continue;
     const p=form.params;
-    const scale=lp.size/W;
 
-    // Compute this form's fcy (same formula as drawFormSimplified)
+    // Compute this form's internal dimensions (same as drawFormSimplified)
     const ancY_f=cutY+4;
-    const zM_f=0.03,innerW_f=W-2*MG,innerH_f=H-2*MG;
+    const zM_f=0.03,innerH_f=H-2*MG,innerW_f=W-2*MG;
     const zoneT_f=MG+innerH_f*zM_f;
     const zoneH_f=ancY_f-zoneT_f;
     const zoneHW_f=(W-MG-(MG+innerW_f*zM_f))/2;
@@ -964,9 +964,13 @@ function drawMainCanvas(){
     const bR_f=Math.min(rawBR_f,zoneHW_f,zoneH_f*.47);
     const fcy_f=Math.max(zoneT_f+bR_f,Math.min(ancY_f-bR_f,zoneT_f+zoneH_f*(p.flip2?.45:.55)));
 
+    // Normalize: scale so bR_f fits in ~85% of placement radius
+    const scale_needed=(PLACE_R*0.85)/bR_f;
+    const scale=scale_needed;
+
     // Rotation
     const rotR=mkR(p.seed+333);
-    const angle=(rotR()-0.5)*0.6; // subtle +-17deg
+    const angle=(rotR()-0.5)*0.6;
 
     ctx.save();
     ctx.translate(lp.x, lp.y);
