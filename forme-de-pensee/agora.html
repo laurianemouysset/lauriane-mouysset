@@ -972,8 +972,8 @@ function computeCanopyLayout(count){
       const pf=res[perimForms[pi]];
       const outAngle=Math.atan2(pf.y-cmy,pf.x-cmx);
 
-      for(let ai=-4;ai<=4;ai++){
-        const tryAngle=outAngle+ai*0.25;
+      for(let ai=-8;ai<=8;ai++){
+        const tryAngle=outAngle+ai*0.2;
         const nx=pf.x+Math.cos(tryAngle)*snapDist;
         const ny=pf.y+Math.sin(tryAngle)*snapDist;
 
@@ -988,10 +988,10 @@ function computeCanopyLayout(count){
         for(let j=0;j<res.length;j++){
           const dx2=nx-res[j].x,dy2=ny-res[j].y;
           const dd2=Math.sqrt(dx2*dx2+dy2*dy2);
-          if(dd2<snapDist*0.7){tooClose=true;break;}
-          if(dd2<=snapDist*1.15){
+          if(dd2<snapDist*0.6){tooClose=true;break;}
+          if(dd2<=snapDist*1.25){
             touchCount++;
-            if(dd2<snapDist*0.85||dd2>snapDist*1.15)spacingOk=false;
+            if(dd2<snapDist*0.75||dd2>snapDist*1.25)spacingOk=false;
           }
         }
         if(tooClose||!spacingOk)continue;
@@ -1037,7 +1037,7 @@ function computeCanopyLayout(count){
     }
   }
 
-  console.log('Layout produced',res.length,'positions (seed=',seedCount,')');
+  console.log('Placed',res.length,'/',count,'forms (seed=',seedCount,')');
   return res;
 }
 
