@@ -931,52 +931,20 @@ function computeCanopyLayout(count){
   return res;
 }
 
-// ===== MEASURE MORPHOLOGY BOUNDING BOX =====
-const _normCache=new Map();
-const _measCanvas=document.createElement('canvas');
-_measCanvas.width=W;_measCanvas.height=H;
-const _measCtx=_measCanvas.getContext('2d');
-
-function measureForm(p){
-  const key=p.seed;
-  if(_normCache.has(key))return _normCache.get(key);
-
-  // Draw on offscreen at full scale
-  const savedCtx=ctx;
-  ctx=_measCtx;
-  ctx.clearRect(0,0,W,H);
-  drawFormSimplified(p);
-  ctx=savedCtx;
-
-  // Scan pixels for bounding box
-  const imgData=_measCtx.getImageData(0,0,W,H);
-  const d=imgData.data;
-  let minX=W,maxX=0,minY=H,maxY=0;
-  for(let y=0;y<H;y+=2){for(let x=0;x<W;x+=2){
-    if(d[(y*W+x)*4+3]>10){
-      if(x<minX)minX=x;if(x>maxX)maxX=x;
-      if(y<minY)minY=y;if(y>maxY)maxY=y;
-    }
-  }}
-  const realW=maxX-minX;const realH=maxY-minY;
-  const realSize=Math.max(realW,realH);
-  const centerX=(minX+maxX)/2;
-  const centerY=(minY+maxY)/2;
-
-  const result={realSize,centerX,centerY};
-  _normCache.set(key,result);
-  return result;
-}
+// ===== FILL FACTORS PER MORPHOLOGY TYPE =====
+const fillFactors={
+  'classify_linear':1.8,'classify_spiral':0.9,'classify_parallel':1.5,'classify_leap':1.6,
+  'connect_linear':1.8,'connect_spiral':1.0,'connect_parallel':1.4,'connect_leap':1.2,
+  'layer_linear':1.0,'layer_spiral':1.0,'layer_parallel':1.8,'layer_leap':1.5,
+  'grow_linear':1.3,'grow_spiral':1.2,'grow_parallel':1.5,'grow_leap':1.3
+};
 
 // ===== DRAW MAIN CANVAS =====
 function drawMainCanvas(){
-  // Clear with cream background
   ctx.fillStyle=`rgb(${CR})`;ctx.fillRect(0,0,W,H);
-  // Paper grain
   const GR=mkR(42);for(let i=0;i<8000;i++){ctx.fillStyle=`rgba(${180+GR()*30},${175+GR()*30},${168+GR()*30},0.012)`;
     ctx.beginPath();ctx.arc(GR()*W,GR()*H,.7+GR()*.5,0,Math.PI*2);ctx.fill();}
 
-  // Clip to frame
   ctx.save();
   ctx.beginPath();ctx.rect(MG,MG,W-MG*2,H-MG*2);ctx.clip();
 
@@ -990,14 +958,20 @@ function drawMainCanvas(){
     if(!form||!lp)continue;
     const p=form.params;
 
-    // Measure real bounding box of this morphology
-    const meas=measureForm(p);
-    if(meas.realSize<5)continue; // skip empty
+    // Per-form internal dimensions
+    const ancY_f=cutY+4;
+    const zM_f=0.03,innerH_f=H-2*MG,innerW_f=W-2*MG;
+    const zoneT_f=MG+innerH_f*zM_f;
+    const zoneH_f=ancY_f-zoneT_f;
+    const zoneHW_f=(W-MG-(MG+innerW_f*zM_f))/2;
+    const rawBR_f=Math.min(700+p.mul*60+p.cpx*55,1400)*(p.flip1?1.15:.88);
+    const bR_f=Math.min(rawBR_f,zoneHW_f,zoneH_f*.47);
+    const fcy_f=Math.max(zoneT_f+bR_f,Math.min(ancY_f-bR_f,zoneT_f+zoneH_f*(p.flip2?.45:.55)));
 
-    // Scale so form fills 90% of placement diameter
-    const targetSize=PLACE_R*2*0.9;
-    let normScale=targetSize/meas.realSize;
-    normScale=Math.max(0.5,Math.min(3.0,normScale));
+    // Fill factor per morphology type
+    const key=p.str+'_'+p.mov;
+    const fillF=fillFactors[key]||1.3;
+    const scale=(PLACE_R*fillF)/bR_f;
 
     // Rotation
     const rotR=mkR(p.seed+333);
@@ -1005,9 +979,11 @@ function drawMainCanvas(){
 
     ctx.save();
     ctx.translate(lp.x, lp.y);
+    // Clip to circle R*1.1
+    ctx.beginPath();ctx.arc(0,0,PLACE_R*1.1,0,Math.PI*2);ctx.clip();
     ctx.rotate(angle);
-    ctx.scale(normScale, normScale);
-    ctx.translate(-meas.centerX, -meas.centerY);
+    ctx.scale(scale, scale);
+    ctx.translate(-CX, -fcy_f);
     drawFormSimplified(p);
     ctx.restore();
   }
