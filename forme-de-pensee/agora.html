@@ -931,34 +931,30 @@ function computeCanopyLayout(count){
   return res;
 }
 
-// ===== FILL FACTORS PER MORPHOLOGY TYPE =====
-const fillFactors={
-  'classify_linear':1.8,'classify_spiral':0.9,'classify_parallel':1.5,'classify_leap':1.6,
-  'connect_linear':1.8,'connect_spiral':1.0,'connect_parallel':1.4,'connect_leap':1.2,
-  'layer_linear':1.0,'layer_spiral':1.0,'layer_parallel':1.8,'layer_leap':1.5,
-  'grow_linear':1.3,'grow_spiral':1.2,'grow_parallel':1.5,'grow_leap':1.3
-};
-
 // ===== DRAW MAIN CANVAS =====
 function drawMainCanvas(){
+  // Clear with cream background
   ctx.fillStyle=`rgb(${CR})`;ctx.fillRect(0,0,W,H);
+  // Paper grain
   const GR=mkR(42);for(let i=0;i<8000;i++){ctx.fillStyle=`rgba(${180+GR()*30},${175+GR()*30},${168+GR()*30},0.012)`;
     ctx.beginPath();ctx.arc(GR()*W,GR()*H,.7+GR()*.5,0,Math.PI*2);ctx.fill();}
 
+  // Clip to frame — no form can escape the border
   ctx.save();
   ctx.beginPath();ctx.rect(MG,MG,W-MG*2,H-MG*2);ctx.clip();
 
+  // Draw miniature forms DIRECTLY on main canvas using translate+scale
   const count=allForms.length;
   const layout=computeCanopyLayout(count);
-  const PLACE_R=65;
 
+  const PLACE_R=65; // placement radius
   for(let i=0;i<count;i++){
     const lp=layout[i];
     const form=allForms[i];
     if(!form||!lp)continue;
     const p=form.params;
 
-    // Per-form internal dimensions
+    // Compute this form's internal dimensions (same as drawFormSimplified)
     const ancY_f=cutY+4;
     const zM_f=0.03,innerH_f=H-2*MG,innerW_f=W-2*MG;
     const zoneT_f=MG+innerH_f*zM_f;
@@ -968,10 +964,9 @@ function drawMainCanvas(){
     const bR_f=Math.min(rawBR_f,zoneHW_f,zoneH_f*.47);
     const fcy_f=Math.max(zoneT_f+bR_f,Math.min(ancY_f-bR_f,zoneT_f+zoneH_f*(p.flip2?.45:.55)));
 
-    // Fill factor per morphology type
-    const key=p.str+'_'+p.mov;
-    const fillF=fillFactors[key]||1.3;
-    const scale=(PLACE_R*fillF)/bR_f;
+    // Normalize: scale so bR_f fits in ~85% of placement radius
+    const scale_needed=(PLACE_R*1.1)/bR_f;
+    const scale=scale_needed;
 
     // Rotation
     const rotR=mkR(p.seed+333);
@@ -979,8 +974,10 @@ function drawMainCanvas(){
 
     ctx.save();
     ctx.translate(lp.x, lp.y);
-    // Clip to circle R*1.1
-    ctx.beginPath();ctx.arc(0,0,PLACE_R*1.1,0,Math.PI*2);ctx.clip();
+    // Clip to placement circle
+    ctx.beginPath();
+    ctx.arc(0,0,PLACE_R*1.3,0,Math.PI*2);
+    ctx.clip();
     ctx.rotate(angle);
     ctx.scale(scale, scale);
     ctx.translate(-CX, -fcy_f);
@@ -991,13 +988,12 @@ function drawMainCanvas(){
   // DEBUG: red circles + numbers
   for(let i=0;i<count;i++){
     const lp=layout[i];if(!lp)continue;
-    ctx.beginPath();ctx.arc(lp.x,lp.y,PLACE_R,0,Math.PI*2);
+    ctx.beginPath();ctx.arc(lp.x,lp.y,65,0,Math.PI*2);
     ctx.strokeStyle='rgba(200,50,50,0.5)';ctx.lineWidth=2;ctx.stroke();
     ctx.fillStyle='rgba(200,50,50,0.1)';ctx.fill();
     ctx.fillStyle='rgba(200,50,50,0.9)';ctx.font='bold 20px monospace';
     ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(String(i),lp.x,lp.y);
   }
-
   ctx.restore(); // end frame clip
 
   // Draw shared bust
