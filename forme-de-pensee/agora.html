@@ -931,9 +931,57 @@ function computeCanopyLayout(count){
   return res;
 }
 
-// ===== DRAW MAIN CANVAS =====
+// ===== MEASURE MORPHOLOGY VIA OFFSCREEN SCAN =====
 const PLACE_R=65;
+const BASE_SCALE=0.3;
+const _mCache=new Map();
+const _offCv=document.createElement('canvas');
+_offCv.width=800;_offCv.height=800;
+const _offCtx=_offCv.getContext('2d');
 
+function measureForm(p){
+  if(_mCache.has(p.seed))return _mCache.get(p.seed);
+
+  // Draw on 800×800 with same transform as final render
+  const realCtx=ctx;
+  ctx=_offCtx;
+  ctx.clearRect(0,0,800,800);
+  ctx.save();
+  ctx.translate(400,400);
+  ctx.scale(BASE_SCALE,BASE_SCALE);
+  ctx.translate(-CX,-cutY*0.6);
+  drawFormSimplified(p);
+  ctx.restore();
+  ctx=realCtx;
+
+  // Scan pixels
+  const imgData=_offCtx.getImageData(0,0,800,800);
+  const d=imgData.data;
+  let sumX=0,sumY=0,cnt=0;
+  const pixels=[];
+  for(let y=0;y<800;y+=2){for(let x=0;x<800;x+=2){
+    if(d[(y*800+x)*4+3]>10){sumX+=x;sumY+=y;cnt++;pixels.push(x,y);}
+  }}
+  if(cnt<3){const r={bcx:400,bcy:400,maxR:50,cnt:0};_mCache.set(p.seed,r);return r;}
+  const bcx=sumX/cnt;
+  const bcy=sumY/cnt;
+  let maxR=0;
+  for(let i=0;i<pixels.length;i+=2){
+    const dx=pixels[i]-bcx,dy=pixels[i+1]-bcy;
+    const dr=Math.sqrt(dx*dx+dy*dy);
+    if(dr>maxR)maxR=dr;
+  }
+  if(maxR<5)maxR=50;
+
+  const key=p.str+'_'+p.mov;
+  console.log('Form',p.seed,key,'bc=',bcx.toFixed(0),bcy.toFixed(0),'maxR=',maxR.toFixed(0),'px=',cnt);
+
+  const result={bcx,bcy,maxR,cnt};
+  _mCache.set(p.seed,result);
+  return result;
+}
+
+// ===== DRAW MAIN CANVAS =====
 function drawMainCanvas(){
   ctx.fillStyle=`rgb(${CR})`;ctx.fillRect(0,0,W,H);
   const GR=mkR(42);for(let i=0;i<8000;i++){ctx.fillStyle=`rgba(${180+GR()*30},${175+GR()*30},${168+GR()*30},0.012)`;
@@ -951,40 +999,55 @@ function drawMainCanvas(){
     if(!form||!lp)continue;
     const p=form.params;
 
-    // Analytical barycentre & maxR for this morphology
-    const ancY_f=cutY+4;
-    const zM_f=0.03,innerH_f=H-2*MG,innerW_f=W-2*MG;
-    const zoneT_f=MG+innerH_f*zM_f;
-    const zoneH_f=ancY_f-zoneT_f;
-    const zoneHW_f=(W-MG-(MG+innerW_f*zM_f))/2;
-    const rawBR_f=Math.min(700+p.mul*60+p.cpx*55,1400)*(p.flip1?1.15:.88);
-    const bR_f=Math.min(rawBR_f,zoneHW_f,zoneH_f*.47);
-    const fcy_f=Math.max(zoneT_f+bR_f,Math.min(ancY_f-bR_f,zoneT_f+zoneH_f*(p.flip2?.45:.55)));
+    const meas=measureForm(p);
+    if(meas.cnt<3)continue;
 
-    // Barycentre = (CX, fcy_f), maxR = bR_f
-    // Scale so bR_f * scale = PLACE_R → morphology touches circle edge
-    const scale=PLACE_R/bR_f;
+    // normScale: maxR pixels in offscreen → should map to PLACE_R on canvas
+    const normScale=PLACE_R/meas.maxR;
+    // offset: shift so barycentre lands at origin
+    const offsetX=400-meas.bcx;
+    const offsetY=400-meas.bcy;
 
     const rotR=mkR(p.seed+333);
     const angle=(rotR()-0.5)*0.6;
 
     ctx.save();
-    ctx.translate(lp.x, lp.y);
+    ctx.translate(lp.x,lp.y);
     ctx.rotate(angle);
-    ctx.scale(scale, scale);
-    ctx.translate(-CX, -fcy_f);
+    ctx.scale(normScale,normScale);
+    ctx.translate(offsetX,offsetY);
+    // Same transform as measureForm:
+    ctx.scale(BASE_SCALE,BASE_SCALE);
+    ctx.translate(-CX,-cutY*0.6);
     drawFormSimplified(p);
     ctx.restore();
   }
 
-  // DEBUG: red circles + numbers
+  // DEBUG: red circles + numbers + green barycentre
   for(let i=0;i<count;i++){
     const lp=layout[i];if(!lp)continue;
+    // Red placement circle
     ctx.beginPath();ctx.arc(lp.x,lp.y,PLACE_R,0,Math.PI*2);
     ctx.strokeStyle='rgba(200,50,50,0.5)';ctx.lineWidth=2;ctx.stroke();
     ctx.fillStyle='rgba(200,50,50,0.1)';ctx.fill();
     ctx.fillStyle='rgba(200,50,50,0.9)';ctx.font='bold 20px monospace';
     ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(String(i),lp.x,lp.y);
+
+    // Green barycentre dot + maxR circle
+    if(allForms[i]){
+      const meas=measureForm(allForms[i].params);
+      if(meas.cnt>=3){
+        const ns=PLACE_R/meas.maxR;
+        const ox=400-meas.bcx,oy=400-meas.bcy;
+        // Barycentre in canvas coords = lp + normScale*(offset + (400,400) - (400,400)) = lp
+        // Actually barycentre maps to lp.x, lp.y by construction (offset recenters it)
+        ctx.beginPath();ctx.arc(lp.x,lp.y,4,0,Math.PI*2);
+        ctx.fillStyle='rgba(0,180,0,0.8)';ctx.fill();
+        // MaxR circle = should coincide with red circle
+        ctx.beginPath();ctx.arc(lp.x,lp.y,PLACE_R,0,Math.PI*2);
+        ctx.strokeStyle='rgba(0,180,0,0.4)';ctx.lineWidth=1.5;ctx.stroke();
+      }
+    }
   }
   ctx.restore(); // end frame clip
 
