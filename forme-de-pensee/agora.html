@@ -965,7 +965,7 @@ function drawMainCanvas(){
     const fcy_f=Math.max(zoneT_f+bR_f,Math.min(ancY_f-bR_f,zoneT_f+zoneH_f*(p.flip2?.45:.55)));
 
     // Normalize: scale so bR_f fits in ~85% of placement radius
-    const scale_needed=(PLACE_R*0.85)/bR_f;
+    const scale_needed=(PLACE_R*1.3)/bR_f;
     const scale=scale_needed;
 
     // Rotation
