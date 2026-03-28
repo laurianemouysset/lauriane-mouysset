@@ -1023,32 +1023,6 @@ function drawMainCanvas(){
     ctx.restore();
   }
 
-  // DEBUG: red circles + numbers + green barycentre
-  for(let i=0;i<count;i++){
-    const lp=layout[i];if(!lp)continue;
-    // Red placement circle
-    ctx.beginPath();ctx.arc(lp.x,lp.y,PLACE_R,0,Math.PI*2);
-    ctx.strokeStyle='rgba(200,50,50,0.5)';ctx.lineWidth=2;ctx.stroke();
-    ctx.fillStyle='rgba(200,50,50,0.1)';ctx.fill();
-    ctx.fillStyle='rgba(200,50,50,0.9)';ctx.font='bold 20px monospace';
-    ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(String(i),lp.x,lp.y);
-
-    // Green barycentre dot + maxR circle
-    if(allForms[i]){
-      const meas=measureForm(allForms[i].params);
-      if(meas.cnt>=3){
-        const ns=PLACE_R/meas.maxR;
-        const ox=400-meas.bcx,oy=400-meas.bcy;
-        // Barycentre in canvas coords = lp + normScale*(offset + (400,400) - (400,400)) = lp
-        // Actually barycentre maps to lp.x, lp.y by construction (offset recenters it)
-        ctx.beginPath();ctx.arc(lp.x,lp.y,4,0,Math.PI*2);
-        ctx.fillStyle='rgba(0,180,0,0.8)';ctx.fill();
-        // MaxR circle = should coincide with red circle
-        ctx.beginPath();ctx.arc(lp.x,lp.y,PLACE_R,0,Math.PI*2);
-        ctx.strokeStyle='rgba(0,180,0,0.4)';ctx.lineWidth=1.5;ctx.stroke();
-      }
-    }
-  }
   ctx.restore(); // end frame clip
 
   // Draw shared bust
