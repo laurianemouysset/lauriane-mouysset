@@ -951,18 +951,29 @@ function drawMainCanvas(){
     const lp=layout[i];
     const form=allForms[i];
     if(!form||!lp)continue;
+    const p=form.params;
     const scale=lp.size/W;
-    const dstH=cutY*scale;
-    // Random rotation per form: most +-30°, 20% up to +-90°
-    const rotR=mkR(form.params.seed+333);
-    const bigRotate=rotR()<0.2;
-    const angle=bigRotate?(rotR()-.5)*Math.PI:(rotR()-.5)*1.0;
+
+    // Compute this form's fcy (same formula as drawFormSimplified)
+    const ancY_f=cutY+4;
+    const zM_f=0.03,innerW_f=W-2*MG,innerH_f=H-2*MG;
+    const zoneT_f=MG+innerH_f*zM_f;
+    const zoneH_f=ancY_f-zoneT_f;
+    const zoneHW_f=(W-MG-(MG+innerW_f*zM_f))/2;
+    const rawBR_f=Math.min(700+p.mul*60+p.cpx*55,1400)*(p.flip1?1.15:.88);
+    const bR_f=Math.min(rawBR_f,zoneHW_f,zoneH_f*.47);
+    const fcy_f=Math.max(zoneT_f+bR_f,Math.min(ancY_f-bR_f,zoneT_f+zoneH_f*(p.flip2?.45:.55)));
+
+    // Rotation
+    const rotR=mkR(p.seed+333);
+    const angle=(rotR()-0.5)*0.6; // subtle +-17deg
+
     ctx.save();
     ctx.translate(lp.x, lp.y);
     ctx.rotate(angle);
-    ctx.scale(scale,scale);
-    ctx.translate(-CX, -cutY*0.5);
-    drawFormSimplified(form.params);
+    ctx.scale(scale, scale);
+    ctx.translate(-CX, -fcy_f);
+    drawFormSimplified(p);
     ctx.restore();
   }
 
