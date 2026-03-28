@@ -985,15 +985,6 @@ function drawMainCanvas(){
     ctx.restore();
   }
 
-  // DEBUG: red circles + numbers
-  for(let i=0;i<count;i++){
-    const lp=layout[i];if(!lp)continue;
-    ctx.beginPath();ctx.arc(lp.x,lp.y,65,0,Math.PI*2);
-    ctx.strokeStyle='rgba(200,50,50,0.5)';ctx.lineWidth=2;ctx.stroke();
-    ctx.fillStyle='rgba(200,50,50,0.1)';ctx.fill();
-    ctx.fillStyle='rgba(200,50,50,0.9)';ctx.font='bold 20px monospace';
-    ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(String(i),lp.x,lp.y);
-  }
   ctx.restore(); // end frame clip
 
   // Draw shared bust
