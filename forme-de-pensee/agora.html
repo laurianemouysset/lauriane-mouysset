@@ -920,6 +920,27 @@ function computeCanopyLayout(count){
     for(let j=0;j<res.length;j++)res[j].x+=sh;
   }
 
+  // Sort by concentric distance, then alternate left/right per band
+  const oCY=res.length>0?(res.reduce((s,p)=>s+p.y,0)/res.length):0;
+  res.sort((a,b)=>{
+    const da=Math.sqrt(Math.pow(a.x-CX,2)+Math.pow(a.y-oCY,2));
+    const db=Math.sqrt(Math.pow(b.x-CX,2)+Math.pow(b.y-oCY,2));
+    return da-db;
+  });
+  for(let band=0;band<res.length;band+=8){
+    const end=Math.min(band+8,res.length);
+    const slice=res.slice(band,end);
+    const left=slice.filter(p=>p.x<CX).sort((a,b)=>a.x-b.x);
+    const right=slice.filter(p=>p.x>=CX).sort((a,b)=>b.x-a.x);
+    const merged=[];
+    let li=0,ri=0;
+    while(li<left.length||ri<right.length){
+      if(li<left.length)merged.push(left[li++]);
+      if(ri<right.length)merged.push(right[ri++]);
+    }
+    for(let j=0;j<merged.length;j++)res[band+j]=merged[j];
+  }
+
   return res;
 }
 
@@ -978,8 +999,30 @@ function drawMainCanvas(){
   const count=allForms.length;
   const layout=computeCanopyLayout(count);
 
+  // --- ZOOM DYNAMIQUE ---
+  let globalScale=1.0;
+  const bBot=bustTop+bust.h*bustScale;
+  if(layout.length>0){
+    let minX=1e9,maxX=-1e9,minY=1e9;
+    for(let j=0;j<layout.length;j++){
+      if(layout[j].x-PLACE_R<minX)minX=layout[j].x-PLACE_R;
+      if(layout[j].x+PLACE_R>maxX)maxX=layout[j].x+PLACE_R;
+      if(layout[j].y-PLACE_R<minY)minY=layout[j].y-PLACE_R;
+    }
+    const contentW=maxX-minX+2*PLACE_R;
+    const contentH=bBot-minY+2*PLACE_R;
+    const availW=W-2*MG-40;
+    const availH=H-2*MG-240;
+    globalScale=Math.min(1.0,availW/contentW,availH/contentH);
+  }
+  // Anchor point: middle of bust bottom
+  const anchorX=CX,anchorY=bBot;
+
   ctx.save();
   ctx.beginPath();ctx.rect(MG,MG,W-MG*2,H-MG*2);ctx.clip();
+  ctx.translate(anchorX,anchorY);
+  ctx.scale(globalScale,globalScale);
+  ctx.translate(-anchorX,-anchorY);
 
   for(let i=0;i<count;i++){
     const lp=layout[i];
