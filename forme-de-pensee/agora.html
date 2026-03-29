@@ -850,14 +850,14 @@ const allForms=[];
 let totalCount=0;
 
 // ===== FIXED ELLIPSE LAYOUT — ellipse inscrite dans le cadre =====
-const HW_RATIO=1.6;
+const HW_RATIO=1.35;
 const SEED_COUNT=20;
 
 function computeCanopyLayout(count){
   if(count<1)return[];
 
   // 1. ELLIPSE FIXE inscrite dans le cadre avec 10% de marge
-  const marginPct=0.10;
+  const marginPct=0.07;
   const maxW=(W-2*MG)*(1-2*marginPct);
   const maxH=(cutY-MG)*(1-2*marginPct);
   let ellA=Math.min(maxW/2,(maxH/HW_RATIO));
@@ -918,9 +918,9 @@ function computeCanopyLayout(count){
     const R2=mkR(7777);
     for(let j=0;j<res.length;j++){
       const dd=Math.sqrt(Math.pow(res[j].x-ellCX,2)+Math.pow(res[j].y-ellCY,2));
-      if(dd>maxDist*0.75){
-        const edgeness=(dd-maxDist*0.75)/(maxDist*0.25);
-        const jitter=dynR*0.3*edgeness;
+      if(dd>maxDist*0.65){
+        const edgeness=(dd-maxDist*0.65)/(maxDist*0.35);
+        const jitter=dynR*0.5*edgeness;
         res[j].x+=(R2()-0.5)*jitter*2;
         res[j].y+=(R2()-0.5)*jitter*2;
       }
