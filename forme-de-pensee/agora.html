@@ -1017,7 +1017,13 @@ function computeCanopyLayout(count){
         const gapToTarget=targetDist-myDist;
 
         const touchBonus=touchCount*3;
-        const score=gapToTarget+touchBonus+R2()*r*0.3;
+        // Symmetry penalty: penalize positions that unbalance the oval
+        const distLeft=nx-MG;
+        const distRight=(W-MG)-nx;
+        const asymmetry=Math.abs(distLeft-distRight)/W;
+        const newCmx=(cmx*res.length+nx)/(res.length+1);
+        const cmxDrift=Math.abs(newCmx-CX)/(W/2);
+        const score=gapToTarget+touchBonus+R2()*r*0.3-asymmetry*3-cmxDrift*5;
 
         if(score>bestScore){bestScore=score;bestNx=nx;bestNy=ny;}
       }
@@ -1035,17 +1041,6 @@ function computeCanopyLayout(count){
         size:sz
       });
     }
-  }
-
-  // Final horizontal recentering: bbox center on CX
-  if(res.length>0){
-    let minX=Infinity,maxX=-Infinity;
-    for(let j=0;j<res.length;j++){
-      if(res[j].x-r<minX)minX=res[j].x-r;
-      if(res[j].x+r>maxX)maxX=res[j].x+r;
-    }
-    const sx=CX-(minX+maxX)/2;
-    for(let j=0;j<res.length;j++)res[j].x+=sx;
   }
 
   console.log('Placed',res.length,'/',count,'forms (seed=',seedCount,')');
