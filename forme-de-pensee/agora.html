@@ -999,30 +999,28 @@ function drawMainCanvas(){
   const count=allForms.length;
   const layout=computeCanopyLayout(count);
 
-  // --- ZOOM DYNAMIQUE ---
+  // --- ZOOM DYNAMIQUE — ancré au bas de l'ovale ---
   let globalScale=1.0;
-  const bBot=bustTop+bust.h*bustScale;
+  // anchorY = bas de l'ovale (bord inférieur de la forme la plus basse)
+  let anchorY=cutY+10; // default = headTopY
   if(layout.length>0){
-    let minX=1e9,maxX=-1e9,minY=1e9;
+    let maxY=-1e9,minY=1e9;
     for(let j=0;j<layout.length;j++){
-      if(layout[j].x-PLACE_R<minX)minX=layout[j].x-PLACE_R;
-      if(layout[j].x+PLACE_R>maxX)maxX=layout[j].x+PLACE_R;
+      if(layout[j].y+PLACE_R>maxY)maxY=layout[j].y+PLACE_R;
       if(layout[j].y-PLACE_R<minY)minY=layout[j].y-PLACE_R;
     }
-    const contentW=maxX-minX+2*PLACE_R;
-    const contentH=bBot-minY+2*PLACE_R;
-    const availW=W-2*MG-40;
-    const availH=H-2*MG-240;
-    globalScale=Math.min(1.0,availW/contentW,availH/contentH);
+    anchorY=maxY; // bas de l'ovale
+    const topMargin=100;
+    const availH=anchorY-MG-topMargin;
+    const contentH=anchorY-minY;
+    if(contentH>availH)globalScale=availH/contentH;
   }
-  // Anchor point: middle of bust bottom
-  const anchorX=CX,anchorY=bBot;
 
   ctx.save();
   ctx.beginPath();ctx.rect(MG,MG,W-MG*2,H-MG*2);ctx.clip();
-  ctx.translate(anchorX,anchorY);
+  ctx.translate(CX,anchorY);
   ctx.scale(globalScale,globalScale);
-  ctx.translate(-anchorX,-anchorY);
+  ctx.translate(-CX,-anchorY);
 
   for(let i=0;i<count;i++){
     const lp=layout[i];
@@ -1051,10 +1049,10 @@ function drawMainCanvas(){
     ctx.restore();
   }
 
-  // Draw bust inside the zoom
-  drawBust();
+  ctx.restore(); // end frame clip + scale
 
-  ctx.restore(); // end frame clip
+  // Draw bust OUTSIDE the scale (fixed position)
+  drawBust();
 
   // Fade at bust top
   const bVisH=bust.h*bustScale;
