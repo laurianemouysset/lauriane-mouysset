@@ -849,206 +849,81 @@ const renderedSeeds=new Set();
 const allForms=[];
 let totalCount=0;
 
-// ===== CANOPY AGGREGATION LAYOUT =====
-// Dense organic cloud: narrow at bust, widens upward like a canopy.
-// Forms overlap 20-40%. Sizes vary from simple to double.
+// ===== ELLIPTICAL HEX GRID LAYOUT =====
+const PLACE_R=65;
+const PLACE_GAP=-10;
 
 // ================================================================
-// PACK CIRCLES INSIDE AN ELLIPSE (filled egg) — Phase 1
-// ================================================================
-function packEllipse(cx,cy,a,b,r,gap,maxCount){
-  const res=[];
-  const spacing=r*2+gap;
-  const rowH=spacing*Math.sqrt(3)/2;
-  const startY=cy-b;
-  const endY=cy+b;
-  for(let y=startY+r;y<=endY-r;y+=rowH){
-    const dy=(y-cy)/b;
-    if(Math.abs(dy)>=1)continue;
-    const halfW=a*Math.sqrt(1-dy*dy);
-    const rowIdx=Math.round((y-startY)/rowH);
-    const xOffset=(rowIdx%2===1)?spacing/2:0;
-    for(let x=cx-halfW+r+xOffset;x<=cx+halfW-r;x+=spacing){
-      const ex=(x-cx)/a,ey=(y-cy)/b;
-      if(ex*ex+ey*ey<=1){
-        res.push({x:x,y:y,size:270});
-        if(res.length>=maxCount)return res;
-      }
-    }
-  }
-  return res;
-}
-
-// ================================================================
-// BUILD OVAL — Phase 1 (seed) + Phase 2 (growth by niches)
+// ALL-HEX ELLIPTICAL LAYOUT — guaranteed oval shape
 // ================================================================
 function computeCanopyLayout(count){
-  const sz=270;
-  const r=65;
-  const gap=-10;
-  const seedCount=Math.min(count,20);
+  const r=PLACE_R;
+  const gap=PLACE_GAP;
   const hwRatio=1.6;
-  const spacing=r*2+gap; // 85
+  const spacing=2*r+gap;
+  const rowH=spacing*Math.sqrt(3)/2;
+  const headTopY=cutY+10;
 
-  // Size the ellipse to fit seedCount circles
-  const areaPerCircle=spacing*spacing*0.9;
-  const totalArea=seedCount*areaPerCircle;
-  let seedA=Math.sqrt(totalArea/(Math.PI*hwRatio));
-  let seedB=seedA*hwRatio;
+  // Size ellipse to fit count forms
+  const areaPerForm=spacing*spacing*0.9;
+  const totalArea=count*areaPerForm;
+  let ellA=Math.sqrt(totalArea/(Math.PI*hwRatio));
+  let ellB=ellA*hwRatio;
+  let ovalCY=headTopY-ellB;
 
-  // Bottom of egg at cutY (bustTop)
-  let ovalCY=cutY-seedB;
-
-  let res=packEllipse(CX,ovalCY,seedA,seedB,r,gap,seedCount);
-
-  // Enlarge if not enough
-  let tries=0;
-  while(res.length<seedCount&&tries<10){
-    seedA*=1.1;seedB*=1.1;
-    ovalCY=cutY-seedB;
-    res=packEllipse(CX,ovalCY,seedA,seedB,r,gap,seedCount);
-    tries++;
-  }
-  if(res.length>seedCount)res=res.slice(0,seedCount);
-
-  // Shift so bottom edge of lowest circle = cutY exactly
-  if(res.length>0){
-    let lowestEdge=-Infinity;
-    for(let j=0;j<res.length;j++){
-      if(res[j].y+r>lowestEdge)lowestEdge=res[j].y+r;
-    }
-    const shiftY=cutY-lowestEdge;
-    for(let j=0;j<res.length;j++)res[j].y+=shiftY;
-  }
-
-  // Center horizontally on CX
-  if(res.length>0){
-    let meanX=0;
-    for(let j=0;j<res.length;j++)meanX+=res[j].x;
-    meanX/=res.length;
-    const shiftX=CX-meanX;
-    for(let j=0;j<res.length;j++)res[j].x+=shiftX;
-  }
-
-  // --- PHASE 2: Grow by filling niches on perimeter ---
-  const snapDist=r*2+gap; // same spacing as seed
-  const floorY=cutY;
-  const topBound=MG+50;
-  const R2=mkR(42);
-
-  for(let i=res.length;i<count;i++){
-    // Center of mass
-    let cmx=0,cmy=0;
-    for(let j=0;j<res.length;j++){cmx+=res[j].x;cmy+=res[j].y;}
-    cmx/=res.length;cmy/=res.length;
-
-    // Find perimeter forms (forms with at least one open direction)
-    const perimForms=[];
-    for(let j=0;j<res.length;j++){
-      let isPerim=false;
-      for(let da=0;da<12;da++){
-        const checkAngle=(da/12)*Math.PI*2;
-        const checkX=res[j].x+Math.cos(checkAngle)*snapDist;
-        const checkY=res[j].y+Math.sin(checkAngle)*snapDist;
-        let hasNeighbor=false;
-        for(let k=0;k<res.length;k++){
-          if(k===j)continue;
-          const ddx=checkX-res[k].x,ddy=checkY-res[k].y;
-          if(Math.sqrt(ddx*ddx+ddy*ddy)<r*0.8){hasNeighbor=true;break;}
+  function packHex(a,b,cy){
+    const res=[];
+    const sY=cy-b;
+    for(let y=sY+r;y<=cy+b-r;y+=rowH){
+      const dy=(y-cy)/b;
+      if(Math.abs(dy)>=1)continue;
+      const halfW=a*Math.sqrt(1-dy*dy);
+      const ri=Math.round((y-sY)/rowH);
+      const xOff=(ri%2===1)?spacing/2:0;
+      for(let x=CX-halfW+r+xOff;x<=CX+halfW-r;x+=spacing){
+        const ex=(x-CX)/a,ey=(y-cy)/b;
+        if(ex*ex+ey*ey<=1){
+          if(y+r>headTopY)continue;
+          res.push({x:x,y:y,size:270});
+          if(res.length>=count)return res;
         }
-        if(!hasNeighbor){isPerim=true;break;}
       }
-      if(isPerim)perimForms.push(j);
+      if(res.length>=count)return res;
     }
-    if(perimForms.length===0)perimForms.push(res.length-1);
+    return res;
+  }
 
-    // Try placing around each perimeter form
-    let bestNx=0,bestNy=0,bestScore=-99999;
+  let res=packHex(ellA,ellB,ovalCY);
 
-    for(let pi=0;pi<perimForms.length;pi++){
-      const pf=res[perimForms[pi]];
-      const outAngle=Math.atan2(pf.y-cmy,pf.x-cmx);
+  // Enlarge until enough forms fit
+  while(res.length<count){
+    ellA*=1.05;ellB*=1.05;
+    ovalCY=headTopY-ellB;
+    res=packHex(ellA,ellB,ovalCY);
+    if(ellA>W)break;
+  }
 
-      for(let ai=-4;ai<=4;ai++){
-        const tryAngle=outAngle+ai*0.25;
-        const nx=pf.x+Math.cos(tryAngle)*snapDist;
-        const ny=pf.y+Math.sin(tryAngle)*snapDist;
+  // Shift so bottom edge of lowest form = headTopY
+  if(res.length>0){
+    let lo=-Infinity;
+    for(let j=0;j<res.length;j++){if(res[j].y+r>lo)lo=res[j].y+r;}
+    const sh=headTopY-lo;
+    for(let j=0;j<res.length;j++)res[j].y+=sh;
+  }
 
-        // Constraints
-        if(ny+r>floorY)continue;
-        if(nx-r<MG||nx+r>W-MG)continue;
-        if(ny-r<topBound)continue;
-
-        let tooClose=false;
-        let touchCount=0;
-        let spacingOk=true;
-        for(let j=0;j<res.length;j++){
-          const dx2=nx-res[j].x,dy2=ny-res[j].y;
-          const dd2=Math.sqrt(dx2*dx2+dy2*dy2);
-          if(dd2<snapDist*0.7){tooClose=true;break;}
-          if(dd2<=snapDist*1.15){
-            touchCount++;
-            if(dd2<snapDist*0.85||dd2>snapDist*1.15)spacingOk=false;
-          }
-        }
-        if(tooClose||!spacingOk)continue;
-
-        // Score: niches + oval growth direction
-        let curMaxW=0,curMaxH=0;
-        for(let j=0;j<res.length;j++){
-          const dxa=Math.abs(res[j].x-cmx)+r;
-          const dya=Math.abs(res[j].y-cmy)+r;
-          if(dxa>curMaxW)curMaxW=dxa;
-          if(dya>curMaxH)curMaxH=dya;
-        }
-        const growF=1+0.3/Math.sqrt(res.length);
-        let tA=curMaxW*growF;
-        let tB=curMaxH*growF;
-        const curRat=tB/Math.max(1,tA);
-        if(curRat<hwRatio*0.85)tB=tA*hwRatio;
-        if(curRat>hwRatio*1.15)tA=tB/hwRatio;
-
-        const cosT=Math.cos(tryAngle),sinT=Math.sin(tryAngle);
-        const targetDist=tA*tB/Math.sqrt(Math.pow(tB*cosT,2)+Math.pow(tA*sinT,2));
-        const myDist=Math.sqrt(Math.pow(nx-cmx,2)+Math.pow(ny-cmy,2));
-        const gapToTarget=targetDist-myDist;
-
-        const touchBonus=touchCount*3;
-        // Symmetry penalty
-        const newCmx=(cmx*res.length+nx)/(res.length+1);
-        const cmxDrift=Math.abs(newCmx-CX)/(W/2);
-        // Ellipse penalty: prefer positions on the theoretical oval edge
-        const ellA=seedA+(res.length-seedCount)*snapDist*0.12;
-        const ellB=ellA*hwRatio;
-        const ex=(nx-CX)/ellA;
-        const ey=(ny-ovalCY)/ellB;
-        const ellDist=Math.sqrt(ex*ex+ey*ey);
-        const ellPenalty=Math.abs(ellDist-1.0)*5;
-        const score=gapToTarget+touchBonus+R2()*r*0.3-cmxDrift*5-ellPenalty;
-
-        if(score>bestScore){bestScore=score;bestNx=nx;bestNy=ny;}
-      }
-    }
-
-    if(bestScore>-9000){
-      res.push({x:bestNx,y:bestNy,size:sz});
-    } else {
-      // Fallback: attach to random perimeter form
-      const par=res[perimForms[Math.floor(R2()*perimForms.length)]];
-      const fa=-Math.PI/2+(R2()-0.5)*1.0;
-      res.push({
-        x:Math.max(MG+r,Math.min(W-MG-r,par.x+Math.cos(fa)*snapDist)),
-        y:Math.max(topBound+r,Math.min(floorY-r,par.y+Math.sin(fa)*snapDist)),
-        size:sz
-      });
-    }
+  // Center on CX
+  if(res.length>0){
+    let mx=0;
+    for(let j=0;j<res.length;j++)mx+=res[j].x;
+    mx/=res.length;
+    const sh=CX-mx;
+    for(let j=0;j<res.length;j++)res[j].x+=sh;
   }
 
   return res;
 }
 
 // ===== MEASURE MORPHOLOGY VIA OFFSCREEN SCAN =====
-const PLACE_R=65;
 const BASE_SCALE=0.3;
 const _mCache=new Map();
 const _offCv=document.createElement('canvas');
