@@ -999,28 +999,25 @@ function drawMainCanvas(){
   const count=allForms.length;
   const layout=computeCanopyLayout(count);
 
-  // --- ZOOM DYNAMIQUE — ancré au bas de l'ovale ---
+  // --- ZOOM — ancré sur headTopY, comprime vers le haut ---
+  const headTopY=cutY+10;
+  const topLimit=MG+80;
   let globalScale=1.0;
-  // anchorY = bas de l'ovale (bord inférieur de la forme la plus basse)
-  let anchorY=cutY+10; // default = headTopY
   if(layout.length>0){
-    let maxY=-1e9,minY=1e9;
+    let minY=Infinity;
     for(let j=0;j<layout.length;j++){
-      if(layout[j].y+PLACE_R>maxY)maxY=layout[j].y+PLACE_R;
       if(layout[j].y-PLACE_R<minY)minY=layout[j].y-PLACE_R;
     }
-    anchorY=maxY; // bas de l'ovale
-    const topMargin=100;
-    const availH=anchorY-MG-topMargin;
-    const contentH=anchorY-minY;
+    const availH=headTopY-topLimit;
+    const contentH=headTopY-minY;
     if(contentH>availH)globalScale=availH/contentH;
   }
 
   ctx.save();
   ctx.beginPath();ctx.rect(MG,MG,W-MG*2,H-MG*2);ctx.clip();
-  ctx.translate(CX,anchorY);
+  ctx.translate(CX,headTopY);
   ctx.scale(globalScale,globalScale);
-  ctx.translate(-CX,-anchorY);
+  ctx.translate(-CX,-headTopY);
 
   for(let i=0;i<count;i++){
     const lp=layout[i];
