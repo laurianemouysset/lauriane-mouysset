@@ -1037,6 +1037,14 @@ function computeCanopyLayout(count){
     }
   }
 
+  // Final horizontal recentering on CX
+  if(res.length>0){
+    let mx=0;for(let j=0;j<res.length;j++)mx+=res[j].x;
+    mx/=res.length;
+    const sx=CX-mx;
+    for(let j=0;j<res.length;j++)res[j].x+=sx;
+  }
+
   console.log('Placed',res.length,'/',count,'forms (seed=',seedCount,')');
   return res;
 }
@@ -1097,11 +1105,43 @@ function drawMainCanvas(){
   const GR=mkR(42);for(let i=0;i<8000;i++){ctx.fillStyle=`rgba(${180+GR()*30},${175+GR()*30},${168+GR()*30},0.012)`;
     ctx.beginPath();ctx.arc(GR()*W,GR()*H,.7+GR()*.5,0,Math.PI*2);ctx.fill();}
 
+  const count=allForms.length;
+  const layout=computeCanopyLayout(count);
+
+  // --- ZOOM DYNAMIQUE ---
+  let globalScale=1.0;
+  let globalOffsetY=0;
+  if(layout.length>0){
+    let minX=1e9,maxX=-1e9,minY=1e9,maxY=-1e9;
+    for(let j=0;j<layout.length;j++){
+      if(layout[j].x-PLACE_R<minX)minX=layout[j].x-PLACE_R;
+      if(layout[j].x+PLACE_R>maxX)maxX=layout[j].x+PLACE_R;
+      if(layout[j].y-PLACE_R<minY)minY=layout[j].y-PLACE_R;
+      if(layout[j].y+PLACE_R>maxY)maxY=layout[j].y+PLACE_R;
+    }
+    // Include bust bottom
+    const bBot=bustTop+bust.h*bustScale;
+    if(bBot>maxY)maxY=bBot;
+    const contentH=maxY-minY;
+    const contentW=maxX-minX;
+    const availableH=H-2*MG-200; // 200px for footer text
+    const availableW=W-2*MG;
+    if(contentH>availableH||contentW>availableW){
+      globalScale=Math.min(availableH/contentH,availableW/contentW);
+    }
+    // Center vertically: midpoint of content → midpoint of available area
+    const contentMidY=(minY+maxY)/2;
+    const availMidY=MG+(availableH/2);
+    globalOffsetY=availMidY-contentMidY*globalScale;
+  }
+
   ctx.save();
   ctx.beginPath();ctx.rect(MG,MG,W-MG*2,H-MG*2);ctx.clip();
 
-  const count=allForms.length;
-  const layout=computeCanopyLayout(count);
+  // Apply global zoom
+  ctx.translate(CX,globalOffsetY);
+  ctx.scale(globalScale,globalScale);
+  ctx.translate(-CX,0);
 
   for(let i=0;i<count;i++){
     const lp=layout[i];
@@ -1112,9 +1152,7 @@ function drawMainCanvas(){
     const meas=measureForm(p);
     if(meas.cnt<3)continue;
 
-    // normScale: maxR pixels in offscreen → should map to PLACE_R on canvas
     const normScale=PLACE_R/meas.maxR;
-    // offset: shift so barycentre lands at origin
     const offsetX=400-meas.bcx;
     const offsetY=400-meas.bcy;
 
@@ -1126,17 +1164,16 @@ function drawMainCanvas(){
     ctx.rotate(angle);
     ctx.scale(normScale,normScale);
     ctx.translate(offsetX,offsetY);
-    // Same transform as measureForm:
     ctx.scale(BASE_SCALE,BASE_SCALE);
     ctx.translate(-CX,-cutY*0.6);
     drawFormSimplified(p);
     ctx.restore();
   }
 
-  ctx.restore(); // end frame clip
-
-  // Draw shared bust
+  // Draw bust inside the zoom
   drawBust();
+
+  ctx.restore(); // end frame clip + zoom
 
   // Fade at bust top
   const bVisH=bust.h*bustScale;
