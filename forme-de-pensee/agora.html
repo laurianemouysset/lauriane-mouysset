@@ -193,20 +193,18 @@ function makeParams(str,mov,intensity,f1,f2,f3){
     flip1:!!f1,flip2:!!f2,flip3:!!f3,seed};
 }
 
-// ===== 80 PRESETS — balanced distribution across 16 morphologies =====
+// ===== 192 PRESETS — 3 rounds × 16 morphologies × 4 intensities =====
 const _S=['classify','connect','layer','grow'];
 const _M=['linear','spiral','parallel','leap'];
 const _I=['light','anchored','dense','overflow'];
 const PRESETS=[];
-{const R=mkR(12345);
-// 80 forms: 5 of each morphology (16 × 5 = 80)
-// Each rep gets unique flips so seeds differ even with same str/mov/int
-for(let si=0;si<4;si++)for(let mi=0;mi<4;mi++)for(let rep=0;rep<5;rep++){
-  const p=makeParams(_S[si],_M[mi],_I[Math.floor(R()*4)],R()>.5,R()>.5,R()>.5);
-  // Make seed unique per rep by mixing in rep index
-  p.seed=(p.seed*31+rep*137+si*17+mi*53)%2147483647;
-  PRESETS.push(p);
-}
+for(let rep=0;rep<3;rep++){
+  const R=mkR(12345+rep*9999);
+  for(let si=0;si<4;si++)for(let mi=0;mi<4;mi++)for(let ri=0;ri<4;ri++){
+    const p=makeParams(_S[si],_M[mi],_I[Math.floor(R()*4)],R()>.5,R()>.5,R()>.5);
+    p.seed=(p.seed*31+rep*9999+ri*137+si*17+mi*53)%2147483647;
+    PRESETS.push(p);
+  }
 }
 // ===== 16 DISTINCT MORPHOLOGIES =====
 function drawFormWith(p){
