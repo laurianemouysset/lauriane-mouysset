@@ -930,7 +930,7 @@ function computeCanopyLayout(count){
     for(let j=0;j<res.length;j++)res[j].x+=shiftX;
   }
 
-  // --- PHASE 2: Elliptical layer growth ---
+  // --- PHASE 2: Elliptical layer growth with strict ellipse constraint ---
   const snapDist=r*2+gap; // 120
   const floorY=cutY;
   const topBound=MG+50;
@@ -947,17 +947,25 @@ function computeCanopyLayout(count){
   let layer=1;
 
   while(remaining>0){
-    const layerA=seedA+layer*snapDist;
-    const layerB=seedB+layer*snapDist;
+    // Target ellipse for this layer
+    const nLayers=layer;
+    const targetA=seedA+nLayers*snapDist*0.7;
+    const targetB=targetA*hwRatio; // strict 1.6 ratio
 
-    // Ellipse perimeter approximation (Ramanujan)
-    const perim=Math.PI*(3*(layerA+layerB)-Math.sqrt((3*layerA+layerB)*(layerA+3*layerB)));
+    // Place forms on this ellipse ring
+    const perim=Math.PI*(3*(targetA+targetB)-Math.sqrt((3*targetA+targetB)*(targetA+3*targetB)));
     const nForms=Math.max(4,Math.floor(perim/snapDist));
 
+    let placedThisLayer=0;
     for(let fi=0;fi<nForms&&remaining>0;fi++){
-      const angle=(fi/nForms)*Math.PI*2+(R2()-0.5)*0.15; // slight jitter
-      const nx=ecx+Math.cos(angle)*layerA;
-      const ny=ecy+Math.sin(angle)*layerB;
+      const angle=(fi/nForms)*Math.PI*2+(R2()-0.5)*0.15;
+      const nx=ecx+Math.cos(angle)*targetA;
+      const ny=ecy+Math.sin(angle)*targetB;
+
+      // Strict ellipse test
+      const ex=(nx-ecx)/targetA;
+      const ey=(ny-ecy)/targetB;
+      if(ex*ex+ey*ey>1.0)continue;
 
       // Skip if below bust or outside canvas
       if(ny+r>floorY)continue;
@@ -966,9 +974,10 @@ function computeCanopyLayout(count){
 
       res.push({x:nx,y:ny,size:sz});
       remaining--;
+      placedThisLayer++;
     }
     layer++;
-    if(layer>50)break; // safety
+    if(layer>50)break;
   }
 
   return res;
@@ -1029,20 +1038,9 @@ function drawMainCanvas(){
 
   const count=allForms.length;
   const layout=computeCanopyLayout(count);
-  console.log('PRESETS:',PRESETS.length,'allForms:',count,'layout:',layout.length);
-
-  // --- ZOOM DYNAMIQUE — inversement proportionnel au nombre de formes ---
-  const n=count;
-  const globalScale=Math.min(1.0,20/Math.sqrt(n*2.5));
-  const bBot=bustTop+bust.h*bustScale;
 
   ctx.save();
   ctx.beginPath();ctx.rect(MG,MG,W-MG*2,H-MG*2);ctx.clip();
-
-  // Scale ancré au bas du buste (point fixe)
-  ctx.translate(CX,bBot);
-  ctx.scale(globalScale,globalScale);
-  ctx.translate(-CX,-bBot);
 
   for(let i=0;i<count;i++){
     const lp=layout[i];
