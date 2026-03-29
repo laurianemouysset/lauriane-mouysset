@@ -971,8 +971,8 @@ function computeCanopyLayout(count){
       const pf=res[perimForms[pi]];
       const outAngle=Math.atan2(pf.y-cmy,pf.x-cmx);
 
-      for(let ai=-8;ai<=8;ai++){
-        const tryAngle=outAngle+ai*0.2;
+      for(let ai=-4;ai<=4;ai++){
+        const tryAngle=outAngle+ai*0.25;
         const nx=pf.x+Math.cos(tryAngle)*snapDist;
         const ny=pf.y+Math.sin(tryAngle)*snapDist;
 
@@ -987,10 +987,10 @@ function computeCanopyLayout(count){
         for(let j=0;j<res.length;j++){
           const dx2=nx-res[j].x,dy2=ny-res[j].y;
           const dd2=Math.sqrt(dx2*dx2+dy2*dy2);
-          if(dd2<snapDist*0.6){tooClose=true;break;}
-          if(dd2<=snapDist*1.25){
+          if(dd2<snapDist*0.7){tooClose=true;break;}
+          if(dd2<=snapDist*1.15){
             touchCount++;
-            if(dd2<snapDist*0.75||dd2>snapDist*1.25)spacingOk=false;
+            if(dd2<snapDist*0.85||dd2>snapDist*1.15)spacingOk=false;
           }
         }
         if(tooClose||!spacingOk)continue;
@@ -1101,17 +1101,8 @@ function drawMainCanvas(){
   const count=allForms.length;
   const layout=computeCanopyLayout(count);
 
-  // --- ZOOM DYNAMIQUE — agressif, réduit dès le début ---
-  const globalScale=Math.min(1.0,12/Math.sqrt(count*2.5));
-  const bBot=bustTop+bust.h*bustScale;
-
   ctx.save();
   ctx.beginPath();ctx.rect(MG,MG,W-MG*2,H-MG*2);ctx.clip();
-
-  // Scale ancré au bas du buste
-  ctx.translate(CX,bBot);
-  ctx.scale(globalScale,globalScale);
-  ctx.translate(-CX,-bBot);
 
   for(let i=0;i<count;i++){
     const lp=layout[i];
@@ -1143,7 +1134,7 @@ function drawMainCanvas(){
   // Draw bust inside the zoom
   drawBust();
 
-  ctx.restore(); // end frame clip + zoom
+  ctx.restore(); // end frame clip
 
   // Fade at bust top
   const bVisH=bust.h*bustScale;
