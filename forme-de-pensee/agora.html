@@ -849,174 +849,88 @@ const renderedSeeds=new Set();
 const allForms=[];
 let totalCount=0;
 
-// ===== PERSISTENT LAYOUT: SEED + NICHE + ELLIPSE REJECTION =====
-const PLACE_R=65;
-const PLACE_GAP=-10;
-const SEED_COUNT=20;
+// ===== FIXED ELLIPSE LAYOUT — ellipse inscrite dans le cadre =====
 const HW_RATIO=1.6;
-const layoutCache=[];
-let seedA_s=0,seedB_s=0,ovalCY_s=0;
+const SEED_COUNT=20;
 
-function packSeed(){
-  const r=PLACE_R,gap=PLACE_GAP,spacing=2*r+gap;
-  const rowH=spacing*Math.sqrt(3)/2;
-  const headTopY=cutY+10;
-  const apc=spacing*spacing*0.9;
-  let sA=Math.sqrt(SEED_COUNT*apc/(Math.PI*HW_RATIO));
-  let sB=sA*HW_RATIO;
-  let oCY=headTopY-sB;
-  function pack(a,b,cy){
-    const res=[],sY=cy-b;
-    for(let y=sY+r;y<=cy+b-r;y+=rowH){
-      const dy=(y-cy)/b;if(Math.abs(dy)>=1)continue;
-      const hw=a*Math.sqrt(1-dy*dy);
-      const ri=Math.round((y-sY)/rowH);
-      const xo=(ri%2===1)?spacing/2:0;
-      for(let x=CX-hw+r+xo;x<=CX+hw-r;x+=spacing){
-        const ex=(x-CX)/a,ey=(y-cy)/b;
-        if(ex*ex+ey*ey<=1){if(y+r>headTopY)continue;
-          res.push({x,y,size:270});if(res.length>=SEED_COUNT)return res;}
-      }if(res.length>=SEED_COUNT)return res;
-    }return res;
+function computeCanopyLayout(count){
+  if(count<1)return[];
+
+  // 1. ELLIPSE FIXE inscrite dans le cadre avec 15% de marge
+  const marginPct=0.15;
+  const maxW=(W-2*MG)*(1-2*marginPct);
+  const maxH=(cutY-MG)*(1-2*marginPct);
+  let ellA=Math.min(maxW/2,(maxH/HW_RATIO));
+  let ellB=ellA*HW_RATIO;
+  if(ellB>maxH/2){ellB=maxH/2;ellA=ellB/HW_RATIO;}
+  const ellCX=CX;
+  const ellBottomY=cutY;
+  const ellCY=ellBottomY-ellB;
+
+  // 2. PLACE_R DYNAMIQUE — s'adapte au nombre de formes
+  const ellArea=Math.PI*ellA*ellB;
+  const areaPerForm=ellArea/Math.max(1,count);
+  const spacing=Math.sqrt(areaPerForm/0.9);
+  let dynR=Math.max(15,Math.min(65,(spacing+3)/2));
+  const gap=-(dynR*0.08); // léger chevauchement proportionnel
+  const snapDist=2*dynR+gap;
+  const rowH=snapDist*Math.sqrt(3)/2;
+
+  // 3. PACK HEX dans l'ellipse fixe
+  const res=[];
+  const startY=ellCY-ellB;
+  for(let y=startY+dynR;y<=ellCY+ellB-dynR;y+=rowH){
+    const dy=(y-ellCY)/ellB;
+    if(Math.abs(dy)>=1)continue;
+    const halfW=ellA*Math.sqrt(1-dy*dy);
+    const ri=Math.round((y-startY)/rowH);
+    const xOff=(ri%2===1)?snapDist/2:0;
+    for(let x=ellCX-halfW+dynR+xOff;x<=ellCX+halfW-dynR;x+=snapDist){
+      const ex=(x-ellCX)/ellA,ey=(y-ellCY)/ellB;
+      if(ex*ex+ey*ey>1)continue;
+      if(y+dynR>ellBottomY)continue; // pas sous le buste
+      res.push({x,y,size:270,r:dynR});
+      if(res.length>=count)break;
+    }
+    if(res.length>=count)break;
   }
-  let res=pack(sA,sB,oCY);
-  let t=0;while(res.length<SEED_COUNT&&t<15){sA*=1.1;sB*=1.1;oCY=headTopY-sB;res=pack(sA,sB,oCY);t++;}
-  if(res.length>SEED_COUNT)res=res.slice(0,SEED_COUNT);
-  // Shift bottom to headTopY
+
+  // 4. Shift bas de l'ovale → touche exactement cutY
   if(res.length>0){
-    let lo=-Infinity;for(let j=0;j<res.length;j++){if(res[j].y+r>lo)lo=res[j].y+r;}
-    const sh=headTopY-lo;for(let j=0;j<res.length;j++)res[j].y+=sh;oCY+=sh;
+    let lo=-Infinity;
+    for(let j=0;j<res.length;j++){if(res[j].y+dynR>lo)lo=res[j].y+dynR;}
+    const sh=ellBottomY-lo;
+    for(let j=0;j<res.length;j++)res[j].y+=sh;
   }
-  // Center on CX
+
+  // 5. Recentrer sur CX
   if(res.length>0){
     let mx=0;for(let j=0;j<res.length;j++)mx+=res[j].x;mx/=res.length;
     const sh=CX-mx;for(let j=0;j<res.length;j++)res[j].x+=sh;
   }
-  seedA_s=sA;seedB_s=sB;ovalCY_s=oCY;
+
+  // 6. Tri concentrique + alternance gauche/droite
+  const oCY=res.length>0?res.reduce((s,p)=>s+p.y,0)/res.length:ellCY;
+  res.sort((a,b)=>{
+    const da=Math.sqrt((a.x-CX)**2+(a.y-oCY)**2);
+    const db=Math.sqrt((b.x-CX)**2+(b.y-oCY)**2);
+    return da-db;
+  });
+  for(let band=0;band<res.length;band+=8){
+    const end=Math.min(band+8,res.length);
+    const slice=res.slice(band,end);
+    const left=slice.filter(p=>p.x<CX).sort((a,b)=>a.x-b.x);
+    const right=slice.filter(p=>p.x>=CX).sort((a,b)=>b.x-a.x);
+    const merged=[];let li=0,ri=0;
+    while(li<left.length||ri<right.length){
+      if(li<left.length)merged.push(left[li++]);
+      if(ri<right.length)merged.push(right[ri++]);}
+    for(let j=0;j<merged.length;j++)res[band+j]=merged[j];
+  }
+
+  // Store dynR for rendering
+  res.dynR=dynR;
   return res;
-}
-
-function findNextNiche(placed){
-  const r=PLACE_R,snap=2*r+PLACE_GAP;
-  const headTopY=cutY+10,topBound=MG+50;
-  const R2=mkR(42+placed.length*7);
-
-  // Center of mass
-  let cmx=0,cmy=0;
-  for(let j=0;j<placed.length;j++){cmx+=placed[j].x;cmy+=placed[j].y;}
-  cmx/=placed.length;cmy/=placed.length;
-
-  // Growing ellipse — STRICT
-  const nAfter=placed.length-SEED_COUNT;
-  const layer=Math.floor(nAfter/8);
-  const tA=seedA_s+(layer+1)*snap*0.55;
-  const tB=tA*HW_RATIO;
-
-  // RÈGLE 2: alternance gauche/droite
-  const isLeftTurn=((placed.length-SEED_COUNT)%2===0);
-
-  // Perimeter forms
-  const perim=[];
-  for(let j=0;j<placed.length;j++){
-    let isP=false;
-    for(let da=0;da<12;da++){
-      const ca=(da/12)*Math.PI*2;
-      const cx2=placed[j].x+Math.cos(ca)*snap,cy2=placed[j].y+Math.sin(ca)*snap;
-      let hasN=false;
-      for(let k=0;k<placed.length;k++){if(k===j)continue;
-        const dx=cx2-placed[k].x,dy=cy2-placed[k].y;
-        if(Math.sqrt(dx*dx+dy*dy)<r*0.8){hasN=true;break;}}
-      if(!hasN){isP=true;break;}
-    }
-    if(isP)perim.push(j);
-  }
-  if(perim.length===0)perim.push(placed.length-1);
-
-  let bestX=CX,bestY=cmy-snap,bestScore=-99999;
-  let strict=true;
-
-  for(let pass=0;pass<2;pass++){
-    // pass 0: strict L/R alternation. pass 1: relaxed (if pass 0 found nothing)
-    if(pass===1&&bestScore>-99000)break; // pass 0 succeeded
-
-    for(let pi=0;pi<perim.length;pi++){
-      const pf=placed[perim[pi]];
-      const outA=Math.atan2(pf.y-cmy,pf.x-cmx);
-      for(let ai=-4;ai<=4;ai++){
-        const tryA=outA+ai*0.25;
-        const nx=pf.x+Math.cos(tryA)*snap;
-        const ny=pf.y+Math.sin(tryA)*snap;
-
-        // RÈGLE 5: pas sous le buste
-        if(ny+r>headTopY)continue;
-        if(nx-r<MG||nx+r>W-MG)continue;
-        if(ny-r<topBound)continue;
-
-        // RÈGLE 3: strict ellipse
-        const ex=(nx-CX)/tA,ey=(ny-ovalCY_s)/tB;
-        if(ex*ex+ey*ey>1.0)continue;
-
-        // RÈGLE 2: alternance (strict en pass 0, relaxé en pass 1)
-        if(pass===0){
-          if(isLeftTurn&&nx>=CX)continue;
-          if(!isLeftTurn&&nx<CX)continue;
-        }
-
-        // Spacing check
-        let tooClose=false,touchCount=0,spacingOk=true;
-        for(let j=0;j<placed.length;j++){
-          const dx2=nx-placed[j].x,dy2=ny-placed[j].y;
-          const dd=Math.sqrt(dx2*dx2+dy2*dy2);
-          if(dd<snap*0.7){tooClose=true;break;}
-          if(dd<=snap*1.15){touchCount++;
-            if(dd<snap*0.85||dd>snap*1.15)spacingOk=false;}
-        }
-        if(tooClose||!spacingOk)continue;
-
-        // Scoring
-        let mxW=0,mxH=0;
-        for(let j=0;j<placed.length;j++){
-          const dxa=Math.abs(placed[j].x-cmx)+r,dya=Math.abs(placed[j].y-cmy)+r;
-          if(dxa>mxW)mxW=dxa;if(dya>mxH)mxH=dya;}
-        const gF=1+0.3/Math.sqrt(placed.length);
-        let gA=mxW*gF,gB=mxH*gF;
-        const cR=gB/Math.max(1,gA);
-        if(cR<HW_RATIO*0.85)gB=gA*HW_RATIO;
-        if(cR>HW_RATIO*1.15)gA=gB/HW_RATIO;
-        const cosT=Math.cos(tryA),sinT=Math.sin(tryA);
-        const tDist=gA*gB/Math.sqrt(Math.pow(gB*cosT,2)+Math.pow(gA*sinT,2));
-        const mDist=Math.sqrt(Math.pow(nx-cmx,2)+Math.pow(ny-cmy,2));
-        const gap2t=tDist-mDist;
-
-        const tBonus=touchCount*3;
-        const newCmx=(cmx*placed.length+nx)/(placed.length+1);
-        const drift=Math.abs(newCmx-CX)/(W/2);
-        const score=gap2t+tBonus+R2()*r*0.3-drift*10;
-
-        if(score>bestScore){bestScore=score;bestX=nx;bestY=ny;}
-      }
-    }
-  }
-
-  console.log('Form',placed.length,'placed at',bestX.toFixed(0),bestY.toFixed(0),
-    isLeftTurn?'LEFT':'RIGHT','cache:',placed.length+1);
-  return {x:bestX,y:bestY,size:270};
-}
-
-function computeCanopyLayout(count){
-  while(layoutCache.length<count){
-    const idx=layoutCache.length;
-    if(idx===0){
-      const seed=packSeed();
-      for(let j=0;j<seed.length;j++){
-        layoutCache.push(seed[j]);
-        console.log('Form',j,'placed at',seed[j].x.toFixed(0),seed[j].y.toFixed(0),'SEED cache:',layoutCache.length);
-      }
-    }else if(idx>=SEED_COUNT){
-      layoutCache.push(findNextNiche(layoutCache));
-    }
-  }
-  return layoutCache.slice(0,count);
 }
 
 // ===== MEASURE MORPHOLOGY VIA OFFSCREEN SCAN =====
@@ -1074,26 +988,11 @@ function drawMainCanvas(){
   const count=allForms.length;
   const layout=computeCanopyLayout(count);
 
-  // --- ZOOM — ancré sur headTopY, comprime vers le haut ---
-  const headTopY=cutY+10;
-  const topLimit=MG+80;
-  let globalScale=0.5; // FORCÉ POUR TEST
-  if(layout.length>0){
-    let minY=Infinity;
-    for(let j=0;j<layout.length;j++){
-      if(layout[j].y-PLACE_R<minY)minY=layout[j].y-PLACE_R;
-    }
-    const availH=headTopY-topLimit;
-    const contentH=headTopY-minY;
-    if(contentH>availH)globalScale=availH/contentH;
-    console.log('ZOOM DEBUG:',{minY:minY.toFixed(0),headTopY:headTopY.toFixed(0),contentH:contentH.toFixed(0),availH:availH.toFixed(0),globalScale:globalScale.toFixed(3),formCount:layout.length});
-  }
+  // No zoom — ellipse is inscribed in the frame by construction
+  const PLACE_R=layout.dynR||65;
 
   ctx.save();
   ctx.beginPath();ctx.rect(MG,MG,W-MG*2,H-MG*2);ctx.clip();
-  ctx.translate(CX,headTopY);
-  ctx.scale(globalScale,globalScale);
-  ctx.translate(-CX,-headTopY);
 
   for(let i=0;i<count;i++){
     const lp=layout[i];
