@@ -207,7 +207,7 @@ for(let si=0;si<4;si++)for(let mi=0;mi<4;mi++)for(let rep=0;rep<5;rep++){
   p.seed=(p.seed*31+rep*137+si*17+mi*53)%2147483647;
   PRESETS.push(p);
 }
-console.log('PRESETS generated:',PRESETS.length);}
+}
 // ===== 16 DISTINCT MORPHOLOGIES =====
 function drawFormWith(p){
   ctx.save();
@@ -885,7 +885,6 @@ function packEllipse(cx,cy,a,b,r,gap,maxCount){
 // BUILD OVAL — Phase 1 (seed) + Phase 2 (growth by niches)
 // ================================================================
 function computeCanopyLayout(count){
-  console.log('Layout called with count=',count);
   const sz=270;
   const r=65;
   const gap=-10;
@@ -1043,7 +1042,6 @@ function computeCanopyLayout(count){
     }
   }
 
-  console.log('Placed',res.length,'/',count,'forms (seed=',seedCount,')');
   return res;
 }
 
@@ -1088,9 +1086,6 @@ function measureForm(p){
     if(dr>maxR)maxR=dr;
   }
   if(maxR<5)maxR=50;
-
-  const key=p.str+'_'+p.mov;
-  console.log('Form',p.seed,key,'bc=',bcx.toFixed(0),bcy.toFixed(0),'maxR=',maxR.toFixed(0),'px=',cnt);
 
   const result={bcx,bcy,maxR,cnt};
   _mCache.set(p.seed,result);
