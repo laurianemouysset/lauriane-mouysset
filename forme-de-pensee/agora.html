@@ -1037,11 +1037,14 @@ function computeCanopyLayout(count){
     }
   }
 
-  // Final horizontal recentering on CX
+  // Final horizontal recentering: bbox center on CX
   if(res.length>0){
-    let mx=0;for(let j=0;j<res.length;j++)mx+=res[j].x;
-    mx/=res.length;
-    const sx=CX-mx;
+    let minX=Infinity,maxX=-Infinity;
+    for(let j=0;j<res.length;j++){
+      if(res[j].x-r<minX)minX=res[j].x-r;
+      if(res[j].x+r>maxX)maxX=res[j].x+r;
+    }
+    const sx=CX-(minX+maxX)/2;
     for(let j=0;j<res.length;j++)res[j].x+=sx;
   }
 
