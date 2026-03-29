@@ -930,114 +930,45 @@ function computeCanopyLayout(count){
     for(let j=0;j<res.length;j++)res[j].x+=shiftX;
   }
 
-  // --- PHASE 2: Grow by filling niches on perimeter ---
-  const snapDist=r*2+gap; // same spacing as seed
+  // --- PHASE 2: Elliptical layer growth ---
+  const snapDist=r*2+gap; // 120
   const floorY=cutY;
   const topBound=MG+50;
   const R2=mkR(42);
 
-  for(let i=res.length;i<count;i++){
-    // Center of mass
-    let cmx=0,cmy=0;
-    for(let j=0;j<res.length;j++){cmx+=res[j].x;cmy+=res[j].y;}
-    cmx/=res.length;cmy/=res.length;
+  // Ellipse center = center of seed
+  let ecx=CX,ecy=ovalCY;
+  if(res.length>0){
+    let sy=0;for(let j=0;j<res.length;j++)sy+=res[j].y;
+    ecy=sy/res.length;
+  }
 
-    // Find perimeter forms (forms with at least one open direction)
-    const perimForms=[];
-    for(let j=0;j<res.length;j++){
-      let isPerim=false;
-      for(let da=0;da<12;da++){
-        const checkAngle=(da/12)*Math.PI*2;
-        const checkX=res[j].x+Math.cos(checkAngle)*snapDist;
-        const checkY=res[j].y+Math.sin(checkAngle)*snapDist;
-        let hasNeighbor=false;
-        for(let k=0;k<res.length;k++){
-          if(k===j)continue;
-          const ddx=checkX-res[k].x,ddy=checkY-res[k].y;
-          if(Math.sqrt(ddx*ddx+ddy*ddy)<r*0.8){hasNeighbor=true;break;}
-        }
-        if(!hasNeighbor){isPerim=true;break;}
-      }
-      if(isPerim)perimForms.push(j);
+  let remaining=count-res.length;
+  let layer=1;
+
+  while(remaining>0){
+    const layerA=seedA+layer*snapDist;
+    const layerB=seedB+layer*snapDist;
+
+    // Ellipse perimeter approximation (Ramanujan)
+    const perim=Math.PI*(3*(layerA+layerB)-Math.sqrt((3*layerA+layerB)*(layerA+3*layerB)));
+    const nForms=Math.max(4,Math.floor(perim/snapDist));
+
+    for(let fi=0;fi<nForms&&remaining>0;fi++){
+      const angle=(fi/nForms)*Math.PI*2+(R2()-0.5)*0.15; // slight jitter
+      const nx=ecx+Math.cos(angle)*layerA;
+      const ny=ecy+Math.sin(angle)*layerB;
+
+      // Skip if below bust or outside canvas
+      if(ny+r>floorY)continue;
+      if(nx-r<MG||nx+r>W-MG)continue;
+      if(ny-r<topBound)continue;
+
+      res.push({x:nx,y:ny,size:sz});
+      remaining--;
     }
-    if(perimForms.length===0)perimForms.push(res.length-1);
-
-    // Try placing around each perimeter form
-    let bestNx=0,bestNy=0,bestScore=-99999;
-
-    for(let pi=0;pi<perimForms.length;pi++){
-      const pf=res[perimForms[pi]];
-      const outAngle=Math.atan2(pf.y-cmy,pf.x-cmx);
-
-      for(let ai=-8;ai<=8;ai++){
-        const tryAngle=outAngle+ai*0.2;
-        const nx=pf.x+Math.cos(tryAngle)*snapDist;
-        const ny=pf.y+Math.sin(tryAngle)*snapDist;
-
-        // Constraints
-        if(ny+r>floorY)continue;
-        if(nx-r<MG||nx+r>W-MG)continue;
-        if(ny-r<topBound)continue;
-
-        let tooClose=false;
-        let touchCount=0;
-        let spacingOk=true;
-        for(let j=0;j<res.length;j++){
-          const dx2=nx-res[j].x,dy2=ny-res[j].y;
-          const dd2=Math.sqrt(dx2*dx2+dy2*dy2);
-          if(dd2<snapDist*0.6){tooClose=true;break;}
-          if(dd2<=snapDist*1.25){
-            touchCount++;
-            if(dd2<snapDist*0.75||dd2>snapDist*1.25)spacingOk=false;
-          }
-        }
-        if(tooClose||!spacingOk)continue;
-
-        // Score: niches + oval growth direction
-        let curMaxW=0,curMaxH=0;
-        for(let j=0;j<res.length;j++){
-          const dxa=Math.abs(res[j].x-cmx)+r;
-          const dya=Math.abs(res[j].y-cmy)+r;
-          if(dxa>curMaxW)curMaxW=dxa;
-          if(dya>curMaxH)curMaxH=dya;
-        }
-        const growF=1+0.3/Math.sqrt(res.length);
-        let tA=curMaxW*growF;
-        let tB=curMaxH*growF;
-        const curRat=tB/Math.max(1,tA);
-        if(curRat<hwRatio*0.85)tB=tA*hwRatio;
-        if(curRat>hwRatio*1.15)tA=tB/hwRatio;
-
-        const cosT=Math.cos(tryAngle),sinT=Math.sin(tryAngle);
-        const targetDist=tA*tB/Math.sqrt(Math.pow(tB*cosT,2)+Math.pow(tA*sinT,2));
-        const myDist=Math.sqrt(Math.pow(nx-cmx,2)+Math.pow(ny-cmy,2));
-        const gapToTarget=targetDist-myDist;
-
-        const touchBonus=touchCount*3;
-        // Symmetry penalty: penalize positions that unbalance the oval
-        const distLeft=nx-MG;
-        const distRight=(W-MG)-nx;
-        const asymmetry=Math.abs(distLeft-distRight)/W;
-        const newCmx=(cmx*res.length+nx)/(res.length+1);
-        const cmxDrift=Math.abs(newCmx-CX)/(W/2);
-        const score=gapToTarget+touchBonus+R2()*r*0.3-asymmetry*3-cmxDrift*5;
-
-        if(score>bestScore){bestScore=score;bestNx=nx;bestNy=ny;}
-      }
-    }
-
-    if(bestScore>-9000){
-      res.push({x:bestNx,y:bestNy,size:sz});
-    } else {
-      // Fallback: attach to random perimeter form
-      const par=res[perimForms[Math.floor(R2()*perimForms.length)]];
-      const fa=-Math.PI/2+(R2()-0.5)*1.0;
-      res.push({
-        x:Math.max(MG+r,Math.min(W-MG-r,par.x+Math.cos(fa)*snapDist)),
-        y:Math.max(topBound+r,Math.min(floorY-r,par.y+Math.sin(fa)*snapDist)),
-        size:sz
-      });
-    }
+    layer++;
+    if(layer>50)break; // safety
   }
 
   return res;
