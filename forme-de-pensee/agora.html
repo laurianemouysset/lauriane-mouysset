@@ -1077,7 +1077,7 @@ function drawMainCanvas(){
   // --- ZOOM — ancré sur headTopY, comprime vers le haut ---
   const headTopY=cutY+10;
   const topLimit=MG+80;
-  let globalScale=1.0;
+  let globalScale=0.5; // FORCÉ POUR TEST
   if(layout.length>0){
     let minY=Infinity;
     for(let j=0;j<layout.length;j++){
