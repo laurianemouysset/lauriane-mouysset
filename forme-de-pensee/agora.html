@@ -1086,7 +1086,7 @@ function drawMainCanvas(){
     const availH=headTopY-topLimit;
     const contentH=headTopY-minY;
     if(contentH>availH)globalScale=availH/contentH;
-    console.log('globalScale:',globalScale.toFixed(3),'minY:',minY.toFixed(0),'headTopY:',headTopY.toFixed(0));
+    console.log('ZOOM DEBUG:',{minY:minY.toFixed(0),headTopY:headTopY.toFixed(0),contentH:contentH.toFixed(0),availH:availH.toFixed(0),globalScale:globalScale.toFixed(3),formCount:layout.length});
   }
 
   ctx.save();
