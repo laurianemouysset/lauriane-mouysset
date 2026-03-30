@@ -475,8 +475,7 @@ function buildGrid(maxCells){
         const angle=Math.atan2(dy,dx);
         if(angle>0.4&&angle<Math.PI-0.4) continue;
         const edgeness=(dd-maxDist*0.55)/(maxDist*0.45);
-        // Jitter ABSOLU — 60px max, indépendant de dynR
-        const jitAmt=60*edgeness;
+        const jitAmt=120*edgeness;
         const radX=dx/Math.max(1,dd),radY=dy/Math.max(1,dd);
         const push=R2()*jitAmt;
         const randX=(R2()-.5)*jitAmt*1.2;
