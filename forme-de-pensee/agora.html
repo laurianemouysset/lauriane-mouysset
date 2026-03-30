@@ -457,7 +457,7 @@ function buildGrid(maxCells){
     const sh=CX-mx;for(let j=0;j<res.length;j++)res[j].x+=sh;
   }
 
-  // Jitter organique — modéré, côtés et haut seulement, bas protégé
+  // Jitter organique — valeur absolue, côtés et haut seulement
   if(res.length>10){
     let cmx=0,cmy=0;
     for(let j=0;j<res.length;j++){cmx+=res[j].x;cmy+=res[j].y;}
@@ -473,14 +473,14 @@ function buildGrid(maxCells){
       const dd=Math.sqrt(dx*dx+dy*dy);
       if(dd>maxDist*0.55){
         const angle=Math.atan2(dy,dx);
-        // Protéger le bas : pas de jitter entre 0.4 et PI-0.4 (zone basse)
         if(angle>0.4&&angle<Math.PI-0.4) continue;
         const edgeness=(dd-maxDist*0.55)/(maxDist*0.45);
-        const jitAmt=dynR*2.0*edgeness;
+        // Jitter ABSOLU — 60px max, indépendant de dynR
+        const jitAmt=60*edgeness;
         const radX=dx/Math.max(1,dd),radY=dy/Math.max(1,dd);
         const push=R2()*jitAmt;
-        const randX=(R2()-.5)*jitAmt*1.0;
-        const randY=(R2()-.5)*jitAmt*1.0;
+        const randX=(R2()-.5)*jitAmt*1.2;
+        const randY=(R2()-.5)*jitAmt*1.2;
         res[j].x+=radX*push+randX;
         res[j].y+=radY*push+randY;
       }
