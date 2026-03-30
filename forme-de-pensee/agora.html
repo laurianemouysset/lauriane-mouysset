@@ -46,7 +46,7 @@ const formsCtx=formsCv.getContext('2d');
 
 // ===== URL PARAMS =====
 const urlParams=new URLSearchParams(window.location.search);
-const REFRESH_MIN=parseFloat(urlParams.get('refresh')||'1'); // poll every 1 min by default
+const REFRESH_MIN=parseFloat(urlParams.get('refresh')||'0.5'); // poll every 30s by default
 const SHOW_BUST=urlParams.get('bust')!=='0'; // ?bust=0 to hide bust
 
 // ===== API =====
@@ -398,14 +398,15 @@ const renderedSeeds=new Set();
 const allForms=[];
 let totalCount=0;
 
-// ===== FIXED ELLIPSE LAYOUT — ellipse inscrite dans le cadre =====
+// ===== MULTI-TIER GRID SYSTEM =====
 const HW_RATIO=1.35;
-let blobTime=0; // kept for blob shape computation
+const GRID_TIERS=[200,300,400,500,600,700,800,900,1000,1500,2000,3000,5000];
+const GRIDS={};
+let GRID=null;
+let GRID_R=65;
+let currentTier=0;
 
-function computeCanopyLayout(count){
-  if(count<1)return[];
-
-  // 1. ELLIPSE FIXE inscrite dans le cadre avec 10% de marge
+function buildGrid(maxCells){
   const marginPct=0.07;
   const maxW=(W-2*MG)*(1-2*marginPct);
   const maxH=(cutY-MG)*(1-2*marginPct);
@@ -416,108 +417,91 @@ function computeCanopyLayout(count){
   const ellBottomY=cutY;
   const ellCY=ellBottomY-ellB;
 
-  // BLOB: déformation de l'ellipse — sinusoïdes multi-fréquence + temps
-  const blobR=mkR(4242);
-  const nBlob=5;
-  const blobFreqs=[],blobAmps=[],blobPhases=[];
-  for(let i=0;i<nBlob;i++){
-    blobFreqs.push(2+i+blobR()*1.5);
-    blobAmps.push(0.04+blobR()*0.08);
-    blobPhases.push(blobR()*Math.PI*2);
-  }
-  // Vitesses de rotation des phases — chaque composante tourne à sa propre vitesse
-  const blobSpeeds=[0.07,0.11,0.05,0.13,0.09]; // radians par unité de blobTime
-  function blobRadius(angle){
-    let r=1;
-    for(let i=0;i<nBlob;i++){
-      r+=blobAmps[i]*Math.sin(angle*blobFreqs[i]+blobPhases[i]+blobTime*blobSpeeds[i]);
-    }
-    return r;
-  }
-
-  // 2. PLACE_R DYNAMIQUE — s'adapte au nombre de formes
+  // dynR basé sur maxCells
   const ellArea=Math.PI*ellA*ellB;
-  const areaPerForm=ellArea/Math.max(1,count);
+  const areaPerForm=ellArea/maxCells;
   const spacing=Math.sqrt(areaPerForm/0.9);
-  let dynR=Math.max(15,Math.min(65,(spacing+3)/2));
-  const gap=-(dynR*0.08); // léger chevauchement proportionnel
+  const dynR=Math.max(8,Math.min(65,(spacing+3)/2));
+  const gap=-(dynR*0.08);
   const snapDist=2*dynR+gap;
   const rowH=snapDist*Math.sqrt(3)/2;
 
-  // 3. PACK HEX dans le blob
+  // Pack hex dans ellipse simple
   const res=[];
-  const startY=ellCY-ellB*1.15; // marge pour les bosses du blob
-  const endY=ellCY+ellB*1.15;
-  for(let y=startY+dynR;y<=endY-dynR;y+=rowH){
-    const ri=Math.round((y-startY)/rowH);
+  for(let y=ellCY-ellB+dynR;y<=ellCY+ellB-dynR;y+=rowH){
+    const dy=(y-ellCY)/ellB;
+    if(Math.abs(dy)>=1)continue;
+    const halfW=ellA*Math.sqrt(1-dy*dy);
+    const ri=Math.round((y-(ellCY-ellB))/rowH);
     const xOff=(ri%2===1)?snapDist/2:0;
-    // Scanner large, le test blob filtrera
-    const scanW=ellA*1.15;
-    for(let x=ellCX-scanW+dynR+xOff;x<=ellCX+scanW-dynR;x+=snapDist){
+    for(let x=ellCX-halfW+dynR+xOff;x<=ellCX+halfW-dynR;x+=snapDist){
       const ex=(x-ellCX)/ellA,ey=(y-ellCY)/ellB;
-      const angle=Math.atan2(ey,ex);
-      const dist=Math.sqrt(ex*ex+ey*ey);
-      if(dist>blobRadius(angle))continue; // test blob au lieu d'ellipse
-      if(y+dynR>ellBottomY)continue; // pas sous le buste
-      res.push({x,y,size:270,r:dynR});
-      if(res.length>=count)break;
+      if(ex*ex+ey*ey>1)continue;
+      res.push({x,y,r:dynR});
     }
-    if(res.length>=count)break;
   }
 
-  // 4. Shift bas de l'ovale → touche exactement cutY
+  // SHIFT BAS — la cellule la plus basse touche exactement cutY
   if(res.length>0){
-    let lo=-Infinity;
-    for(let j=0;j<res.length;j++){if(res[j].y+dynR>lo)lo=res[j].y+dynR;}
-    const sh=ellBottomY-lo;
-    for(let j=0;j<res.length;j++)res[j].y+=sh;
+    let maxY=-Infinity;
+    for(let j=0;j<res.length;j++){
+      if(res[j].y+dynR>maxY) maxY=res[j].y+dynR;
+    }
+    const sh=ellBottomY-maxY;
+    for(let j=0;j<res.length;j++) res[j].y+=sh;
   }
 
-  // 5. Recentrer sur CX
+  // Recentrer sur CX
   if(res.length>0){
     let mx=0;for(let j=0;j<res.length;j++)mx+=res[j].x;mx/=res.length;
     const sh=CX-mx;for(let j=0;j<res.length;j++)res[j].x+=sh;
   }
 
-  // 5b. Bord organique — jitter fort avec variation angulaire
-  if(res.length>3){
+  // Jitter organique — modéré, côtés et haut seulement, bas protégé
+  if(res.length>10){
+    let cmx=0,cmy=0;
+    for(let j=0;j<res.length;j++){cmx+=res[j].x;cmy+=res[j].y;}
+    cmx/=res.length;cmy/=res.length;
     let maxDist=0;
     for(let j=0;j<res.length;j++){
-      const dd=Math.sqrt(Math.pow(res[j].x-ellCX,2)+Math.pow(res[j].y-ellCY,2));
-      if(dd>maxDist)maxDist=dd;}
+      const dd=Math.sqrt((res[j].x-cmx)**2+(res[j].y-cmy)**2);
+      if(dd>maxDist)maxDist=dd;
+    }
     const R2=mkR(7777);
-    // Variation angulaire du seuil — certaines zones du bord sont plus dentelées
-    const nLobes=3+Math.floor(R2()*3); // 3-5 lobes irréguliers
-    const lobePhase=R2()*Math.PI*2;
-    const lobeAmps=[];for(let l=0;l<nLobes;l++)lobeAmps.push(0.08+R2()*0.12);
     for(let j=0;j<res.length;j++){
-      const dx=res[j].x-ellCX,dy=res[j].y-ellCY;
+      const dx=res[j].x-cmx,dy=res[j].y-cmy;
       const dd=Math.sqrt(dx*dx+dy*dy);
-      const angle=Math.atan2(dy,dx);
-      // Seuil variable par angle (0.45-0.60 au lieu de 0.65 fixe)
-      let threshVar=0;
-      for(let l=0;l<nLobes;l++)threshVar+=lobeAmps[l]*Math.sin(angle*(l+1)+lobePhase+l*1.7);
-      const threshold=maxDist*(0.50+threshVar*0.5);
-      if(dd>threshold){
-        const edgeness=Math.min(1,(dd-threshold)/(maxDist*0.25));
-        const jitter=dynR*1.3*edgeness;
-        // Direction du jitter biaisée vers l'extérieur (pousse certaines formes plus loin)
-        const outBias=0.3+R2()*0.4; // 30-70% du jitter est radial vers l'extérieur
-        const radX=dx/dd,radY=dy/dd;
-        const randX=(R2()-0.5)*2,randY=(R2()-0.5)*2;
-        res[j].x+=(randX*(1-outBias)+radX*outBias*(R2()-.2))*jitter;
-        res[j].y+=(randY*(1-outBias)+radY*outBias*(R2()-.2))*jitter;
+      if(dd>maxDist*0.55){
+        const angle=Math.atan2(dy,dx);
+        // Protéger le bas : pas de jitter entre 0.4 et PI-0.4 (zone basse)
+        if(angle>0.4&&angle<Math.PI-0.4) continue;
+        const edgeness=(dd-maxDist*0.55)/(maxDist*0.45);
+        const jitAmt=dynR*2.0*edgeness;
+        const radX=dx/Math.max(1,dd),radY=dy/Math.max(1,dd);
+        const push=R2()*jitAmt;
+        const randX=(R2()-.5)*jitAmt*1.0;
+        const randY=(R2()-.5)*jitAmt*1.0;
+        res[j].x+=radX*push+randX;
+        res[j].y+=radY*push+randY;
       }
     }
   }
 
-  // 6. Tri bottom-up — part du buste et monte vers le haut, alternance gauche/droite
-  // Point d'ancrage = bas de l'ellipse (contact buste)
-  const anchorX=CX;
+  // SHIFT BAS FINAL — après jitter, la cellule la plus basse touche cutY
+  if(res.length>0){
+    let maxY=-Infinity;
+    for(let j=0;j<res.length;j++){
+      if(res[j].y+dynR>maxY) maxY=res[j].y+dynR;
+    }
+    const sh=ellBottomY-maxY;
+    for(let j=0;j<res.length;j++) res[j].y+=sh;
+  }
+
+  // Tri bottom-up — par distance au bas
   const anchorY=ellBottomY;
   res.sort((a,b)=>{
-    const da=Math.sqrt((a.x-anchorX)**2+(a.y-anchorY)**2);
-    const db=Math.sqrt((b.x-anchorX)**2+(b.y-anchorY)**2);
+    const da=Math.sqrt((a.x-CX)**2+(a.y-anchorY)**2);
+    const db=Math.sqrt((b.x-CX)**2+(b.y-anchorY)**2);
     return da-db;
   });
   for(let band=0;band<res.length;band+=8){
@@ -532,9 +516,32 @@ function computeCanopyLayout(count){
     for(let j=0;j<merged.length;j++)res[band+j]=merged[j];
   }
 
-  // Store dynR for rendering
-  res.dynR=dynR;
-  return res;
+  return {cells:res, dynR:dynR};
+}
+
+function initGrids(){
+  const g=buildGrid(GRID_TIERS[0]);
+  GRIDS[GRID_TIERS[0]]=g;
+  GRID=g.cells;
+  GRID_R=g.dynR;
+  currentTier=0;
+}
+
+function checkTierSwitch(){
+  const count=allForms.length;
+  const tierCap=GRID_TIERS[currentTier];
+  if(count>=tierCap && currentTier<GRID_TIERS.length-1){
+    currentTier++;
+    const nextCap=GRID_TIERS[currentTier];
+    if(!GRIDS[nextCap]) GRIDS[nextCap]=buildGrid(nextCap);
+    GRID=GRIDS[nextCap].cells;
+    GRID_R=GRIDS[nextCap].dynR;
+    formsCtx.clearRect(0,0,W,H);
+    for(let i=0;i<allForms.length;i++) drawOneForm(i);
+    compositeCanvas();
+    return true;
+  }
+  return false;
 }
 
 // ===== MEASURE MORPHOLOGY VIA OFFSCREEN SCAN =====
@@ -636,15 +643,15 @@ function compositeCanvas(){
   // 5. Frame
   ctx.strokeStyle='rgba(130,125,118,0.55)';ctx.lineWidth=1.5;ctx.strokeRect(MG,MG,W-MG*2,H-MG*2);
 
-  // 6. Footer text
-  ctx.textAlign='center';
-  ctx.font='italic 400 28px "Instrument Serif",serif';ctx.fillStyle='rgba(122,117,108,0.6)';
-  ctx.fillText('Agora collective : Volte geste',CX,H-MG-130);
-  ctx.letterSpacing='8px';ctx.font='400 41px "DM Mono",monospace';ctx.fillStyle='rgba(42,39,37,0.6)';
-  ctx.fillText('LAURIANE MOUYSSET',CX,H-MG-75);
-  ctx.letterSpacing='6px';ctx.font='400 27px "DM Mono",monospace';ctx.fillStyle='rgba(122,117,108,0.5)';
-  ctx.fillText('COLLECTION AGORA',CX,H-MG-30);
-  ctx.letterSpacing='0px';ctx.textAlign='start';
+  // 6. Footer text (caché en mode sans buste)
+  if(SHOW_BUST){
+    ctx.textAlign='center';
+    ctx.letterSpacing='8px';ctx.font='400 41px "DM Mono",monospace';ctx.fillStyle='rgba(42,39,37,0.6)';
+    ctx.fillText('LAURIANE MOUYSSET',CX,H-MG-75);
+    ctx.letterSpacing='6px';ctx.font='400 27px "DM Mono",monospace';ctx.fillStyle='rgba(122,117,108,0.5)';
+    ctx.fillText('AGORA COLLECTIVE',CX,H-MG-30);
+    ctx.letterSpacing='0px';ctx.textAlign='start';
+  }
 }
 
 // ===== ADD FORMS =====
@@ -655,44 +662,10 @@ function addForm(params){
   allForms.push({params});
 }
 
-// ===== LAYOUT CACHE =====
-let _layoutCache=null;
-let _layoutPlaceR=65;
-
-function initLayout(count){
-  _layoutCache=computeCanopyLayout(count);
-  _layoutPlaceR=_layoutCache.dynR||65;
-}
-
-// ===== FULL REDRAW — clear forms layer and redraw all forms =====
-function fullRedraw(){
-  initLayout(allForms.length);
-  formsCtx.clearRect(0,0,W,H);
-  for(let i=0;i<allForms.length;i++){
-    if(_layoutCache[i]){
-      drawFormOnLayer(allForms[i],_layoutCache[i],_layoutPlaceR);
-    }
-  }
-  compositeCanvas();
-}
-
-// ===== PROGRESSIVE INITIAL RENDER =====
-// Draws forms one by one for visual animation, then static
-let _formDrawIdx=0;
-
-function renderProgressively(formsList,idx,onDone){
-  if(idx>=formsList.length){if(onDone)onDone();return;}
-  addForm(formsList[idx]);
-
-  // Draw only the newest form at its pre-computed position
-  const formIdx=_formDrawIdx;
-  if(_layoutCache&&_layoutCache[formIdx]){
-    drawFormOnLayer(allForms[formIdx],_layoutCache[formIdx],_layoutPlaceR);
-  }
-  _formDrawIdx++;
-
-  compositeCanvas();
-  requestAnimationFrame(()=>renderProgressively(formsList,idx+1,onDone));
+// ===== DRAW ONE FORM — incrémental sur le canvas offscreen =====
+function drawOneForm(idx){
+  if(!GRID||!GRID[idx]||!allForms[idx])return;
+  drawFormOnLayer(allForms[idx],GRID[idx],GRID_R);
 }
 
 // ===== API FETCH =====
@@ -701,7 +674,6 @@ async function fetchForms(){
     const resp=await fetch(API_URL,{redirect:'follow'});
     const data=await resp.json();
     if(!data||!data.forms)return;
-    totalCount=data.total||data.forms.length;
     const newForms=[];
     data.forms.forEach(f=>{
       const seed=Number(f.seed);
@@ -721,10 +693,13 @@ async function fetchForms(){
       newForms.push(params);
     });
     if(newForms.length>0){
-      // Add all new forms to the list
-      newForms.forEach(p=>addForm(p));
-      // Full redraw at new size (forms are smaller, more cells)
-      fullRedraw();
+      newForms.forEach(p=>{
+        addForm(p);
+        if(!checkTierSwitch()){ // si pas de switch, dessiner incrémentalement
+          drawOneForm(allForms.length-1);
+        }
+      });
+      compositeCanvas();
     }
   }catch(e){
     console.warn('[agora] API fetch failed:',e);
@@ -733,16 +708,14 @@ async function fetchForms(){
 
 // ===== INIT =====
 function init(){
-  totalCount=PRESETS.length;
-  initLayout(totalCount);
-  _formDrawIdx=0;
-  renderProgressively(PRESETS,0,()=>{
-    compositeCanvas();
-    // Then fetch real data
-    fetchForms();
-    // Set up polling — new participants arrive via API
-    setInterval(fetchForms,REFRESH_MIN*60*1000);
+  initGrids();
+  PRESETS.forEach((p,i)=>{
+    addForm(p);
+    drawOneForm(i);
   });
+  compositeCanvas();
+  fetchForms();
+  setInterval(fetchForms,REFRESH_MIN*60*1000);
 }
 
 // Wait for fonts to load
