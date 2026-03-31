@@ -46,7 +46,7 @@ const formsCtx=formsCv.getContext('2d');
 
 // ===== URL PARAMS =====
 const urlParams=new URLSearchParams(window.location.search);
-const REFRESH_MIN=parseFloat(urlParams.get('refresh')||'0.5'); // poll every 30s by default
+const REFRESH_MIN=parseFloat(urlParams.get('refresh')||'0.25'); // poll every 15s by default
 const SHOW_BUST=urlParams.get('bust')!=='0'; // ?bust=0 to hide bust
 
 // ===== API =====
