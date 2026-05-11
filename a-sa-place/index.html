@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>À sa place</title>
+<meta property="og:title" content="À sa place">
+<meta property="og:description" content="Dix découvertes scientifiques où une femme a été sous-créditée. Le biais de genre se corrige-t-il avec le temps ? La réponse des données est non.">
+<meta property="og:image" content="https://lauriane-mouysset.fr/a-sa-place/og-image.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://lauriane-mouysset.fr/a-sa-place/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="À sa place">
+<meta name="twitter:description" content="Dix découvertes scientifiques où une femme a été sous-créditée. Le biais de genre se corrige-t-il avec le temps ? La réponse des données est non.">
+<meta name="twitter:image" content="https://lauriane-mouysset.fr/a-sa-place/og-image.png">
+<meta name="author" content="Lauriane Mouysset">
+<link rel="alternate" hreflang="fr" href="https://lauriane-mouysset.fr/a-sa-place/">
+<link rel="alternate" hreflang="en" href="https://lauriane-mouysset.fr/a-sa-place/en/">
+<link rel="alternate" hreflang="x-default" href="https://lauriane-mouysset.fr/a-sa-place/">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@200;300;400;500;600;700&display=swap');
+:root{--bg:#080808;--fg:#e0dcd4;--r:#C63838;--dim:#333}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{background:var(--bg);color:var(--fg);font-family:'IBM Plex Mono',monospace;height:100%;width:100%;overflow:hidden}
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:9999}
+
+/* ─── SCREENS (intro, screen2, screen3) ─── */
+.fullscreen{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 1.2s;opacity:0;pointer-events:none}
+.fullscreen.visible{opacity:1;pointer-events:auto}
+.fullscreen.hidden{opacity:0;pointer-events:none}
+#intro{z-index:200}
+#intro:not(.hidden){opacity:1;pointer-events:auto}
+#intro.hidden{opacity:0;pointer-events:none}
+#screen2{z-index:190}
+#screen3{z-index:185;background:rgba(8,8,8,0.92)}
+
+#intro h1,#screen3 h1{font-weight:300;font-size:clamp(2.2rem,5vw,4rem);letter-spacing:0.15em;text-transform:uppercase;text-align:center;line-height:1.5;color:var(--r)}
+.fs-text{font-size:clamp(0.55rem,0.9vw,0.75rem);font-weight:300;letter-spacing:0.04em;color:#c0bcb4;margin-top:1.8rem;text-align:left;line-height:2.4;max-width:640px;padding:0 2rem}
+.fs-text em{font-style:normal;color:var(--r)}
+.fs-text strong{font-weight:500;color:var(--fg)}
+.fs-text .step-label{display:block;font-size:clamp(0.4rem,0.55vw,0.5rem);letter-spacing:0.2em;text-transform:uppercase;color:#555;margin-bottom:0.8rem}
+#intro .author{font-size:0.55rem;font-weight:300;letter-spacing:0.12em;text-transform:uppercase;color:#c8c4bc;margin-top:1.2rem}
+.ibtn{margin-top:1.8rem;background:none;border:1px solid var(--dim);color:var(--fg);font-family:inherit;font-size:0.6rem;letter-spacing:0.3em;text-transform:uppercase;padding:0.7rem 2.2rem;cursor:pointer;transition:all 0.3s}
+.ibtn:hover{border-color:var(--fg);background:var(--fg);color:var(--bg)}
+.info-link{font-size:0.5rem;font-weight:300;letter-spacing:0.2em;text-transform:uppercase;color:#c8c4bc;cursor:pointer;transition:color 0.3s;background:none;border:none;font-family:inherit;margin-top:0.6rem}
+.info-link:hover{color:var(--fg)}
+
+/* ─── STAGE ─── */
+#stage{position:fixed;inset:0;display:flex;flex-direction:column;opacity:0;transition:opacity 0.8s;pointer-events:none;z-index:10}
+#stage.visible{opacity:1;pointer-events:auto}
+#topbar{flex-shrink:0;padding:0.4rem 1.2rem 0.1rem;display:flex;justify-content:flex-end;min-height:18px}
+#source{font-weight:200;font-size:clamp(0.28rem,0.4vw,0.35rem);letter-spacing:0.1em;text-transform:uppercase;color:#1a1a1a;transition:color 0.8s}
+#source.bright{color:#3a3a3a}
+#chart-wrap{flex:1;display:flex;flex-direction:column;padding:0 0.4rem;overflow:hidden}
+#chart{flex:1;display:flex;align-items:stretch;gap:0}
+
+.pair{flex:1;display:flex;flex-direction:column;min-width:14px;border-left:1px solid #0c0c0c;position:relative;transition:opacity 0.8s,transform 0.6s}
+.pair:first-child{border-left:none}
+.pair.dimmed{opacity:0.12}
+.pair.pair-focused{transform:scale(1.04)}
+.pair.pair-focused .topic{color:#d4d0c8}
+.pair-info{flex-shrink:0;width:100%;min-width:0;text-align:center;padding-bottom:2px;display:flex;flex-direction:column;align-items:center;transition:opacity 0.6s}
+.pair-info.hidden-names{opacity:0}
+.names{display:flex;flex-direction:column;gap:0;justify-content:center;align-items:center;width:100%}
+.lbl{font-weight:500;letter-spacing:0.03em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:center;line-height:1.3;width:100%;display:block;transition:font-size 0.6s, opacity 0.6s}
+.lbl.small{font-size:clamp(0.46rem,0.7vw,0.6rem);opacity:0.85}
+.lbl.big{font-size:clamp(0.46rem,0.7vw,0.6rem);opacity:1}
+.lbl.m{color:var(--fg)}.lbl.f{color:var(--r)}
+.topic{font-size:clamp(0.36rem,0.5vw,0.46rem);letter-spacing:0.05em;text-transform:uppercase;color:#a8a4a0;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+
+.bar-zone{flex:1;display:flex;gap:1px;align-items:flex-end;padding:0 6%}
+.bar-col{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%}
+.bar{width:100%;min-height:0;transition:height 1.5s cubic-bezier(0.37,0,0.63,1);position:relative}
+.bar.m{background:var(--fg)}.bar.f{background:var(--r)}
+.bar{transition:opacity 1.2s cubic-bezier(0.22,1,0.36,1)}
+#stage.focus-male .bar.f{opacity:0.40}
+#stage.focus-female .bar.m{opacity:0.40}
+
+/* CARD positioned dynamically */
+#cards{position:fixed;inset:0;display:flex;align-items:center;z-index:50;pointer-events:none;justify-content:center}
+.card{background:var(--fg);color:var(--bg);padding:1rem 1.8rem;opacity:0;transform:translateY(12px);transition:all 0.6s cubic-bezier(0.22,1,0.36,1);pointer-events:none;max-width:90vw;text-align:center}
+.card.visible{opacity:1;transform:translateY(0);pointer-events:auto}
+.card .txt{font-size:clamp(0.62rem,1.1vw,0.92rem);font-weight:400;letter-spacing:0.05em;line-height:2}
+.card .sub-txt{font-size:clamp(0.42rem,0.6vw,0.52rem);color:#666;margin-top:0.4rem;letter-spacing:0.03em;line-height:1.8}
+.card.wide{max-width:min(740px,92vw);text-align:left;padding:1.2rem 2rem}
+.card.wide .txt{font-size:clamp(0.62rem,1.1vw,0.92rem);line-height:2}
+.card .txt .kw-red{color:var(--r);font-weight:500}
+/* list inside card BIGGER */
+.card .card-list{margin:0.7rem 0 0.2rem 0;padding:0;list-style:none;text-align:left}
+.card .card-list li{font-size:clamp(0.52rem,0.85vw,0.72rem);line-height:2;letter-spacing:0.02em;padding:0.2rem 0;opacity:0;transform:translateY(8px);transition:opacity 0.6s cubic-bezier(0.22,1,0.36,1),transform 0.6s cubic-bezier(0.22,1,0.36,1)}
+.card .card-list li.revealed{opacity:1;transform:translateY(0)}
+.card .card-list li .cl-name{color:var(--r);font-weight:600;text-transform:uppercase;letter-spacing:0.04em}
+.card .card-list li .cl-reason{color:#3a3835;font-weight:300}
+
+#legend{position:fixed;top:0.6rem;left:1.2rem;opacity:0;transition:opacity 0.6s;z-index:40}
+#legend.visible{opacity:1}
+
+#final{position:fixed;inset:0;background:var(--bg);z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.8s;padding:2rem}
+#final.visible{opacity:1;pointer-events:auto}
+#final .big{font-size:clamp(0.8rem,1.6vw,1.2rem);font-weight:300;letter-spacing:0.08em;text-align:center;line-height:2.2;max-width:700px}
+#final .body{font-size:clamp(0.52rem,0.8vw,0.68rem);font-weight:300;letter-spacing:0.05em;text-align:center;line-height:2.4;max-width:620px;margin-top:1.5rem;color:#c0bcb4}
+#final .body .red{color:var(--r)}
+#final .body .last{display:block;margin-top:1.2rem;color:var(--r);font-weight:500;letter-spacing:0.15em;text-transform:uppercase;font-size:clamp(0.65rem,1.1vw,0.85rem)}
+.rbtn{background:none;border:1px solid var(--dim);color:var(--fg);font-family:inherit;font-size:0.5rem;letter-spacing:0.2em;text-transform:uppercase;padding:0.5rem 1.5rem;cursor:pointer;transition:all 0.3s;margin:0.3rem}
+.rbtn:hover{border-color:var(--fg);background:var(--fg);color:var(--bg)}
+.fin-btns{margin-top:1.5rem;display:flex;flex-wrap:wrap;justify-content:center;gap:0.4rem}
+.share-row{margin-top:1rem;display:flex;align-items:center;gap:0.5rem}
+.share-label{font-size:0.4rem;letter-spacing:0.15em;text-transform:uppercase;color:#555}
+.share-btn{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border:1px solid #222;color:#666;font-size:0.5rem;text-decoration:none;font-family:inherit;background:none;cursor:pointer;transition:all 0.3s}
+.share-btn:hover{border-color:var(--fg);color:var(--fg)}
+
+#info{position:fixed;inset:0;background:rgba(8,8,8,0.96);z-index:300;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.5s}
+#info.visible{opacity:1;pointer-events:auto}
+#info-inner{max-width:620px;max-height:85vh;overflow-y:auto;padding:2rem;font-size:0.62rem;line-height:2.2;color:#aaa;letter-spacing:0.03em}
+#info-inner h2{font-size:0.65rem;font-weight:500;letter-spacing:0.15em;text-transform:uppercase;color:var(--r);margin:1.5rem 0 0.5rem}
+#info-inner h2:first-child{margin-top:0}
+#info-inner p{margin-bottom:0.8rem}
+#info-inner a{color:var(--r);text-decoration:none}
+#info-inner ul{margin:0.5rem 0 0.8rem 1.2rem}
+#info-inner li{margin-bottom:0.3rem}
+#info-inner .disclaimer{border-top:1px solid #222;padding-top:1rem;margin-top:1.5rem;color:#777;font-style:italic}
+.close-info{position:fixed;top:1rem;right:1.5rem;background:none;border:none;color:#666;font-size:1.2rem;cursor:pointer;z-index:301;font-family:inherit}
+.close-info:hover{color:var(--fg)}
+
+#final-recap{margin:1.2rem auto 0.8rem;width:100%;max-width:720px}
+.rp-wrap{display:flex;align-items:flex-end;justify-content:center;gap:0.6rem;padding:0 0.5rem}
+.rp-group{display:flex;flex-direction:column;align-items:center;flex-shrink:0}
+.rp-label{font-size:clamp(0.36rem,0.5vw,0.46rem);letter-spacing:0.1em;text-transform:uppercase;color:#c0bcb4;margin-bottom:0.5rem;font-weight:500;text-align:center}
+.rp-pairs{display:flex;gap:6px;align-items:flex-end;height:110px}
+.rp-pair{display:flex;gap:1px;align-items:flex-end;height:100%}
+.rp-bar{width:9px;min-height:1px;display:block}
+.rp-bar.rp-m{background:var(--fg)}
+.rp-bar.rp-f{background:var(--r)}
+.rp-novisi .rp-bar{opacity:0.55}
+.rp-sep{width:1px;align-self:stretch;background:#2a2a2a;margin:0 0.5rem;margin-top:1.5rem}
+.rp-legend{display:flex;justify-content:center;margin-top:0.8rem;font-size:clamp(0.32rem,0.45vw,0.4rem);color:#888;letter-spacing:0.08em;text-transform:uppercase}
+.rp-axis{color:#888}
+@media (max-width: 600px){
+  .rp-pairs{gap:4px;height:90px}
+  .rp-bar{width:7px}
+}
+
+@media (max-width: 600px){
+  .fs-text{padding:0 1rem;line-height:2.0;font-size:0.7rem}
+  #intro h1{font-size:2rem}
+  .card{padding:0.9rem 1.2rem}
+  .card.wide{padding:1rem 1.4rem}
+  .card .card-list li{font-size:0.6rem;line-height:1.7;padding:0.15rem 0}
+  #final{padding:1.2rem}
+  #final .big{font-size:0.95rem;line-height:1.7}
+  #final .body{font-size:0.6rem;line-height:1.9;margin-top:1rem}
+  #final .body .last{font-size:0.7rem;margin-top:0.9rem}
+  .lbl.big{font-size:0.5rem}
+  .lbl.small{font-size:0.42rem}
+  /* Phase 2 mobile : card en bas pour laisser voir le focus des paires */
+  #cards.phase2-position{align-items:flex-end;padding-bottom:1.2rem}
+}
+
+/* ─── LANGUAGE TOGGLE ─── */
+#lang-toggle{position:fixed;top:1rem;right:1rem;z-index:1000;font-family:inherit;font-size:0.5rem;font-weight:300;letter-spacing:0.2em;text-transform:uppercase;color:#777;background:none;border:none;display:flex;gap:0.5rem;align-items:center}
+#lang-toggle a{color:#777;text-decoration:none;padding:0.2rem 0.3rem;transition:color 0.3s}
+#lang-toggle a:hover{color:var(--fg)}
+#lang-toggle a.active{color:var(--fg);border-bottom:1px solid var(--r)}
+#lang-toggle .sep{color:#444}
+@media(max-width:600px){#lang-toggle{top:0.6rem;right:0.6rem;font-size:0.45rem}}
+</style>
+</head>
+<body>
+
+<!-- ═══ LANGUAGE TOGGLE ═══ -->
+<div id="lang-toggle">
+  <a href="./" class="active" hreflang="fr" aria-label="Version française">FR</a>
+  <span class="sep">·</span>
+  <a href="./en/" hreflang="en" aria-label="English version">EN</a>
+</div>
+
+<!-- ═══ SCREEN 1: title ═══ -->
+<div id="intro" class="fullscreen visible">
+  <h1>À sa place</h1>
+  <div class="fs-text">
+    Pour dix découvertes scientifiques majeures, une femme a été sous-créditée. Que dit Wikipédia aujourd'hui de cet héritage ?
+  </div>
+  <div class="author">Lauriane Mouysset · 2025</div>
+  <button class="ibtn" id="go">Commencer</button>
+  <button class="info-link" id="info-open-intro">Méthode & sources</button>
+</div>
+
+<!-- ═══ SCREEN 3: phase 2 intro ═══ -->
+<div id="screen3" class="fullscreen">
+  <h1>À sa place</h1>
+  <div class="fs-text">
+    Pourquoi le biais s'est-il inversé dans certains couples et pas dans d'autres&nbsp;?
+  </div>
+  <button class="ibtn" id="go3">Continuer</button>
+</div>
+
+<!-- ═══ STAGE ═══ -->
+<div id="stage">
+  <div id="topbar"><div id="source"></div></div>
+  <div id="chart-wrap"><div id="chart"></div></div>
+</div>
+
+<div id="legend"></div>
+
+<div id="cards">
+  <div class="card" id="theCard"><div class="txt"></div><div class="sub-txt"></div></div>
+</div>
+
+<div id="final">
+  <div class="big" id="fin-big"></div>
+  <div class="body" id="fin-body"></div>
+  <div class="fin-btns">
+    <button class="rbtn" id="replay">Tout revoir</button>
+    <button class="rbtn" id="replay-pairs">Revoir les couples</button>
+    <button class="rbtn" id="info-open-final">Méthode</button>
+  </div>
+  <div class="share-row">
+    <div class="share-label">Partager</div>
+    <a class="share-btn" id="sh-li" target="_blank" rel="noopener">in</a>
+    <a class="share-btn" id="sh-wa" target="_blank" rel="noopener">wa</a>
+    <a class="share-btn" href="https://www.instagram.com/lauriane_mouysset/" target="_blank" rel="noopener">ig</a>
+    <button class="share-btn" id="sh-cp">🔗</button>
+  </div>
+</div>
+
+<div id="info">
+  <button class="close-info" id="info-close">✕</button>
+  <div id="info-inner">
+    <h2>Intention</h2>
+    <p>Cette visualisation examine dix découvertes scientifiques où une femme a été sous-créditée au profit d'un homme. Sa question centrale&nbsp;: le biais de reconnaissance se corrige-t-il de lui-même avec le temps&nbsp;? La réponse des données est non.</p>
+    <h2>Sélection des couples</h2>
+    <p>Les couples sont organisés en deux niveaux.</p>
+    <p><strong>Niveau 1, effet Matilda documenté</strong> (8 couples). Le sous-crédit de la femme est attesté par au moins une source académique ou encyclopédique : Rossiter (1993) sur l'effet Matilda, Sayre (1975) sur Rosalind Franklin, rapport INSERM (2014) sur le cas Gautier-Lejeune.</p>
+    <ul>
+      <li><strong>Lise Meitner</strong> et Otto Hahn, fission nucléaire (1938)</li>
+      <li><strong>Chien-Shiung Wu</strong> et C.N. Yang, violation de la parité (1956)</li>
+      <li><strong>Jocelyn Bell Burnell</strong> et A. Hewish, pulsars (1967)</li>
+      <li><strong>Cecilia Payne</strong> et H.N. Russell, composition des étoiles (1925)</li>
+      <li><strong>Rosalind Franklin</strong> et J. Watson, structure de l'ADN (1952)</li>
+      <li><strong>Marthe Gautier</strong> et J. Lejeune, trisomie 21 (1958)</li>
+      <li><strong>Esther Lederberg</strong> et J. Lederberg, génétique bactérienne (1950)</li>
+      <li><strong>Katherine Johnson</strong> et J. Glenn, calculs spatiaux (1962)</li>
+    </ul>
+    <p><strong>Niveau 2, sous-crédit observable</strong> (2 couples). La femme a contribué de manière significative à la même découverte ou au même programme de recherche, mais sa contribution est nettement moins reconnue, sans documentation académique spécifique en tant qu'effet Matilda.</p>
+    <ul>
+      <li><strong>Kathleen Lonsdale</strong> et J.D. Bernal, cristallographie (1924)</li>
+      <li><strong>Marguerite Perey</strong> et G. Seaborg, éléments transuraniens (1939)</li>
+    </ul>
+    <p>Trois cas initialement examinés ont été écartés. Nettie Stevens : un pic aberrant en 2016 tirait la moyenne sur l'ensemble de la période, alors que l'homme dominait année après année depuis 2017. Marietta Blau : volumes annuels insuffisants, entre trois et neuf mille pages vues par an. Leona Woods : son ratio extrême face à Enrico Fermi s'explique en partie par la célébrité publique majeure de Fermi (figure emblématique du XX<sup>e</sup> siècle, prix Nobel, projet Manhattan), ce qui rendait le cas peu comparable au reste du corpus.</p>
+    <h2>Données</h2>
+    <p><strong>Reconnaissance institutionnelle.</strong> Nombre de langues Wikipédia. Source&nbsp;: Wikidata, février 2026.</p>
+    <p><strong>Intérêt contemporain.</strong> Pages vues Wikipédia anglophone, juillet 2015 à décembre 2025. Source&nbsp;: Wikimedia Pageviews API.</p>
+    <p><strong>Ratio F/H.</strong> Rapport simple des pages vues annuelles entre la femme et l'homme de chaque paire. Un ratio supérieur à 1 indique que la femme est plus consultée que son collègue masculin.</p>
+    <p><strong>Note sur le choix des hommes de comparaison.</strong> Le ratio F/H mesure conjointement le sous-crédit de la femme et la notoriété de l'homme. Cette imbrication est intrinsèque à la question posée&nbsp;: l'invisibilisation se mesure dans l'écart, pas dans une grandeur isolée. Les paires retenues présentent toutes une co-signature scientifique attestée et une dispute attributive documentée ou observable. Le cas de Leona Woods a été écarté précisément parce que la célébrité publique de Fermi y dominait au point de rendre le cas peu comparable au reste du corpus.</p>
+    <h2>Ce que cette visualisation montre et ne montre pas</h2>
+    <div class="disclaimer">
+      <p>Ceci est un objet de communication, pas un travail de recherche. Cette visualisation ne prétend pas établir un lien causal entre visibilisation et reconnaissance, ce serait trivial.</p>
+      <p>Ce qu'elle montre est moins évident&nbsp;: que pour dix cas documentés de sous-crédit scientifique, le biais de reconnaissance hérité du XX<sup>e</sup> siècle <strong>ne se corrige pas spontanément</strong>. Aujourd'hui, les femmes qui n'ont fait l'objet d'aucun geste de visibilisation spécifique restent aussi peu connues qu'il y a vingt ans.</p>
+      <p>L'effet causal de la visibilisation de modèles féminins sur les perceptions a été établi dans d'autres contextes, notamment par l'étude randomisée de Breda, Grenet, Monnet & Van Effenterre (<em>The Economic Journal</em>, 2023).</p>
+    </div>
+    <h2>Autrice</h2>
+    <p><strong>Lauriane Mouysset</strong><br>Directrice de recherche au CNRS<br>Médaille de bronze du CNRS (2024)<br>Ambassadrice <a href="https://www.femmesetsciences.fr" target="_blank">Femmes & Sciences</a><br><a href="https://lauriane-mouysset.fr" target="_blank">lauriane-mouysset.fr</a></p>
+    <p>© 2025 Lauriane Mouysset · <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></p>
+  </div>
+</div>
+
+<script>
+const D=[
+  {t:"Fission",m:{n:"Hahn",l:87},f:{n:"Meitner",l:85,full:"Lise Meitner"},vis:"VIS",
+   hY:[138410,132904,133478,123775,114132,107863,104139,183064,118996,162320],fY:[160991,165896,161351,156095,153070,174513,160230,258041,195967,237535]},
+  {t:"Violation parité",m:{n:"Yang",l:65},f:{n:"Wu",l:57,full:"Chien-Shiung Wu"},vis:"VIS",
+   hY:[51203,82986,55432,19563,13333,11959,10750,14827,12131,14554],fY:[71200,78649,72056,78246,83231,140152,110570,140435,109191,114438]},
+  {t:"Pulsars",m:{n:"Hewish",l:70},f:{n:"Bell",l:59,full:"Jocelyn Bell Burnell"},vis:"VIS",
+   hY:[21990,21717,38816,20457,16453,57829,19749,14707,17424,22639],fY:[81836,89499,280790,122026,114575,219161,118598,105049,168671,135983]},
+  {t:"Comp. stellaire",m:{n:"Russell",l:48},f:{n:"Payne",l:57,full:"Cecilia Payne"},vis:"VIS",
+   hY:[13657,12434,13468,12386,10615,10283,12612,11434,12476,12031],fY:[69715,64466,120988,154184,139840,144551,117547,270876,208534,113865]},
+  {t:"Structure ADN",m:{n:"Watson",l:93},f:{n:"Franklin",l:97,full:"Rosalind Franklin"},vis:"VIS",
+   hY:[663460,491937,398845,531318,347226,312316,278393,306704,313087,716097],fY:[536506,522947,543160,585418,564714,515012,505184,519054,529294,584105]},
+  {t:"Calculs",m:{n:"Glenn",l:76},f:{n:"Johnson",l:66,full:"Katherine Johnson"},vis:"VIS",
+   hY:[2527002,2003876,923423,942664,1556841,996403,693681,736774,931380,621808],fY:[783019,4259216,1324714,1162691,1994753,1074679,803696,1017992,1084659,842262]},
+  {t:"Trisomie 21",m:{n:"Lejeune",l:20},f:{n:"Gautier",l:16,full:"Marthe Gautier"},vis:"AUCUN",
+   hY:[14190,13062,12994,12519,12368,20091,15166,14000,16997,13146],fY:[2491,2603,2503,2452,2214,2700,5726,3297,3794,7003]},
+  {t:"Génétique",m:{n:"J. Lederberg",l:52},f:{n:"E. Lederberg",l:27,full:"Esther Lederberg"},vis:"AUCUN",
+   hY:[32449,35645,29933,36462,49867,26227,20178,21355,20805,18697],fY:[12286,14128,16405,20364,17893,15034,12558,15235,12556,13217]},
+  {t:"Cristallographie",m:{n:"Bernal",l:40},f:{n:"Lonsdale",l:33,full:"Kathleen Lonsdale"},vis:"AUCUN",
+   hY:[27472,26579,25159,18626,11730,10861,9614,9008,8502,7570],fY:[10777,13000,15002,13730,16056,14688,14741,13423,13095,15494]},
+  {t:"Transuraniens",m:{n:"Seaborg",l:75},f:{n:"Perey",l:34,full:"Marguerite Perey"},vis:"AUCUN",
+   hY:[108866,115747,90256,107216,86417,85206,98948,129388,115183,85929],fY:[12620,10628,9770,15276,13431,14539,11204,12798,14386,14138]},
+];
+D.forEach(p=>{p.m.v=p.hY.reduce((a,b)=>a+b,0);p.f.v=p.fY.reduce((a,b)=>a+b,0)});
+const visIdx=[0,1,2,3,4,5], noVisIdx=[6,7,8,9];
+
+const chart=document.getElementById('chart');
+D.forEach((p,i)=>{
+  const d=document.createElement('div');d.className='pair';
+  d.innerHTML=`
+    <div class="pair-info"><div class="names"><div class="lbl m small">${p.m.n}</div><div class="lbl f small">${p.f.n}</div></div><div class="topic">${p.t}</div></div>
+    <div class="bar-zone"><div class="bar-col m"><div class="bar m"></div></div><div class="bar-col f"><div class="bar f"></div></div></div>`;
+  chart.appendChild(d);
+});
+
+const $=id=>document.getElementById(id);
+const pairEls=document.querySelectorAll('.pair');
+const allBars=document.querySelectorAll('.bar');
+const EASE='cubic-bezier(0.37,0,0.63,1)';
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+function maxH(){return Math.max(80,$('chart-wrap').clientHeight-80)}
+
+function card(txt,opts={}){
+  const c=$('theCard');
+  const wasVisible=c.classList.contains('visible');
+  // Cross-fade : si la card est visible, on commence à la cacher tout de suite
+  if(wasVisible){c.classList.remove('visible');c._hideAt=Date.now();}
+  // Calculer le délai pour que la transition de sortie soit assez avancée (cross-fade fluide)
+  // CARD_TRANSITION = 600ms. On attend qu'elle soit à ~50-60% pour avoir un cross-fade visible mais sans saut
+  const TRANSITION=600;
+  const FADE_OVERLAP=0.55;  // 55% de la transition de sortie écoulée avant de commencer à entrer
+  let delay=0;
+  if(wasVisible){
+    delay=Math.round(TRANSITION*FADE_OVERLAP);  // ~330ms
+  }else if(c._hideAt){
+    // Une card a été cachée précédemment, vérifier où on en est dans la transition
+    const elapsed=Date.now()-c._hideAt;
+    const remaining=Math.max(0,Math.round(TRANSITION*FADE_OVERLAP)-elapsed);
+    delay=remaining;
+  }
+  setTimeout(()=>{
+    c.querySelector('.txt').innerHTML=txt;
+    c.querySelector('.txt').className='txt';
+    c.querySelector('.sub-txt').textContent=opts.sub||'';
+    c.className='card'+(opts.wide?' wide':'');
+    requestAnimationFrame(()=>{
+      c.classList.add('visible');
+      // Reveal list items progressively, after a reading pause for the intro sentence
+      const items=c.querySelectorAll('.card-list li');
+      items.forEach((li,i)=>{
+        setTimeout(()=>{
+          li.classList.add('revealed');
+          // Si focusOrder est fourni, on dim toutes les paires sauf celle ciblée
+          if(opts.focusOrder && opts.focusOrder[i] !== undefined){
+            const targetIdx=opts.focusOrder[i];
+            // Dim TOUTES les paires sauf celle ciblée (toutes les autres sont atténuées)
+            dimPairs((p,k)=>k !== targetIdx);
+            // Mise en valeur visuelle de la paire focusée (scale up)
+            document.querySelectorAll('.pair').forEach((p,k)=>{
+              p.classList.toggle('pair-focused', k === targetIdx);
+            });
+          }
+        },1800+i*1500);
+      });
+      // À la fin de la liste, ré-éclairer toutes les paires du groupe cible
+      if(opts.focusOrder){
+        const lastT=1800+(items.length-1)*1500+800;
+        setTimeout(()=>{
+          dimPairs((p,k)=>!opts.dimGroup.includes(k));
+          // Retirer toute mise en valeur de paire au re-éclairage final
+          document.querySelectorAll('.pair').forEach(p=>p.classList.remove('pair-focused'));
+        },lastT);
+      }
+    });
+  },delay);
+}
+function hideCards(){const c=$('theCard');if(c.classList.contains('visible')){c.classList.remove('visible');c._hideAt=Date.now()}}
+
+// Position card container centered over a group of pair indices
+function cardOver(indices){
+  const cont=$('cards');
+  if(!indices){cont.style.justifyContent='center';cont.style.paddingLeft='';cont.style.paddingRight='';return}
+  // Calculate center of the highlighted pairs
+  const rects=indices.map(i=>pairEls[i].getBoundingClientRect());
+  const left=Math.min(...rects.map(r=>r.left));
+  const right=Math.max(...rects.map(r=>r.right));
+  const centerX=(left+right)/2;
+  const vw=window.innerWidth;
+  // Clamp so card doesn't go off screen
+  const pct=Math.max(10,Math.min(90,(centerX/vw)*100));
+  cont.style.justifyContent='flex-start';
+  cont.style.paddingLeft=`calc(${pct}vw - 370px)`;// half of max-width 740
+  cont.style.paddingRight='0';
+}
+
+function setEqual(dur){const h=maxH()*0.4;allBars.forEach(b=>{b.style.transition=`height ${dur}s ${EASE}`;b.style.height=h+'px'})}
+function setMetric(key,dur){
+  const h=maxH();
+  pairEls.forEach((el,i)=>{
+    const p=D[i];let mV=p.m[key],fV=p.f[key];
+    const[bm,bf]=el.querySelectorAll('.bar');
+    const t=`height ${dur}s ${EASE}`;bm.style.transition=t;bf.style.transition=t;
+    if(mV===null||fV===null){bm.style.height='0px';bf.style.height='0px';return}
+    const mx=Math.max(mV,fV);
+    bm.style.height=Math.max(3,(mV/mx)*h)+'px';bf.style.height=Math.max(3,(fV/mx)*h)+'px';
+  });
+}
+function dimPairs(fn){pairEls.forEach((el,i)=>el.classList.toggle('dimmed',fn(D[i],i)))}
+function undimAll(){pairEls.forEach(el=>el.classList.remove('dimmed'))}
+function setNamesSize(s){document.querySelectorAll('.lbl').forEach(l=>{l.classList.remove('small','big');l.classList.add(s)})}
+function hideTopNames(hide){document.querySelectorAll('.pair-info').forEach(pi=>pi.classList.toggle('hidden-names',hide))}
+
+// ═══ PHASE 1 ═══
+async function runPhase1(){
+  hideCards();undimAll();setNamesSize('small');hideTopNames(false);cardOver(null);
+  $('source').textContent='';$('source').className='';
+  allBars.forEach(b=>{b.style.transition='none';b.style.height='0px'});
+  await wait(60);
+  $('stage').classList.add('visible');$('legend').classList.add('visible');await wait(300);
+
+  card("Même science. Même\u00A0découverte.");
+  setEqual(1.3);await wait(2300);
+
+  hideCards();await wait(300);
+  $('source').textContent="Langues Wikipédia · au 1ᵉʳ février 2026";$('source').classList.add('bright');
+  setMetric('l',1.5);await wait(900);
+  $('stage').classList.add('focus-male');
+  card('Dans la majorité des cas, les hommes ont une plus grande reconnaissance institutionnelle.');
+  await wait(3000);
+  $('stage').classList.remove('focus-male');
+
+  hideCards();await wait(300);
+  $('source').textContent="Pages vues Wikipédia · 2015 à 2025";
+  setMetric('v',1.5);await wait(900);
+  $('stage').classList.add('focus-female');
+  card('Pour certains couples, les femmes dépassent les hommes dans l\'intérêt contemporain.');
+  await wait(3300);
+  $('stage').classList.remove('focus-female');
+
+  // Fade stage to background, screen3 over it
+  hideCards();
+  $('stage').style.transition='opacity 1s';$('stage').style.opacity='0';
+  await wait(800);
+  $('screen3').classList.add('visible');
+}
+
+// ═══ PHASE 2 ═══
+async function runPhase2(){
+  $('screen3').classList.add('hidden');await wait(600);
+  // Restore stage opacity
+  $('stage').style.transition='opacity 0.8s';$('stage').style.opacity='1';
+  $('legend').classList.add('visible');
+  hideTopNames(false);  // s'assurer que les noms sont visibles (idempotent)
+  $('cards').classList.add('phase2-position');  // Mobile : card en bas
+  await wait(400);
+
+  setNamesSize('big');await wait(300);
+  // Noms et découvertes restent visibles en phase 2
+
+  // ── Visibilised (left side: 0-5) ──
+  dimPairs((p,i)=>!visIdx.includes(i));
+  cardOver(null);  // centré sur la page comme les autres slides
+  // focusOrder = ordre d'apparition dans la liste mappé aux indices D
+  // Johnson=5, Bell=2, Payne=3, Wu=1, Franklin=4, Meitner=0
+  card('Le biais s\'est inversé dans les couples où les femmes ont bénéficié d\'un geste de visibilisation récent.'
+    +'<ul class="card-list">'
+    +'<li><span class="cl-name">Katherine Johnson</span><span class="cl-reason"> le film Hidden Figures (2016) révèle son rôle dans le programme spatial</span></li>'
+    +'<li><span class="cl-name">Jocelyn Bell Burnell</span><span class="cl-reason"> le Breakthrough Prize (2018, 3M$) reconnaît sa découverte des pulsars</span></li>'
+    +'<li><span class="cl-name">Cecilia Payne</span><span class="cl-reason"> un Google Doodle (2019) célèbre sa découverte de la composition stellaire</span></li>'
+    +'<li><span class="cl-name">Chien-Shiung Wu</span><span class="cl-reason"> un timbre US Postal (2021) honore celle qui prouva la violation de la parité</span></li>'
+    +'<li><span class="cl-name">Rosalind Franklin</span><span class="cl-reason"> le rover Mars de l\'ESA (2022) porte le nom de l\'autrice du cliché 51</span></li>'
+    +'<li><span class="cl-name">Lise Meitner</span><span class="cl-reason"> visibilisation diffuse\u00A0: meitnerium, livres, 150e anniversaire (2023)</span></li>'
+    +'</ul>',{focusOrder:[5,2,3,1,4,0],dimGroup:visIdx});
+  await wait(13000);
+
+  // ── Non-corrected ──
+  hideCards();await wait(300);
+  dimPairs((p,i)=>!noVisIdx.includes(i));
+  cardOver(null);  // centré sur la page comme les autres slides
+  card('Quatre femmes n\'ont bénéficié d\'aucun geste de visibilisation.<br>Pour aucune d\'entre elles, le biais ne s\'est corrigé.');
+  await wait(2800);
+
+  // Final
+  hideCards();
+  undimAll();hideTopNames(false);cardOver(null);
+  $('stage').style.transition='opacity 1.2s';$('stage').style.opacity='0';
+  await wait(1400);
+  showFinal();
+}
+
+function showFinal(){
+  $('cards').classList.remove('phase2-position');  // Cleanup mobile
+  $('fin-big').innerHTML="Le biais de genre ne se corrige pas tout seul.";
+  let t='';
+  t+='<div id="final-recap"></div>';
+  t+="Quand les femmes scientifiques ont bénéficié d'un geste public récent, leur page Wikipédia est autant vue que celle de leur homologue masculin.<br><br>";
+  t+="Sans geste de visibilisation, leur page reste largement moins consultée.";
+  t+='<span class="last">La visibilisation est ce qui produit le changement.<br>Sans elle, le biais de genre du XX<sup>e</sup> siècle persiste.</span>';
+  $('fin-body').innerHTML=t;
+  drawFinalRecap();
+  $('final').classList.add('visible');
+}
+
+function drawFinalRecap(){
+  // Mini-visualisation récapitulative : reprend l'esthétique de la dataviz principale
+  // 10 paires de barres verticales (homme/femme), en miniature, figées avec les pages vues
+  const recap = document.getElementById('final-recap');
+  if(!recap) return;
+  
+  // Pour chaque paire, calculer les hauteurs normalisées au sein du couple (comme dans la dataviz)
+  // f.v et m.v sont les pages vues. On normalise pour que max(f.v, m.v) = 100%
+  function renderPair(idx, isVis){
+    const p = D[idx];
+    const max = Math.max(p.m.v, p.f.v);
+    const hM = (p.m.v / max) * 100;
+    const hF = (p.f.v / max) * 100;
+    return '<div class="rp-pair' + (isVis ? '' : ' rp-novisi') + '">' +
+           '<div class="rp-bar rp-m" style="height:' + hM + '%"></div>' +
+           '<div class="rp-bar rp-f" style="height:' + hF + '%"></div>' +
+           '</div>';
+  }
+  
+  let html = '<div class="rp-wrap">';
+  // Colonne avec geste (6 paires)
+  html += '<div class="rp-group rp-vis"><div class="rp-label">Avec geste public</div><div class="rp-pairs">';
+  visIdx.forEach(i => { html += renderPair(i, true); });
+  html += '</div></div>';
+  // Séparateur
+  html += '<div class="rp-sep"></div>';
+  // Colonne sans geste (4 paires)
+  html += '<div class="rp-group rp-novisi-group"><div class="rp-label">Sans geste</div><div class="rp-pairs">';
+  noVisIdx.forEach(i => { html += renderPair(i, false); });
+  html += '</div></div>';
+  html += '</div>';
+  // Légende sobre (pas de "Homme/Femme", on comprend par les noms des couples)
+  html += '<div class="rp-legend"><span class="rp-axis">pages vues Wikipédia · au sein de chaque couple</span></div>';
+  
+  recap.innerHTML = html;
+}
+
+// ═══ NAVIGATION ═══
+$('go').onclick=()=>{$('intro').classList.add('hidden');setTimeout(runPhase1,800)};
+$('go3').onclick=()=>{runPhase2()};
+$('replay').onclick=()=>{
+  $('final').classList.remove('visible');
+  $('cards').classList.remove('phase2-position');
+  $('stage').style.opacity='';$('stage').style.transition='opacity 0.8s';
+  $('stage').classList.remove('visible');$('legend').classList.remove('visible');
+  $('screen3').classList.remove('visible','hidden');
+  $('intro').classList.remove('hidden');$('intro').classList.add('visible');
+};
+$('replay-pairs').onclick=async()=>{
+  $('final').classList.remove('visible');
+  await wait(400);
+  $('stage').style.opacity='1';$('stage').classList.add('visible');
+  $('legend').classList.add('visible');
+  // Restaurer le metric "pages vues" et relancer phase 2
+  setNamesSize('small');hideTopNames(false);
+  $('source').textContent="Pages vues Wikipédia · 2015 à 2025";$('source').classList.add('bright');
+  setMetric('v',0.6);
+  await wait(800);
+  runPhase2();
+};
+$('info-open-intro').onclick=()=>$('info').classList.add('visible');
+$('info-open-final').onclick=()=>$('info').classList.add('visible');
+$('info-close').onclick=()=>$('info').classList.remove('visible');
+const SHARE_URL=window.location.href,SHARE_TXT="À sa place : 10 femmes scientifiques sous-créditées. Le biais de genre ne se corrige pas tout seul.";
+$('sh-li').href=`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(SHARE_URL)}`;
+$('sh-wa').href=`https://api.whatsapp.com/send?text=${encodeURIComponent(SHARE_TXT+' '+SHARE_URL)}`;
+$('sh-cp').onclick=async()=>{try{await navigator.clipboard.writeText(SHARE_URL);$('sh-cp').textContent='✓';setTimeout(()=>$('sh-cp').textContent='🔗',2000)}catch(e){prompt('Copier :',SHARE_URL)}};
+</script>
+</body>
+</html>
