@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mouysset Studio — Lauriane Mouysset</title>
+  
+  <link rel="icon" type="image/png" href="favicon.png">
+  
+  <meta name="description" content="Data Embroidery — Broder ce que l'on ne voit plus. Artiste contemporaine et directrice de recherche au CNRS.">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=IBM+Plex+Sans:wght@100;200;300;400&family=IBM+Plex+Mono:wght@300;400&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --f-name: 'IBM Plex Sans', sans-serif;
+      --f-body: 'IBM Plex Mono', monospace;
+      --f-nav: 'Space Grotesk', sans-serif;
+
+      --noir: #FAF9F7;
+      --blanc: #1A1A18;
+      --fond-alt: #252523;
+      --texte: #E0E0DD;
+      --gris: #9A9A95;
+      --gris-clair: #7A7A72;
+      --accent: #7A1F1A;
+      --border: rgba(250,249,247,0.1);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--blanc); color: var(--texte); font-family: var(--f-body); }
+    .container { max-width: 1140px; margin: 0 auto; padding: 0 36px; }
+
+    /* ========================================
+       BANDEAU UNIFIÉ
+       ======================================== */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      background: rgba(250,249,247,0.96); backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(26,26,24,0.1);
+    }
+    .nav-inner {
+      max-width: 1140px; margin: 0 auto; padding: 0 36px;
+      height: 56px; display: flex; justify-content: space-between; align-items: center;
+    }
+    .nav-logo {
+      font-family: var(--f-nav); font-size: 14px; font-weight: 700;
+      color: #1A1A18; letter-spacing: 0.06em; text-transform: uppercase; text-decoration: none;
+    }
+    .nav-univers { display: flex; align-items: center; gap: 4px; margin-left: 24px; margin-right: auto; }
+    .nav-univers a {
+      font-family: 'IBM Plex Sans', sans-serif; font-size: 11px; font-weight: 500;
+      color: #7A7A72; text-decoration: none; padding: 4px 10px; transition: color 0.2s;
+    }
+    .nav-univers a:hover { color: #1A1A18; }
+    .nav-univers a.active { color: var(--accent); font-weight: 600; }
+    .nav-links { display: flex; align-items: center; gap: 6px; }
+    .nav-links a {
+      font-family: 'IBM Plex Sans', sans-serif; font-size: 11px; font-weight: 500;
+      color: #7A7A72; text-decoration: none; padding: 4px 10px; transition: color 0.2s;
+    }
+    .nav-links a:hover { color: #1A1A18; }
+
+    /* ========================================
+       HEADER — titre pleine largeur
+       ======================================== */
+    .header-block {
+      padding: 120px 0 40px;
+    }
+    .header-title {
+      margin-bottom: 28px; 
+      display: flex; align-items: center; gap: 14px;
+    }
+    .header-title::before {
+      content: ''; width: 32px; height: 1px; background: var(--noir);
+    }
+    .header-title span {
+      font-family: var(--f-name); font-size: 17px; font-weight: 300;
+      color: var(--noir); letter-spacing: 0.1em; text-transform: uppercase;
+    }
+    .header-name {
+      font-family: var(--f-name); font-size: clamp(56px, 8vw, 96px);
+      font-weight: 200; line-height: 1; color: var(--noir); 
+      letter-spacing: 0.02em; text-transform: uppercase;
+    }
+    .header-name span { display: block; }
+    .header-name .mouysset-word { color: var(--accent); }
+
+    /* ========================================
+       CHAPÔ + PHOTO — grille côte à côte
+       ======================================== */
+    .chapo-block {
+      display: grid; grid-template-columns: 1fr 400px;
+      gap: 0 48px;
+      align-items: stretch;
+      padding: 40px 0 0;
+    }
+
+    .chapo-text {
+      grid-column: 1; grid-row: 1;
+    }
+
+    .chapo-photo {
+      grid-column: 2; grid-row: 1;
+      width: 400px;
+      align-self: stretch;
+      display: flex;
+      align-items: center;
+    }
+    .chapo-photo-inner {
+      width: 100%;
+      position: relative;
+      transform: translateY(-12px);
+    }
+    .chapo-photo img {
+      width: 100%; height: auto; display: block;
+    }
+    .photo-credit {
+      position: absolute; bottom: -18px; right: 0;
+      font-family: var(--f-body); font-size: 10px; color: rgba(122,122,114,0.45);
+    }
+
+    .header-doc-links {
+      grid-column: 1 / -1; grid-row: 2;
+      display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 32px;
+      padding: 24px 0 48px;
+      border-top: 1px solid var(--border);
+    }
+
+    .chapo-accroche {
+      font-family: var(--f-body); font-size: 15px; font-weight: 300;
+      line-height: 1.7; color: var(--noir); font-style: italic;
+      margin-bottom: 20px;
+    }
+
+    .chapo-body {
+      font-family: var(--f-body); font-size: 14px; font-weight: 300;
+      line-height: 1.8; color: var(--texte);
+      margin-bottom: 20px;
+    }
+    .chapo-body:last-of-type {
+      margin-bottom: 0;
+    }
+    .chapo-body em {
+      font-style: italic; color: var(--noir);
+    }
+    .chapo-body strong {
+      font-weight: 300; font-style: normal; color: var(--noir);
+      background: rgba(250,249,247,0.07);
+      padding: 2px 6px;
+      border-radius: 2px;
+    }
+
+    .header-doc-links a {
+      font-family: var(--f-body); font-size: 12px; font-weight: 400;
+      color: var(--accent); text-decoration: none; transition: color 0.2s;
+      text-transform: uppercase; letter-spacing: 0.14em;
+    }
+    .header-doc-links a:hover { color: var(--noir); }
+    .doc-separator { color: var(--accent); font-size: 12px; letter-spacing: 0.14em; }
+
+    /* ========================================
+       CARTES — 2×2
+       ======================================== */
+    .explore-section { 
+      padding: 0;
+      border-top: 1px solid var(--border);
+    }
+    .card-grid { 
+      display: grid; 
+      grid-template-columns: repeat(2, 1fr); 
+      gap: 1px;
+    }
+    .card {
+      display: flex; flex-direction: column; justify-content: space-between;
+      background: var(--fond-alt); padding: 48px 32px;
+      text-decoration: none; position: relative; min-height: 180px;
+      transition: background 0.3s, transform 0.3s; cursor: pointer;
+    }
+    .card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: var(--border);
+    }
+    .card:hover { background: var(--noir); transform: translateY(-3px); }
+    .card:hover::before { background: var(--accent); }
+    .card:hover .card-label { color: var(--blanc); }
+    .card:hover .card-hook { color: rgba(224,224,221,0.7); }
+    .card:hover .card-arrow { opacity: 1; color: var(--accent); }
+    .card-header { 
+      display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; 
+    }
+    .card-label {
+      font-family: var(--f-name); font-size: 14px; font-weight: 400;
+      color: var(--noir); transition: color 0.3s;
+      text-transform: uppercase; letter-spacing: 0.08em;
+    }
+    .card-arrow { 
+      opacity: 0.25; transition: opacity 0.3s, color 0.3s; font-size: 20px; color: var(--gris);
+    }
+    .card-hook { 
+      font-size: 13px; line-height: 1.7; color: var(--gris);
+      transition: color 0.3s; font-weight: 300;
+    }
+
+    /* ========================================
+       FOOTER
+       ======================================== */
+    footer {
+      padding: 48px 36px; border-top: 1px solid var(--border); text-align: center;
+    }
+    .footer-copy { font-size: 11px; color: var(--gris-clair); font-weight: 300; }
+
+    /* ========================================
+       RESPONSIVE
+       ======================================== */
+    @media (max-width: 900px) {
+      .chapo-block { grid-template-columns: 1fr; gap: 32px; }
+      .chapo-photo { width: 100%; order: -1; }
+      .card-grid { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+    }
+    @media (max-width: 540px) {
+      .container { padding: 0 24px; }
+      .header-name { font-size: clamp(42px, 12vw, 56px); }
+      .header-title span { font-size: 15px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============ BANDEAU UNIFIÉ ============ -->
+  <nav>
+    <div class="nav-inner">
+      <a href="https://lauriane-mouysset.fr" class="nav-logo">L. Mouysset</a>
+      <div class="nav-univers">
+        <a href="https://lauriane-mouysset.fr/recherche/">Recherche</a>
+        <a href="index.html" class="active">Studio</a>
+        <a href="https://lauriane-mouysset.fr/in-visibles">In/Visibles</a>
+      </div>
+      <div class="nav-links">
+        <a href="https://instagram.com/mouysset_studio" target="_blank">Instagram</a>
+        <a href="contact.html">Contact</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+
+    <!-- ============ TITRE ============ -->
+    <header class="header-block">
+      <h1 class="header-name">
+        <span class="mouysset-word">Mouysset</span>
+        <span>Studio</span>
+      </h1>
+    </header>
+
+    <!-- ============ CHAPÔ + PHOTO ============ -->
+    <section class="chapo-block">
+      <div class="chapo-text">
+        <p class="chapo-body">
+          La <strong>data embroidery</strong> donne un corps aux données par le fil. Capturer ce que l'on ne voit pas et qui pourtant structure nos pensées et nos comportements. Capturer pour comprendre et parfois pour dénoncer.
+        </p>
+        <p class="chapo-body">
+          <strong>Comment vivre ensemble dans un monde pluriel ?</strong> Comment cohabiter avec différentes manières de penser, différents rapports aux vivants mais aussi aux morts ? Le travail du studio se construit par séries, car c'est dans l'accumulation que l'inconscient qui encadre nos pensées devient visible.
+        </p>
+        <p class="chapo-body">
+          Mouysset Studio articule <strong>deux pratiques</strong>. La broderie sur papier pour donner une corporalité à ces données invisibles. Des objets numériques, codés sur mesure, pour les contextualiser et les ouvrir au public. Des ateliers participatifs permettent de mettre ces créations textiles et numériques dans les mains du jeune public.
+        </p>
+      </div>
+
+      <div class="chapo-photo">
+        <div class="chapo-photo-inner">
+          <img src="photo-studio.png" alt="Lauriane Mouysset à l'atelier">
+          <span class="photo-credit">© Marion Saupin</span>
+        </div>
+      </div>
+
+      <div class="header-doc-links">
+        <a href="https://lauriane-mouysset.fr/studio/portfolio_MouyssetLauriane.pdf" target="_blank">Portfolio</a>
+        <span class="doc-separator">·</span>
+        <a href="https://lauriane-mouysset.fr/studio/catalogue-agora.pdf" target="_blank">Catalogue Agora</a>
+        <span class="doc-separator">·</span>
+        <a href="https://instagram.com/mouysset_studio" target="_blank">Instagram</a>
+        <span class="doc-separator">·</span>
+        <a href="https://e42cb6ea.sibforms.com/serve/MUIFAJrM3MBcMCOYHvaGG2SU4uTeNgiaBGILuDNO8xNJ7ruE0PpsXm-0O6LF8kfvyRZb2ANTWnqJZowIfgRjojVD7DjHvMIRH07ev9NVk3lDs6P2K017-EifWV-LcJ5A_kfZkVO5hX3M4n6Vs-skdeIB49FcjJKJ-yqmMHKTlNvWu9jSFWalAhVg62bcvmTk7bUuekjMZv0HcwZosw==" target="_blank">Newsletter</a>
+      </div>
+    </section>
+
+    <!-- ============ 4 CARTES — 2×2 ============ -->
+    <section class="explore-section">
+      <div class="card-grid">
+        
+        <a href="actualites.html" class="card">
+          <div class="card-header">
+            <span class="card-label">Actualités</span>
+            <span class="card-arrow">↗</span>
+          </div>
+          <p class="card-hook">
+            Expositions en cours, événements à venir, archives.
+          </p>
+        </a>
+
+        <a href="a-propos.html" class="card">
+          <div class="card-header">
+            <span class="card-label">Démarche & Contact</span>
+            <span class="card-arrow">↗</span>
+          </div>
+          <p class="card-hook">
+            Pourquoi broder des données — statement, biographie, commandes.
+          </p>
+        </a>
+        
+        <a href="collections.html" class="card">
+          <div class="card-header">
+            <span class="card-label">Collections textiles</span>
+            <span class="card-arrow">↗</span>
+          </div>
+          <p class="card-hook">
+            Guerrières, Concordances, Amazonas — les séries brodées et photographiques.
+          </p>
+        </a>
+        
+        <a href="arts-et-numerique.html" class="card">
+          <div class="card-header">
+            <span class="card-label">Objets numériques</span>
+            <span class="card-arrow">↗</span>
+          </div>
+          <p class="card-hook">
+            Interfaces interactives entre données scientifiques et expérience sensible.
+          </p>
+        </a>
+
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ============ FOOTER ============ -->
+  <footer>
+    <span class="footer-copy">© 2026 Lauriane Mouysset</span>
+  </footer>
+
+</body>
+</html>
