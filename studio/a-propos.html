@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lauriane Mouysset — Mouysset Studio</title>
+  
+  <link rel="icon" type="image/png" href="favicon.png">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=IBM+Plex+Sans:wght@100;200;300;400&family=IBM+Plex+Mono:wght@300;400&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --f-name: 'IBM Plex Sans', sans-serif;
+      --f-body: 'IBM Plex Mono', monospace;
+      --f-nav: 'Space Grotesk', sans-serif;
+
+      --noir: #FAF9F7;
+      --blanc: #1A1A18;
+      --fond-alt: #252523;
+      --texte: #E0E0DD;
+      --gris: #9A9A95;
+      --gris-clair: #7A7A72;
+      --accent: #7A1F1A;
+      --border: rgba(250,249,247,0.1);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--blanc); color: var(--texte); font-family: var(--f-body); }
+    .container { max-width: 1140px; margin: 0 auto; padding: 0 36px; }
+
+    /* ========================================
+       BANDEAU UNIFIÉ
+       ======================================== */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      background: rgba(250,249,247,0.96); backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(26,26,24,0.1);
+    }
+    .nav-inner {
+      max-width: 1140px; margin: 0 auto; padding: 0 36px;
+      height: 56px; display: flex; justify-content: space-between; align-items: center;
+    }
+    .nav-logo {
+      font-family: var(--f-nav); font-size: 14px; font-weight: 700;
+      color: #1A1A18; letter-spacing: 0.06em; text-transform: uppercase; text-decoration: none;
+    }
+    .nav-univers { display: flex; align-items: center; gap: 4px; margin-left: 24px; margin-right: auto; }
+    .nav-univers a {
+      font-family: 'IBM Plex Sans', sans-serif; font-size: 11px; font-weight: 500;
+      color: #7A7A72; text-decoration: none; padding: 4px 10px; transition: color 0.2s;
+    }
+    .nav-univers a:hover { color: #1A1A18; }
+    .nav-univers a.active { color: var(--accent); font-weight: 600; }
+    .nav-links { display: flex; align-items: center; gap: 6px; }
+    .nav-links a {
+      font-family: 'IBM Plex Sans', sans-serif; font-size: 11px; font-weight: 500;
+      color: #7A7A72; text-decoration: none; padding: 4px 10px; transition: color 0.2s;
+    }
+    .nav-links a:hover { color: #1A1A18; }
+
+    /* ========================================
+       PAGE TITLE
+       ======================================== */
+    .page-header {
+      padding: 120px 0 0;
+      text-align: center;
+    }
+    .page-title {
+      font-family: var(--f-name);
+      font-size: 36px;
+      font-weight: 200;
+      color: var(--noir);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .page-role {
+      font-family: var(--f-body);
+      font-size: 13px;
+      font-weight: 300;
+      color: var(--gris);
+      letter-spacing: 0.04em;
+      margin-bottom: 48px;
+    }
+
+    /* ========================================
+       HERO STATEMENT
+       ======================================== */
+    .hero-statement {
+      padding: 0 0 60px;
+      text-align: center;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .hook-main {
+      font-family: var(--f-name);
+      font-size: 32px;
+      font-weight: 300;
+      line-height: 1.5;
+      color: var(--accent);
+      letter-spacing: 0.02em;
+      margin-bottom: 0;
+    }
+    .hook-secondary {
+      font-family: var(--f-name);
+      font-size: 20px;
+      font-weight: 300;
+      line-height: 1.5;
+      color: var(--texte);
+    }
+
+    /* ========================================
+       BIO
+       ======================================== */
+    .bio-section {
+      padding: 0 0 60px;
+    }
+    .bio-text {
+      font-family: var(--f-body);
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 1.8;
+      color: var(--texte);
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    /* ========================================
+       STATEMENT
+       ======================================== */
+    .statement-section {
+      padding: 80px 0;
+    }
+    .statement-title {
+      font-family: var(--f-body);
+      font-size: 13px;
+      font-weight: 300;
+      color: var(--texte);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 40px;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+      background: rgba(250,249,247,0.07);
+      padding: 4px 8px;
+      display: inline-block;
+      border-radius: 2px;
+    }
+    .statement-block {
+      margin-bottom: 40px;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .statement-block:last-child { margin-bottom: 0; }
+    .statement-subtitle {
+      font-family: var(--f-name);
+      font-size: 20px;
+      font-weight: 300;
+      color: var(--accent);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .statement-text {
+      font-family: var(--f-body);
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 1.8;
+      color: var(--texte);
+      margin-bottom: 16px;
+    }
+    .statement-text:last-child { margin-bottom: 0; }
+    .statement-text a {
+      color: var(--gris);
+      text-decoration: none;
+      border-bottom: 1px solid var(--gris-clair);
+      transition: color 0.2s;
+    }
+    .statement-text a:hover { color: var(--texte); }
+
+    /* ========================================
+       DISTINCTIONS
+       ======================================== */
+    .distinctions-section {
+      padding: 40px 0;
+    }
+    .distinctions-title {
+      font-family: var(--f-name);
+      font-size: 20px;
+      font-weight: 300;
+      color: var(--accent);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 32px;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .distinctions-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .distinctions-label {
+      font-family: var(--f-body);
+      font-size: 12px;
+      color: var(--texte);
+      font-weight: 300;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 12px;
+      background: rgba(250,249,247,0.07);
+      padding: 4px 8px;
+      display: inline-block;
+      border-radius: 2px;
+    }
+    .distinctions-list {
+      font-family: var(--f-body);
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 2;
+      color: var(--gris);
+      letter-spacing: 0.01em;
+    }
+
+    /* ========================================
+       ATELIER
+       ======================================== */
+    .atelier-section {
+      padding: 40px 0;
+    }
+    .atelier-title {
+      font-family: var(--f-name);
+      font-size: 20px;
+      font-weight: 300;
+      color: var(--accent);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 32px;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .atelier-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 12px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .atelier-grid .miniature {
+      cursor: pointer;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      transition: opacity 0.3s;
+      height: 150px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--fond-alt);
+    }
+    .atelier-grid .miniature:hover { opacity: 0.8; }
+    .atelier-grid .miniature img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+    }
+
+    /* ========================================
+       CONTACT
+       ======================================== */
+    .contact-section {
+      padding: 60px 0;
+      border-top: 1px solid var(--border);
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .contact-grid {
+      display: flex;
+      gap: 48px;
+      flex-wrap: wrap;
+    }
+    .contact-item {
+      font-family: var(--f-body);
+      font-size: 13px;
+      font-weight: 300;
+      color: var(--gris);
+      line-height: 1.8;
+    }
+    .contact-item a {
+      color: var(--gris);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .contact-item a:hover { color: var(--texte); }
+
+    /* ========================================
+       FOOTER
+       ======================================== */
+    footer {
+      padding: 48px 36px;
+      border-top: 1px solid var(--border);
+      text-align: center;
+    }
+    .footer-copy {
+      font-size: 11px;
+      color: var(--gris-clair);
+      font-weight: 300;
+    }
+
+    /* ========================================
+       LIGHTBOX
+       ======================================== */
+    .lightbox {
+      display: none;
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.95);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+    }
+    .lightbox.active { display: flex !important; }
+    .lightbox-wrapper {
+      position: relative; max-width: 90vw; max-height: 90vh; text-align: center;
+    }
+    .lightbox-image { max-width: 100%; max-height: 80vh; object-fit: contain; }
+    .lightbox-counter {
+      color: var(--gris-clair); font-family: var(--f-body); font-size: 11px; margin-top: 8px;
+    }
+    .lightbox-close,
+    .lightbox-prev,
+    .lightbox-next {
+      position: fixed; background: transparent; border: none;
+      color: var(--noir); font-size: 32px; cursor: pointer;
+      padding: 16px; transition: opacity 0.2s; z-index: 2001;
+    }
+    .lightbox-close:hover,
+    .lightbox-prev:hover,
+    .lightbox-next:hover { opacity: 0.7; }
+    .lightbox-close { top: 20px; right: 20px; }
+    .lightbox-prev { left: 20px; top: 50%; transform: translateY(-50%); }
+    .lightbox-next { right: 20px; top: 50%; transform: translateY(-50%); }
+
+    /* ========================================
+       RESPONSIVE
+       ======================================== */
+    @media (max-width: 900px) {
+      .distinctions-grid { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+      .atelier-grid { grid-template-columns: 1fr; }
+      .contact-grid { flex-direction: column; gap: 24px; }
+    }
+    @media (max-width: 540px) {
+      .container { padding: 0 24px; }
+      .page-title { font-size: 36px; }
+      .hook-main { font-size: clamp(24px, 8vw, 32px); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============ BANDEAU UNIFIÉ ============ -->
+  <nav>
+    <div class="nav-inner">
+      <a href="https://lauriane-mouysset.fr" class="nav-logo">L. Mouysset</a>
+      <div class="nav-univers">
+        <a href="https://lauriane-mouysset.fr/recherche/">Recherche</a>
+        <a href="index.html" class="active">Studio</a>
+        <a href="https://lauriane-mouysset.fr/in-visibles">In/Visibles</a>
+      </div>
+      <div class="nav-links">
+        <a href="https://instagram.com/mouysset_studio" target="_blank">Instagram</a>
+        <a href="contact.html">Contact</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+
+    <!-- ============ TITRE ============ -->
+    <div class="page-header">
+      <h1 class="page-title">Lauriane Mouysset</h1>
+      <p class="page-role">Fondatrice de Mouysset Studio</p>
+    </div>
+
+    <!-- ============ HERO STATEMENT ============ -->
+    <section class="hero-statement">
+      <h2 class="hook-main">L'art renouvelle la science.</h2>
+      <p class="hook-secondary">Le geste explore quand la pensée tourne en rond.</p>
+    </section>
+
+    <!-- ============ BIO ============ -->
+    <section class="bio-section">
+      <p class="bio-text">
+        Je ne suis pas artiste en tant que scientifique. Je suis artiste parce que mon geste déverrouille ma pensée. Chaque série naît d'un problème que je vis, dans ma vie professionnelle ou personnelle. La broderie me permet de l'aborder par le corps plutôt que par la pensée, et finalement de le traverser.
+      </p>
+    </section>
+
+    <!-- ============ STATEMENT ============ -->
+    <section class="statement-section">
+
+      <div class="statement-block">
+        <div class="statement-subtitle">Point de départ</div>
+        <p class="statement-text">
+          Directrice de recherche au CNRS, je travaille depuis quinze ans sur la crise de la biodiversité à l'interface de l'écologie, de l'économie et de la philosophie. Un jour, mon regard de chercheuse n'arrivait plus à se renouveler. Alors j'ai brodé. Des insectes dorés sur des portraits chinés. Et le déblocage est venu. De la main, pas de la tête. <a href="https://lauriane-mouysset.fr" target="_blank">En savoir plus sur mon activité scientifique →</a>
+        </p>
+      </div>
+
+      <div class="statement-block">
+        <div class="statement-subtitle">Processus</div>
+        <p class="statement-text">
+          Le processus est entièrement artisanal. Croquis, esquisse à l'échelle, choix de la photo dans mon stock, poinçonnage trou par trou, puis broderie. Chaque œuvre est une pièce unique. De la conception à la production, tout est long et rien n'est parfait. C'est le moyen que j'ai trouvé pour me reconnecter à un espace-temps plus humain, à contre-pied de mon activité de chercheuse globalisée et surconnectée.
+        </p>
+        <p class="statement-text">
+          Par l'usage de photos chinées et la lenteur obstinée du geste, ma démarche s'inscrit dans le courant du slow art : le recyclage d'œuvres existantes, la valorisation de l'artisanat. Une démarche qui me permet de rester cohérente avec des valeurs écologiques, que je porte aussi dans ma recherche scientifique sur la crise de la biodiversité.
+        </p>
+      </div>
+
+      <div class="statement-block">
+        <div class="statement-subtitle">Fil rouge</div>
+        <p class="statement-text">
+          Un fil rouge traverse toutes mes séries : la cohabitation. Cohabitation entre les humains, avec les non-humains, avec nos morts, avec nos traumas. Comment faire coexister ce qui semble inconciliable ? Comment habiter ensemble un monde pluriel ? C'est cette question qui sous-tend chacune de mes explorations, qu'elles soient scientifiques ou artistiques.
+        </p>
+        <p class="statement-text">
+          Ma broderie me permet de faire de la visualisation des données que l'on ne voit plus ou mal dans nos vies, dans nos sociétés, dans nos relations. Je propose un traitement épuré et graphique afin de capturer le cœur de ces données.
+        </p>
+      </div>
+
+      <div class="statement-block">
+        <div class="statement-subtitle">L'art renouvelle la science</div>
+        <p class="statement-text">
+          Je me place à contre-courant des initiatives art-science. Dans la plupart d'entre elles, la connaissance scientifique fournit la matière, et l'art la met en forme. Ici, c'est l'inverse : c'est la pratique artistique qui renouvelle ma recherche, qui lui ouvre des portes que l'exploration strictement intellectuelle n'arrivait pas à voir.
+        </p>
+        <p class="statement-text">
+          Cette exploration se prolonge dans mes objets numériques. Ma recherche scientifique théorise des concepts. Ma broderie explore les données par le geste. Mes objets numériques ouvrent une interface avec le public.
+        </p>
+      </div>
+
+      <!-- DISTINCTIONS -->
+      <div class="statement-block">
+        <div class="statement-subtitle">Distinctions</div>
+        <div class="distinctions-grid">
+          <div>
+            <div class="distinctions-label">Artistiques</div>
+            <div class="distinctions-list">
+              Galerie Même Si (2026)<br>
+              Pavillon Vendôme (2026)<br>
+              Cercle de l'Art (2025-26)<br>
+              Villa Médicis (2024-25)<br>
+              Galerie Ad Luminem (2022)
+            </div>
+          </div>
+          <div>
+            <div class="distinctions-label">Scientifiques</div>
+            <div class="distinctions-list">
+              Prix Terras sem Sombra, Biodiversité (2026, Lauréate)<br>
+              Ambassadrice Femmes & Sciences (depuis 2025)<br>
+              Prix Jeune Économiste du Monde (2025, nominée)<br>
+              Médaille de Bronze CNRS (2025, Lauréate)<br>
+              Cité des sciences de la Villette (2022)
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AU STUDIO -->
+      <div class="statement-block">
+        <div class="statement-subtitle">Au studio</div>
+        <div class="atelier-grid">
+          <div class="miniature" data-index="0"><img src="atelier-1.jpg" alt="Atelier"></div>
+          <div class="miniature" data-index="1"><img src="atelier-2.jpg" alt="Atelier"></div>
+          <div class="miniature" data-index="2"><img src="atelier-3.jpg" alt="Atelier"></div>
+          <div class="miniature" data-index="3"><img src="atelier-4.jpg" alt="Atelier"></div>
+          <div class="miniature" data-index="4"><img src="atelier-5.jpg" alt="Atelier"></div>
+          <div class="miniature" data-index="5"><img src="atelier-6.jpg" alt="Atelier"></div>
+          <div class="miniature" data-index="6"><img src="atelier-7.jpg" alt="Atelier"></div>
+          <div class="miniature" data-index="7"><img src="atelier-8.jpg" alt="Atelier"></div>
+          <div class="miniature" data-index="8"><img src="atelier-9.jpg" alt="Atelier"></div>
+          <div class="miniature" data-index="9"><img src="atelier-10.jpg" alt="Atelier"></div>
+          <div class="miniature" data-index="10"><img src="atelier-11.jpg" alt="Atelier"></div>
+          <div class="miniature" data-index="11"><img src="atelier-12.jpg" alt="Atelier"></div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ============ CONTACT ============ -->
+    <section class="contact-section">
+      <div class="contact-grid">
+        <div class="contact-item">
+          lauriane.mouysset(a)cnrs.fr
+        </div>
+        <div class="contact-item">
+          <a href="tel:+33607148768">06 07 14 87 68</a>
+        </div>
+        <div class="contact-item">
+          <a href="https://instagram.com/mouysset_studio" target="_blank">@mouysset_studio</a>
+        </div>
+        <div class="contact-item">
+          Studio Mouysset, Paris
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ============ FOOTER ============ -->
+  <footer>
+    <span class="footer-copy">© 2026 Lauriane Mouysset</span>
+  </footer>
+
+  <!-- ============ LIGHTBOX ============ -->
+  <div class="lightbox" id="lightbox">
+    <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
+    <button class="lightbox-prev" onclick="changeImage(-1)">&#8249;</button>
+    <button class="lightbox-next" onclick="changeImage(1)">&#8250;</button>
+    <div class="lightbox-wrapper">
+      <img id="lightbox-img" class="lightbox-image" src="" alt="">
+      <div class="lightbox-counter" id="lightbox-counter"></div>
+    </div>
+  </div>
+
+  <script>
+    const atelierImages = [
+      'atelier-1.jpg','atelier-2.jpg','atelier-3.jpg','atelier-4.jpg',
+      'atelier-5.jpg','atelier-6.jpg','atelier-7.jpg','atelier-8.jpg',
+      'atelier-9.jpg','atelier-10.jpg','atelier-11.jpg','atelier-12.jpg'
+    ];
+    let currentIndex = 0;
+
+    document.querySelectorAll('.atelier-grid .miniature').forEach((miniature, index) => {
+      miniature.addEventListener('click', () => openLightbox(index));
+    });
+
+    function openLightbox(index) {
+      currentIndex = index;
+      updateLightboxImage();
+      document.getElementById('lightbox').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeLightbox() {
+      document.getElementById('lightbox').classList.remove('active');
+      document.body.style.overflow = 'auto';
+    }
+    function changeImage(direction) {
+      currentIndex += direction;
+      if (currentIndex < 0) currentIndex = atelierImages.length - 1;
+      if (currentIndex >= atelierImages.length) currentIndex = 0;
+      updateLightboxImage();
+    }
+    function updateLightboxImage() {
+      document.getElementById('lightbox-img').src = atelierImages[currentIndex];
+      document.getElementById('lightbox-counter').textContent = (currentIndex + 1) + ' / ' + atelierImages.length;
+    }
+    document.getElementById('lightbox').addEventListener('click', (e) => {
+      if (e.target.id === 'lightbox') closeLightbox();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (!document.getElementById('lightbox').classList.contains('active')) return;
+      if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'ArrowRight') changeImage(1);
+      if (e.key === 'ArrowLeft') changeImage(-1);
+    });
+  </script>
+
+</body>
+</html>
