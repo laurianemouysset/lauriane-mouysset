@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Textile & Numérique — Mouysset Studio</title>
+  
+  <link rel="icon" type="image/png" href="favicon.png">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=IBM+Plex+Sans:wght@100;200;300;400&family=IBM+Plex+Mono:wght@300;400&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --f-name: 'IBM Plex Sans', sans-serif;
+      --f-body: 'IBM Plex Mono', monospace;
+      --f-nav: 'Space Grotesk', sans-serif;
+
+      --noir: #FAF9F7;
+      --blanc: #1A1A18;
+      --fond-alt: #252523;
+      --texte: #E0E0DD;
+      --gris: #9A9A95;
+      --gris-clair: #7A7A72;
+      --accent: #7A1F1A;
+      --border: rgba(250,249,247,0.1);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--blanc); color: var(--texte); font-family: var(--f-body); }
+    .container { max-width: 1140px; margin: 0 auto; padding: 0 36px; }
+
+    /* ========================================
+       BANDEAU UNIFIÉ
+       ======================================== */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      background: rgba(250,249,247,0.96); backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(26,26,24,0.1);
+    }
+    .nav-inner {
+      max-width: 1140px; margin: 0 auto; padding: 0 36px;
+      height: 56px; display: flex; justify-content: space-between; align-items: center;
+    }
+    .nav-logo {
+      font-family: var(--f-nav); font-size: 14px; font-weight: 700;
+      color: #1A1A18; letter-spacing: 0.06em; text-transform: uppercase; text-decoration: none;
+    }
+    .nav-univers { display: flex; align-items: center; gap: 4px; margin-left: 24px; margin-right: auto; }
+    .nav-univers a {
+      font-family: 'IBM Plex Sans', sans-serif; font-size: 11px; font-weight: 500;
+      color: #7A7A72; text-decoration: none; padding: 4px 10px; transition: color 0.2s;
+    }
+    .nav-univers a:hover { color: #1A1A18; }
+    .nav-univers a.active { color: var(--accent); font-weight: 600; }
+    .nav-links { display: flex; align-items: center; gap: 6px; }
+    .nav-links a {
+      font-family: 'IBM Plex Sans', sans-serif; font-size: 11px; font-weight: 500;
+      color: #7A7A72; text-decoration: none; padding: 4px 10px; transition: color 0.2s;
+    }
+    .nav-links a:hover { color: #1A1A18; }
+
+    /* ========================================
+       INTRO
+       ======================================== */
+    .intro-section {
+      padding: 120px 0 80px;
+      text-align: center;
+    }
+    .intro-title {
+      font-family: var(--f-name);
+      font-size: 48px;
+      font-weight: 200;
+      color: var(--noir);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 32px;
+    }
+    .intro-text {
+      font-family: var(--f-body);
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 1.8;
+      color: var(--texte);
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    /* ========================================
+       SECTIONS
+       ======================================== */
+    .section {
+      padding: 40px 0;
+    }
+    .section-title {
+      font-family: var(--f-name);
+      font-size: 20px;
+      font-weight: 300;
+      color: var(--accent);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 40px;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* 3 COLONNES */
+    .three-cols {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 40px;
+    }
+    .col-visual {
+      width: 100%;
+      height: 240px;
+      background: var(--fond-alt);
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+    .col-visual img {
+      width: 100%; height: 100%; object-fit: cover;
+    }
+    .col-label {
+      font-family: var(--f-body);
+      font-size: 13px;
+      font-weight: 300;
+      color: var(--texte);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      background: rgba(250,249,247,0.07);
+      padding: 4px 8px;
+      display: inline-block;
+      border-radius: 2px;
+    }
+    .col-text {
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 1.8;
+      color: var(--texte);
+    }
+
+    /* TEXTE APPORTE */
+    .apporte-text {
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 1.8;
+      color: var(--texte);
+      max-width: 900px;
+      margin: 0 auto 24px;
+    }
+
+    /* BLOCS DIFFÉRENCIATION */
+    .diff-block {
+      margin-bottom: 40px;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .diff-block:last-child { margin-bottom: 0; }
+    .diff-title {
+      font-family: var(--f-body);
+      font-size: 13px;
+      font-weight: 300;
+      color: var(--texte);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+      background: rgba(250,249,247,0.07);
+      padding: 4px 8px;
+      display: inline-block;
+      border-radius: 2px;
+    }
+    .diff-text {
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 1.8;
+      color: var(--texte);
+    }
+
+    /* GRILLE PROJETS */
+    .projets-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+    }
+    .projet-card {
+      display: block;
+      transition: transform 0.2s;
+      cursor: pointer;
+    }
+    .projet-card:hover { transform: translateY(-4px); }
+    .projet-thumb {
+      width: 100%;
+      height: 220px;
+      background: var(--fond-alt);
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+    .projet-thumb img {
+      width: 100%; height: 100%; object-fit: cover;
+    }
+    .projet-name {
+      font-family: var(--f-name);
+      font-size: 16px;
+      font-weight: 300;
+      color: var(--texte);
+      margin-bottom: 6px;
+    }
+    .projet-tag {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 300;
+      color: var(--texte);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 8px;
+      background: rgba(250,249,247,0.07);
+      padding: 2px 6px;
+      border-radius: 2px;
+    }
+    .projet-desc {
+      font-size: 13px;
+      font-weight: 300;
+      line-height: 1.7;
+      color: var(--gris);
+    }
+
+    /* CTA */
+    .cta-section {
+      padding: 60px 0;
+      text-align: center;
+    }
+    .cta-title {
+      font-family: var(--f-name);
+      font-size: 20px;
+      font-weight: 300;
+      color: var(--accent);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+    .cta-text {
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 2;
+      color: var(--texte);
+      margin-bottom: 32px;
+    }
+    .cta-button {
+      display: inline-block;
+      padding: 14px 36px;
+      font-family: var(--f-name);
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--texte);
+      background: transparent;
+      border: 1px solid var(--texte);
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .cta-button:hover {
+      background: var(--texte);
+      color: var(--blanc);
+    }
+
+    /* MODAL */
+    .modal-overlay {
+      display: none;
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(26,26,24,0.95);
+      z-index: 2000;
+      overflow-y: auto;
+      padding: 80px 36px;
+    }
+    .modal-overlay.active {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-content {
+      max-width: 900px;
+      width: 100%;
+      background: var(--fond-alt);
+      padding: 48px;
+      position: relative;
+    }
+    .modal-close {
+      position: absolute; top: 24px; right: 24px;
+      font-size: 32px; color: var(--gris); cursor: pointer;
+      background: none; border: none; line-height: 1;
+      transition: color 0.2s;
+    }
+    .modal-close:hover { color: var(--noir); }
+    .modal-title {
+      font-family: var(--f-name);
+      font-size: 32px;
+      font-weight: 200;
+      color: var(--texte);
+      margin-bottom: 12px;
+      letter-spacing: 0.02em;
+    }
+    .modal-tag {
+      font-size: 11px;
+      font-weight: 300;
+      color: var(--texte);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 24px;
+      display: block;
+      background: rgba(250,249,247,0.07);
+      padding: 4px 8px;
+      display: inline-block;
+      border-radius: 2px;
+    }
+    .modal-text {
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 1.8;
+      color: var(--texte);
+      margin-bottom: 32px;
+    }
+    .modal-link {
+      display: inline-block;
+      padding: 14px 36px;
+      font-family: var(--f-name);
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--texte);
+      background: transparent;
+      border: 1px solid var(--texte);
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .modal-link:hover {
+      background: var(--texte);
+      color: var(--blanc);
+    }
+
+    /* ========================================
+       FOOTER
+       ======================================== */
+    footer {
+      padding: 48px 36px;
+      border-top: 1px solid var(--border);
+      text-align: center;
+    }
+    .footer-copy {
+      font-size: 11px;
+      color: var(--gris-clair);
+      font-weight: 300;
+    }
+
+    /* ========================================
+       RESPONSIVE
+       ======================================== */
+    @media (max-width: 768px) {
+      .three-cols,
+      .projets-grid {
+        grid-template-columns: 1fr;
+        gap: 48px;
+      }
+      .nav-links { display: none; }
+      .intro-title { font-size: 36px; }
+    }
+    @media (max-width: 540px) {
+      .container { padding: 0 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============ BANDEAU UNIFIÉ ============ -->
+  <nav>
+    <div class="nav-inner">
+      <a href="https://lauriane-mouysset.fr" class="nav-logo">L. Mouysset</a>
+      <div class="nav-univers">
+        <a href="https://lauriane-mouysset.fr/recherche/">Recherche</a>
+        <a href="index.html" class="active">Studio</a>
+        <a href="https://lauriane-mouysset.fr/in-visibles">In/Visibles</a>
+      </div>
+      <div class="nav-links">
+        <a href="https://instagram.com/mouysset_studio" target="_blank">Instagram</a>
+        <a href="contact.html">Contact</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- INTRO -->
+  <section class="intro-section">
+    <div class="container">
+      <h1 class="intro-title">Textile & Numérique</h1>
+      <p class="intro-text">
+        La broderie incarne les données invisibles. Le numérique contextualise la science. Les ateliers ouvrent les données au public. Les projets du studio tissent une expérience entre chiffre, esthétique et échange.
+      </p>
+    </div>
+  </section>
+
+  <!-- SECTION 1 : COMMENT ÇA FONCTIONNE -->
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title">Comment ça fonctionne</h2>
+
+      <div class="three-cols">
+        
+        <!-- BRODERIE -->
+        <div>
+          <div class="col-visual">
+            <img src="photo-broderie-process.jpg" alt="Broderie">
+          </div>
+          <div class="col-label">Broderie</div>
+          <p class="col-text">
+            Broder des données invisibles sur du papier. Rapports de pouvoir, émotions face à la nature, pensées divergentes : les fils dessinent ce que les chiffres ne peuvent pas mesurer mais qui structure nos vies.
+          </p>
+        </div>
+
+        <!-- NUMÉRIQUE -->
+        <div>
+          <div class="col-visual">
+            <img src="screenshot-numerique-col.jpg" alt="Objet numérique">
+          </div>
+          <div class="col-label">Numérique</div>
+          <p class="col-text">
+            Coder des objets numériques pour contextualiser des données visibles. Curseurs, filtres, visualisations dynamiques : chacun peut explorer et se questionner. L'information devient appropriable.
+          </p>
+        </div>
+
+        <!-- ATELIERS -->
+        <div>
+          <div class="col-visual">
+            <img src="photo-atelier.jpg" alt="Atelier et performance">
+          </div>
+          <div class="col-label">Ateliers & Performances</div>
+          <p class="col-text">
+            Inviter le public à créer ensemble. Broder, performer les données, dialoguer : le public devient acteur de la révélation. Le geste devient espace de transmission.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 2 : CE QUE ÇA APPORTE CONCRÈTEMENT -->
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title">Ce que ça apporte concrètement</h2>
+
+      <p class="apporte-text">
+        Cette approche dépasse à la fois la simple médiation culturelle et la simple médiation scientifique. Elle ne se contente pas d'expliquer une œuvre déjà faite ou de visibiliser des données produites par des scientifiques. Elle fait de l'expérience du public une partie constitutive du projet. Dans les ateliers scolaires pour Science Taille XX Elles, les élèves ne reçoivent pas un discours sur les femmes en science : ils créent les outils de leur propre transmission. Les cartes qu'ils créent circulent ensuite dans les établissements. Ils deviennent médiateurs.
+      </p>
+
+      <p class="apporte-text">
+        Les objets numériques comme ton-extinction.fr ne disent pas "voici la crise écologique". Ils disent "quelle espèce a disparu ton année de naissance ?". Ils personnalisent, incarnent, ancrent. L'utilisateur ne consomme pas passivement une visualisation : il interroge les données, crée sa propre narration.
+      </p>
+    </div>
+  </section>
+
+  <!-- SECTION 3 : CE QUI ME DIFFÉRENCIE -->
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title">Ce qui me différencie</h2>
+
+      <div class="diff-block">
+        <h3 class="diff-title">Ma double formation n'est pas décorative</h3>
+        <p class="diff-text">
+          Directrice de recherche au CNRS, mes travaux sur la biodiversité sont publiés dans des revues à comité de lecture et j'ai reçu plusieurs distinctions académiques dont la Médaille de Bronze du CNRS. Cette légitimité scientifique garantit que les données que je manipule artistiquement sont robustes, sourcées, vérifiables.
+        </p>
+        <p class="diff-text">
+          Mais surtout elle me permet de parler de l'intérieur : depuis la recherche en train de se faire, depuis la position d'une chercheuse qui étudie un sujet crucial mais peu considéré dans le débat politique. Mon art ne vulgarise pas la science : il la met en tension avec l'émotion, le corps, le geste.
+        </p>
+      </div>
+
+      <div class="diff-block">
+        <h3 class="diff-title">Mon expérience de femme scientifique nourrit directement mes projets</h3>
+        <p class="diff-text">
+          Ambassadrice de Femmes & Sciences depuis 2025, j'ai vécu de l'intérieur les mécanismes d'invisibilisation. Guerrières n'est pas une série "sur" les femmes en science. C'est une série née de mon expérience face aux stéréotypes de genre dans la recherche. Les ateliers que j'anime ne transmettent pas un savoir extérieur : ils partagent un vécu incarné.
+        </p>
+      </div>
+
+      <div class="diff-block">
+        <h3 class="diff-title">Aucune sous-traitance</h3>
+        <p class="diff-text">
+          Concevoir les projets, coder les interfaces, broder les œuvres, animer les ateliers. Cette maîtrise complète de la chaîne garantit une cohérence que peu d'artistes peuvent offrir. Pas de traduction, pas de perte : le projet porte la pensée de bout en bout.
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SECTION 4 : OBJETS NUMÉRIQUES -->
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title">Objets numériques</h2>
+
+      <div class="projets-grid">
+
+        <!-- À SA PLACE -->
+        <div class="projet-card" data-projet="asaplace">
+          <div class="projet-thumb">
+            <img src="screenshot-asaplace-card.jpg" alt="À sa place">
+          </div>
+          <div class="projet-name">À sa place</div>
+          <div class="projet-tag">Numérique</div>
+          <p class="projet-desc">
+            Objet numérique explorant les disparités de genre dans la reconnaissance scientifique via Wikipedia
+          </p>
+        </div>
+
+        <!-- TON EXTINCTION -->
+        <div class="projet-card" data-projet="tonextinction">
+          <div class="projet-thumb">
+            <img src="screenshot-ton-extinction.jpg" alt="Ton extinction">
+          </div>
+          <div class="projet-name">Ton extinction</div>
+          <div class="projet-tag">Numérique</div>
+          <p class="projet-desc">
+            Quelle espèce a disparu l'année de ta naissance ? Objet numérique personnalisant la crise écologique
+          </p>
+        </div>
+
+        <!-- FORME DE PENSÉE -->
+        <div class="projet-card" data-projet="formedepensee">
+          <div class="projet-thumb">
+            <img src="screenshot-forme-de-pensee-card.jpg" alt="Forme de pensée">
+          </div>
+          <div class="projet-name">Forme de pensée</div>
+          <div class="projet-tag">Numérique</div>
+          <p class="projet-desc">
+            Objet numérique dessinant votre forme de pensée à partir d'un questionnaire
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 5 : ATELIERS ET PERFORMANCES -->
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title">Ateliers et performances</h2>
+
+      <div class="projets-grid">
+
+        <!-- MA GUERRIÈRE -->
+        <div class="projet-card" id="maguerriere" data-projet="maguerriere">
+          <div class="projet-thumb">
+            <img src="photo-atelier-maguerriere-card.jpg" alt="Atelier Ma Guerrière">
+          </div>
+          <div class="projet-name">Ma Guerrière</div>
+          <div class="projet-tag">Atelier</div>
+          <p class="projet-desc">
+            S'approprier sa guerrière scientifique après avoir vu l'installation Guerrières — les enfants repartent avec leur guerrière, son histoire et l'injustice qu'elle a subie
+          </p>
+        </div>
+
+        <!-- AGORA COLLECTIVE -->
+        <div class="projet-card" id="agoracollective" data-projet="agoracollective">
+          <div class="projet-thumb">
+            <img src="photo-performance-agora.jpg" alt="Agora collective">
+          </div>
+          <div class="projet-name">Nous sommes l'Agora</div>
+          <div class="projet-tag">Performance</div>
+          <p class="projet-desc">
+            Un questionnaire transforme chaque pensée en forme géométrique unique. Les formes s'agrègent en constellation collective, projetée en temps réel. Le résultat est l'agora collective de l'événement qui est décalquée puis brodée
+          </p>
+        </div>
+
+        <!-- MASQUÉES -->
+        <div class="projet-card" id="masquees" data-projet="masquees">
+          <div class="projet-thumb">
+            <img src="photo-atelier-masquees-card.jpg" alt="Atelier Masquées">
+          </div>
+          <div class="projet-name">Masquées pour démasquer</div>
+          <div class="projet-tag">Atelier</div>
+          <p class="projet-desc">
+            Projet pédagogique avec un groupe scolaire, de la maternelle au CM2 — masquer des portraits de femmes scientifiques pour attirer l'attention sur elles et dénoncer les injustices d'invisibilisation
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="container">
+      <h2 class="cta-title">Collaborer</h2>
+      <p class="cta-text">
+        Commande d'œuvre brodée<br>
+        Création d'objet numérique sur mesure<br>
+        Atelier ou performance pour votre institution
+      </p>
+      <a href="contact.html" class="cta-button">Contact</a>
+    </div>
+  </section>
+
+  <!-- MODAL PROJET -->
+  <div class="modal-overlay" id="modal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeModal()">×</button>
+      <h2 class="modal-title" id="modal-title"></h2>
+      <span class="modal-tag" id="modal-tag"></span>
+      <p class="modal-text" id="modal-text"></p>
+      <div id="modal-link-container"></div>
+    </div>
+  </div>
+
+  <!-- ============ FOOTER ============ -->
+  <footer>
+    <span class="footer-copy">© 2026 Lauriane Mouysset</span>
+  </footer>
+
+  <script>
+    const projets = {
+      asaplace: {
+        title: "À sa place",
+        tag: "Numérique",
+        text: "8 découvertes scientifiques majeures. À chaque fois, un homme et une femme ont contribué de manière comparable. Deux mesures de reconnaissance sont comparées.\n\nMémoire collective — nombre de langues dans lesquelles chaque scientifique dispose d'un article Wikipédia (source : Wikidata, janvier 2025). Cet indicateur reflète la reconnaissance structurelle.\n\nIntérêt réel — nombre total de consultations de la page Wikipédia anglophone (source : Wikimedia Pageviews, janvier 2025 – janvier 2026). Cet indicateur reflète l'intérêt réel du public aujourd'hui.\n\nLe résultat est saisissant : là où les structures encyclopédiques reflètent encore les hiérarchies du passé, le regard collectif est en train de les corriger. Ceci n'est pas une investigation sociologique mais un geste de visibilisation.",
+        link: "https://lauriane-mouysset.fr/a-sa-place/"
+      },
+      tonextinction: {
+        title: "Ton extinction",
+        tag: "Numérique",
+        text: "La crise de la biodiversité n'est pas un problème technique qu'on résoudra avec des chiffres. Ce n'est pas non plus un problème purement moral qu'on résoudra avec de la culpabilité. C'est un problème complexe qui demande de croiser les regards.\n\nChaque année de naissance est associée à une espèce éteinte cette année-là. L'objet numérique personnalise l'expérience de la crise écologique : ce n'est plus abstrait, c'est ton année, ton extinction, ton regard croisé.",
+        link: "https://lauriane-mouysset.fr/ton-extinction/"
+      },
+      formedepensee: {
+        title: "Forme de pensée",
+        tag: "Numérique",
+        text: "Un rapide questionnaire individuel dessine votre forme de pensée — une géométrie unique qui rend visible la manière dont vous pensez le monde.",
+        link: "https://lauriane-mouysset.fr/forme-de-pensee/"
+      },
+      maguerriere: {
+        title: "Ma Guerrière",
+        tag: "Atelier",
+        text: "Dans le cadre de l'exposition de l'installation Guerrières au Pavillon Vendôme (Clichy), les enfants s'approprient leur guerrière scientifique. Après avoir découvert les œuvres brodées, ils reprennent le geste avec du matériel créatif.\n\nChaque enfant repart avec sa guerrière, son histoire et l'injustice qu'elle a subie. L'atelier transforme la visite d'exposition en expérience de transmission : les enfants ne reçoivent pas un discours sur les femmes en science, ils créent les outils de leur propre récit.",
+        link: null
+      },
+      agoracollective: {
+        title: "Nous sommes l'Agora",
+        tag: "Performance",
+        text: "Nous sommes l'Agora est un dispositif artistique en trois temps.\n\nLe visiteur peut, via un QR Code, accéder à l'objet numérique Forme de Pensée qui transforme les réponses de chaque participant en une forme de pensée unique générée par algorithme et rendue en points de couture simulés.\n\nQuelques secondes après, un extrait de cette forme personnalisée est sélectionné et envoyé en temps réel dans une constellation projetée au mur au-dessus d'un buste blanc. Le visiteur voit sa pensée rejoindre celles des autres, formant une agora collective, un monde pluriel, une pensée riche et diversifiée.\n\nAprès l'exposition, l'ensemble est reproduit au feutre sur un grand format papier, puis des liens sont brodés entre les différents constituants de l'agora collective.",
+        link: "https://lauriane-mouysset.fr/forme-de-pensee/"
+      },
+      masquees: {
+        title: "Masquées pour démasquer",
+        tag: "Atelier",
+        text: "Projet pédagogique mené avec un groupe scolaire, plusieurs classes de la maternelle au CM2.\n\nLe projet commence par une présentation de femmes scientifiques et une discussion sur ce que signifie être une femme scientifique face aux stéréotypes de genre. Les enfants découvrent ensuite quelques guerrières scientifiques brodées, extraites de la collection Guerrières, puis de nombreuses femmes scientifiques avec leur histoire, leur découverte et leur combat.\n\nLes enfants sont invités à masquer ces portraits avec des masques colorés pour attirer l'attention sur elles et dénoncer les injustices d'invisibilisation. Le projet se conclut par une restitution sous forme d'exposition présentée aux parents dans la bibliothèque de l'école.",
+        link: null
+      }
+    };
+
+    document.querySelectorAll('.projet-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const projetId = card.getAttribute('data-projet');
+        const projet = projets[projetId];
+        document.getElementById('modal-title').textContent = projet.title;
+        document.getElementById('modal-tag').textContent = projet.tag;
+        document.getElementById('modal-text').innerHTML = projet.text.replace(/\n\n/g, '<br><br>');
+        const linkContainer = document.getElementById('modal-link-container');
+        if (projet.link) {
+          linkContainer.innerHTML = '<a href="' + projet.link + '" target="_blank" class="modal-link">Voir le projet →</a>';
+        } else {
+          linkContainer.innerHTML = '';
+        }
+        document.getElementById('modal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+      });
+    });
+
+    function closeModal() {
+      document.getElementById('modal').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    document.getElementById('modal').addEventListener('click', (e) => {
+      if (e.target.id === 'modal') closeModal();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeModal();
+    });
+  </script>
+
+</body>
+</html>
