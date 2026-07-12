@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>In/Visibles — Lauriane Mouysset</title>
+
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+
+  <meta name="description" content="In/Visibles — association loi 1901 pour faire reconnaître et rendre visible le deuil périnatal.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --f-display: 'Space Grotesk', sans-serif;
+      --f-body: 'IBM Plex Sans', sans-serif;
+
+      --noir: #1A1A18;
+      --blanc: #FAF9F7;
+      --fond-alt: #F0EEEA;
+      --texte: #4A4A46;
+      --gris: #7A7A72;
+      --gris-clair: #B8B8B0;
+
+      --accent: #2F5D45;
+      --accent-clair: #4A6B4A;
+      --accent-pale: #EAF0EC;
+      --accent-trait: rgba(47,93,69,0.16);
+
+      --border: rgba(26,26,24,0.1);
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--blanc); color: var(--texte); font-family: var(--f-body); }
+    ::selection { background: var(--accent-pale); color: var(--accent); }
+
+    .container { max-width: 1000px; margin: 0 auto; padding: 0 36px; }
+
+    /* ========== NAV ========== */
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: rgba(250,249,247,0.96); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); }
+    .nav-inner { max-width: 1000px; margin: 0 auto; padding: 0 36px; height: 56px; display: flex; justify-content: space-between; align-items: center; }
+    .nav-logo { font-family: var(--f-display); font-size: 14px; font-weight: 700; color: var(--noir); letter-spacing: 0.06em; text-transform: uppercase; text-decoration: none; }
+    .nav-univers { display: flex; align-items: center; gap: 4px; margin-left: 24px; margin-right: auto; }
+    .nav-univers a { font-family: var(--f-body); font-size: 11px; font-weight: 500; color: var(--gris); text-decoration: none; padding: 4px 10px; transition: color 0.2s; }
+    .nav-univers a:hover { color: var(--noir); }
+    .nav-univers a.active { color: var(--accent); font-weight: 600; }
+    .nav-links { display: flex; align-items: center; gap: 6px; }
+    .nav-links a { font-family: var(--f-body); font-size: 11px; font-weight: 500; color: var(--gris); text-decoration: none; padding: 4px 10px; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--noir); }
+
+    /* ========== HERO ========== */
+    .hero { padding: 128px 0 52px; }
+    .hero-mark { font-family: var(--f-body); font-size: 14px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); display: flex; align-items: center; gap: 14px; margin-bottom: 28px; }
+    .hero-mark::before { content: ''; width: 34px; height: 1px; background: var(--accent); }
+    .hero-title { font-family: var(--f-display); font-size: clamp(72px, 11vw, 132px); font-weight: 300; line-height: 0.95; letter-spacing: -0.03em; color: var(--noir); }
+    .hero-title .slash { color: var(--accent); font-weight: 400; margin: 0 -0.035em; }
+    .hero-title .visibles { font-weight: 600; }
+    .hero-accroche { font-family: var(--f-display); font-size: clamp(20px, 2.6vw, 27px); font-weight: 400; line-height: 1.28; letter-spacing: -0.02em; color: var(--noir); max-width: 820px; margin-top: 30px; }
+    .hero-accroche strong { font-weight: 600; color: var(--accent); }
+    .hero-baseline { font-family: var(--f-body); font-size: 18px; font-weight: 300; line-height: 1.6; color: var(--texte); max-width: 920px; margin-top: 22px; }
+    .hero-baseline strong { font-weight: 600; color: var(--accent); }
+
+    /* ========== SECTIONS ========== */
+    section { padding: 44px 0; }
+    .rule-top { border-top: 1px solid var(--border); }
+    .kicker { font-family: var(--f-body); font-size: 12.5px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); margin-bottom: 14px; display: flex; align-items: center; gap: 10px; }
+    .kicker::before { content: ''; width: 18px; height: 1px; background: var(--accent-trait); flex: none; }
+    .s-title { font-family: var(--f-display); font-size: 26px; font-weight: 400; line-height: 1.12; letter-spacing: -0.02em; color: var(--noir); margin-bottom: 14px; }
+    .s-title em { font-style: italic; font-weight: 300; }
+
+    /* ========== MISSIONS ========== */
+    .mission { background: var(--accent-pale); }
+    .mission-statement { font-family: var(--f-body); font-size: 15.5px; font-weight: 300; line-height: 1.6; color: var(--noir); max-width: 920px; margin-bottom: 14px; }
+    .mission-statement strong { font-weight: 500; }
+    .mission-clause { font-family: var(--f-body); font-size: 15.5px; font-weight: 300; line-height: 1.6; color: var(--accent-clair); max-width: 920px; margin-bottom: 28px; }
+    .name-link { color: var(--accent); font-weight: 500; text-decoration: none; border-bottom: 1px solid var(--accent-trait); cursor: pointer; transition: border-color 0.2s; }
+    .name-link:hover { border-color: var(--accent); }
+    .mission-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--accent-trait); border: 1px solid var(--accent-trait); }
+    .mission-item { background: var(--blanc); padding: 20px 18px; }
+    .mission-item-num { font-family: var(--f-display); font-size: 12px; font-weight: 600; color: var(--accent-clair); margin-bottom: 8px; }
+    .mission-item-text { font-family: var(--f-body); font-size: 13.5px; font-weight: 300; line-height: 1.5; color: var(--texte); }
+    .mission-item-text strong { font-weight: 600; color: var(--noir); display: block; margin-bottom: 3px; }
+
+    /* ========== NOS ACTIONS — vignettes (4 par ligne) ========== */
+    .actions-head { margin-bottom: 24px; }
+    .actions-sub { font-family: var(--f-display); font-size: 18px; font-weight: 400; line-height: 1.2; letter-spacing: -0.02em; color: var(--noir); margin-top: 4px; }
+
+    .grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+
+    .vig { text-decoration: none; display: flex; flex-direction: column; cursor: pointer; }
+    .vig:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+    .vig-tag { font-family: var(--f-body); font-size: 9.5px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; display: flex; align-items: center; gap: 7px; }
+    .vig-tag::before { content: ''; width: 12px; height: 1px; background: var(--accent); flex: none; }
+    .vig-media { position: relative; aspect-ratio: 4/5; overflow: hidden; background: var(--noir); }
+    .vig-media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+    .vig:hover .vig-media img { transform: scale(1.04); }
+    .vig-badge { position: absolute; top: 9px; left: 9px; z-index: 2; background: var(--accent); color: #fff; font-family: var(--f-body); font-size: 10px; padding: 3px 7px; }
+    .vig-badge strong { font-weight: 600; }
+    .vig-media.is-carto { background: var(--accent-pale); }
+
+    /* cartes document — tribunes (papier) & note (vert asso) */
+    .vig-media.is-doc { display: flex; flex-direction: column; }
+    .doc-quote { flex: 1; display: flex; align-items: center; justify-content: center; text-align: center; padding: 16px 14px; font-family: var(--f-display); font-size: 13.5px; font-weight: 400; line-height: 1.34; letter-spacing: -0.01em; }
+
+    /* tribunes : fond papier + logo du journal (document externe) */
+    .vig-media.is-press { background: var(--fond-alt); }
+    .doc-masthead { height: 54px; flex: none; background: #fff; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: center; padding: 8px 16px; overflow: hidden; }
+    .doc-masthead.is-dark-mh { background: var(--noir); border-bottom-color: rgba(255,255,255,0.14); }
+    /* surcharge la règle .vig-media img (réservée aux photos) pour les logos */
+    .doc-masthead .doc-logo { position: static; inset: auto; width: auto; height: auto; max-height: 22px; max-width: 78%; object-fit: contain; display: block; }
+    .doc-masthead .doc-logo--echos { max-height: 30px; max-width: 90%; }
+    .doc-masthead .doc-head { padding: 0; font-family: var(--f-display); font-weight: 700; font-size: 15px; line-height: 1; letter-spacing: -0.015em; color: var(--noir); }
+    .vig-media.is-press .doc-quote { color: var(--noir); }
+
+    /* note d'analyse : couverture de document produit par l'asso (distincte des tribunes) */
+    .vig-media.is-report { background: var(--accent); justify-content: space-between; padding: 16px 15px 18px; }
+    .report-brand { font-family: var(--f-display); font-size: 15px; font-weight: 300; line-height: 1; color: rgba(250,249,247,0.9); }
+    .report-brand .slash { color: rgba(250,249,247,0.6); }
+    .report-brand .visibles { font-weight: 600; }
+    .report-title { display: block; font-family: var(--f-display); font-size: 18px; font-weight: 500; line-height: 1.14; letter-spacing: -0.01em; color: var(--blanc); margin-bottom: 9px; }
+    .report-title .nowrap { white-space: nowrap; }
+    .report-desc { display: block; font-family: var(--f-body); font-size: 12px; font-weight: 300; line-height: 1.5; color: rgba(250,249,247,0.86); }
+
+    /* contact : fond vert + marque */
+    .vig-media.is-contact { background: var(--fond-alt); }
+    .vig-media.is-contact .doc-spacer { height: 54px; flex: none; }
+    .vig-media.is-contact .doc-name { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-align: center; padding: 10px 14px 34px; font-family: var(--f-display); font-size: 20px; font-weight: 300; line-height: 1.05; color: var(--noir); }
+    .vig-media.is-contact .doc-name .slash { color: var(--accent); font-weight: 400; }
+    .vig-media.is-contact .doc-name .visibles { font-weight: 600; }
+
+    .vig-body { padding: 11px 2px 0; display: flex; flex-direction: column; }
+    .vig-title { font-family: var(--f-display); font-size: 13.5px; font-weight: 600; line-height: 1.2; letter-spacing: -0.01em; color: var(--noir); margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .vig-foot { font-family: var(--f-body); font-size: 11px; font-weight: 500; color: var(--accent); margin-top: 6px; display: inline-flex; align-items: center; gap: 5px; transition: gap 0.2s; }
+    .vig:hover .vig-foot { gap: 9px; }
+
+    @media (max-width: 860px) { .grid4 { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 600px) { .grid4 { grid-template-columns: repeat(2, 1fr); gap: 13px; } }
+
+    /* ========== BANDEAU DON ========== */
+    .don { background: var(--accent); }
+    .don-inner { display: flex; align-items: center; justify-content: space-between; gap: 28px; flex-wrap: wrap; padding: 36px 0; }
+    .don-text h3 { font-family: var(--f-display); font-size: 24px; font-weight: 400; letter-spacing: -0.02em; color: var(--blanc); margin-bottom: 6px; }
+    .don-text p { font-family: var(--f-body); font-size: 13.5px; font-weight: 300; line-height: 1.6; color: rgba(250,249,247,0.85); max-width: 540px; }
+    .don-btn { font-family: var(--f-body); font-size: 13px; font-weight: 600; color: var(--accent); background: var(--blanc); border: 1px solid var(--blanc); text-decoration: none; padding: 13px 26px; border-radius: 2px; white-space: nowrap; transition: background 0.2s, color 0.2s, transform 0.2s; }
+    .don-btn:hover { background: transparent; color: var(--blanc); transform: translateY(-2px); }
+
+    /* ========== FOOTER ========== */
+    footer { background: var(--fond-alt); border-top: 1px solid var(--border); padding: 40px 0 28px; }
+    .footer-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 32px; margin-bottom: 28px; }
+    .footer-col h4 { font-family: var(--f-body); font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; }
+    .footer-col p, .footer-col a { font-family: var(--f-body); font-size: 12.5px; font-weight: 300; line-height: 1.6; color: var(--texte); text-decoration: none; }
+    .footer-col a { display: block; transition: color 0.2s; }
+    .footer-col a:hover { color: var(--accent); }
+    .footer-brand { font-family: var(--f-display); font-size: 18px; font-weight: 300; color: var(--noir); margin-bottom: 10px; }
+    .footer-brand .slash { color: var(--accent); } .footer-brand .visibles { font-weight: 600; }
+    .footer-legal { font-family: var(--f-body); font-size: 11px; font-weight: 300; line-height: 1.6; color: var(--gris); max-width: 360px; }
+    .footer-bottom { border-top: 1px solid var(--border); padding-top: 18px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+    .footer-bottom span { font-family: var(--f-body); font-size: 11px; color: var(--gris-clair); }
+
+    /* ========== MODALES ========== */
+    .modal-overlay { position: fixed; inset: 0; z-index: 2000; background: rgba(26,26,24,0.45); backdrop-filter: blur(3px); display: none; align-items: center; justify-content: center; padding: 24px; opacity: 0; transition: opacity 0.25s; }
+    .modal-overlay.open { display: flex; opacity: 1; }
+    .modal { background: var(--blanc); max-width: 600px; width: 100%; max-height: 88vh; overflow-y: auto; border-radius: 3px; box-shadow: 0 24px 60px rgba(26,26,24,0.25); position: relative; transform: translateY(12px); transition: transform 0.25s; }
+    .modal-overlay.open .modal { transform: translateY(0); }
+    .modal-head { position: relative; padding: 28px 32px 0; }
+    .modal-photo { width: calc(100% + 64px); margin: -28px -32px 22px; display: block; height: auto; }
+    .modal-photo--crop { max-height: 240px; object-fit: cover; object-position: center 58%; }
+    .modal-video { width: calc(100% + 64px); margin: -28px -32px 22px; aspect-ratio: 16/9; background: var(--noir); display: block; }
+    .modal-video iframe, .modal-video video { width: 100%; height: 100%; border: 0; display: block; }
+    .modal-close { position: absolute; top: 16px; right: 16px; z-index: 3; width: 32px; height: 32px; border: none; border-radius: 50%; background: rgba(250,249,247,0.92); color: var(--noir); font-size: 20px; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
+    .modal-close:hover { background: #fff; }
+    .modal-kicker { font-family: var(--f-body); font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
+    .modal-title { font-family: var(--f-display); font-size: 26px; font-weight: 400; line-height: 1.12; letter-spacing: -0.02em; color: var(--noir); margin-bottom: 14px; }
+    .modal-body { padding: 0 32px 32px; }
+    .modal-body p { font-family: var(--f-body); font-size: 14px; font-weight: 300; line-height: 1.7; color: var(--texte); margin-bottom: 14px; }
+    .modal-body p strong { font-weight: 600; color: var(--accent); }
+    .modal-body p.modal-lead { font-family: var(--f-body); font-size: 16px; font-weight: 400; line-height: 1.6; color: var(--noir); margin-bottom: 16px; }
+    .modal-sub { font-family: var(--f-body); font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin: 4px 0 12px; }
+    .modal-facts { list-style: none; margin: 4px 0 18px; padding: 16px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); display: grid; gap: 8px; }
+    .modal-facts li { font-family: var(--f-body); font-size: 13px; font-weight: 300; color: var(--texte); display: flex; gap: 10px; }
+    .modal-facts li b { font-weight: 600; color: var(--noir); min-width: 96px; flex: none; }
+    .modal-note { font-family: var(--f-body); font-size: 11.5px; font-style: italic; color: var(--gris); margin-top: 4px; }
+    .modal-cta { display: inline-flex; align-items: center; gap: 8px; font-family: var(--f-body); font-size: 13px; font-weight: 500; color: var(--blanc); background: var(--accent); text-decoration: none; padding: 11px 22px; border-radius: 2px; margin-top: 6px; transition: background 0.2s; }
+    .modal-cta:hover { background: var(--accent-clair); }
+    .modal-cta.secondary { background: transparent; color: var(--accent); border: 1px solid var(--accent-trait); }
+    .modal-cta.secondary:hover { background: var(--accent-pale); }
+    .modal-cta-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
+    .modal-source { font-family: var(--f-body); font-size: 12px; font-weight: 600; color: var(--accent); letter-spacing: 0.01em; margin: 2px 0 16px; }
+    .modal-title .nowrap { white-space: nowrap; }
+
+    /* ========== RESPONSIVE ========== */
+    @media (max-width: 820px) {
+      .mission-grid { grid-template-columns: repeat(2, 1fr); }
+      .footer-grid { grid-template-columns: 1fr; gap: 24px; }
+      .cards { grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); }
+    }
+    @media (max-width: 540px) {
+      .container { padding: 0 24px; }
+      .nav-links { display: none; }
+      .hero { padding: 100px 0 64px; }
+      .mission-grid { grid-template-columns: 1fr; }
+      .don-inner { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========== NAV ========== -->
+  <nav>
+    <div class="nav-inner">
+      <a href="https://lauriane-mouysset.fr" class="nav-logo">L. Mouysset</a>
+      <div class="nav-univers">
+        <a href="https://lauriane-mouysset.fr/recherche/">Recherche</a>
+        <a href="https://lauriane-mouysset.fr/studio/">Studio</a>
+        <a href="#" class="active">In/Visibles</a>
+      </div>
+      <div class="nav-links">
+        <a href="https://www.instagram.com/mon.grand.frere.etoile/" target="_blank">Instagram</a>
+        <a href="#contact">Contact</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <!-- ========== HERO ========== -->
+    <header class="hero">
+      <div class="hero-mark">Association loi 1901</div>
+      <h1 class="hero-title">In<span class="slash">/</span><span class="visibles">Visibles</span></h1>
+      <p class="hero-accroche">
+        Perdre un enfant avant, pendant ou peu après la naissance n'est ni rare, ni honteux. C'est pourtant <strong>l'un des derniers tabous</strong>.
+      </p>
+      <p class="hero-baseline">
+        Comme l'avortement, la fausse couche ou la PMA avant lui, il est temps que la société affronte ce deuil. Laissé dans l'intime, <strong>le deuil périnatal</strong> isole et culpabilise. Porté dans l'espace public, il devient <strong>l'affaire de tous</strong>&nbsp;: on le comprend, on outille mieux, on légifère correctement, on cesse d'avoir honte.
+      </p>
+    </header>
+  </div>
+
+  <!-- ========== MISSIONS ========== -->
+  <section class="mission">
+    <div class="container">
+      <div class="kicker">L'association</div>
+      <p class="mission-statement">
+        L'association In/Visibles, fondée par <a class="name-link" role="button" tabindex="0" onclick="openModal('modal-portrait')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openModal('modal-portrait');}">Lauriane Mouysset</a>, vise à transformer le regard de la société sur le deuil périnatal. Sa mission&nbsp;: faire connaître ce deuil, du grand public aux institutions, pour qu'il cesse d'être une affaire privée et devienne une responsabilité collective.
+      </p>
+      <p class="mission-clause">
+        In/Visibles ne propose pas d'accompagnement aux familles qui traversent ce deuil. Toutefois, les personnes en demande de soutien seront accueillies avec bienveillance et orientées vers les ressources et services adaptés.
+      </p>
+      <div class="mission-grid">
+        <div class="mission-item"><div class="mission-item-num">01</div><p class="mission-item-text"><strong>Créer</strong>Éditer et diffuser des œuvres et des supports sur ce deuil.</p></div>
+        <div class="mission-item"><div class="mission-item-num">02</div><p class="mission-item-text"><strong>Informer</strong>Faire connaître les droits, les ressources et les dispositifs existants.</p></div>
+        <div class="mission-item"><div class="mission-item-num">03</div><p class="mission-item-text"><strong>Rassembler</strong>Organiser des rencontres et des événements de sensibilisation.</p></div>
+        <div class="mission-item"><div class="mission-item-num">04</div><p class="mission-item-text"><strong>Faire évoluer</strong>Contribuer à une meilleure prise en compte, sociale et juridique.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== NOS ACTIONS ========== -->
+  <section class="rule-top">
+    <div class="container">
+      <div class="actions-head">
+        <div class="kicker">Nos actions</div>
+        <p class="actions-sub">Porter le deuil périnatal dans l'espace public.</p>
+      </div>
+
+      <div class="grid4">
+
+        <!-- LIVRE -->
+        <div class="vig" role="button" tabindex="0" onclick="openModal('modal-livre')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openModal('modal-livre');}">
+          <span class="vig-tag">Créer</span>
+          <div class="vig-media"><img src="couverture-livre.jpg" alt="Couverture de Mon grand frère étoile"></div>
+          <div class="vig-body">
+            <span class="vig-title">Album jeunesse dès 4 ans</span>
+            <span class="vig-foot">Découvrir le livre →</span>
+          </div>
+        </div>
+
+        <!-- TRIBUNE L'OBS -->
+        <div class="vig" role="button" tabindex="0" onclick="openModal('modal-trib-obs')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openModal('modal-trib-obs');}">
+          <span class="vig-tag">Faire évoluer</span>
+          <div class="vig-media is-doc is-press">
+            <div class="doc-masthead is-dark-mh">
+              <img class="doc-logo" src="logo-nouvelobs.png" alt="Le Nouvel Obs" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+              <span class="doc-head" style="display:none;">Le Nouvel Obs</span>
+            </div>
+            <span class="doc-quote">« Un frère dont l'école n'a jamais entendu le nom. »</span>
+          </div>
+          <div class="vig-body">
+            <span class="vig-title">Tribune de presse</span>
+            <span class="vig-foot">Lire la tribune →</span>
+          </div>
+        </div>
+
+        <!-- TABLE RONDE -->
+        <div class="vig" role="button" tabindex="0" onclick="openModal('modal-event')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openModal('modal-event');}">
+          <span class="vig-tag">Rassembler</span>
+          <div class="vig-media">
+            <img src="table-ronde.jpg" alt="Les intervenants de la table ronde, Mairie de Paris Centre">
+          </div>
+          <div class="vig-body">
+            <span class="vig-title">Discussion avec 3 spécialistes</span>
+            <span class="vig-foot">Découvrir la table ronde →</span>
+          </div>
+        </div>
+
+        <!-- TRIBUNE LA CROIX -->
+        <div class="vig" role="button" tabindex="0" onclick="openModal('modal-trib-croix')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openModal('modal-trib-croix');}">
+          <span class="vig-tag">Faire évoluer</span>
+          <div class="vig-media is-doc is-press">
+            <div class="doc-masthead">
+              <img class="doc-logo" src="logo-lacroix.png" alt="La Croix" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+              <span class="doc-head" style="display:none;">La Croix</span>
+            </div>
+            <span class="doc-quote">« Il lui reste le geste symétrique, pour ceux<br>qui repartent sans. »</span>
+          </div>
+          <div class="vig-body">
+            <span class="vig-title">Tribune de presse</span>
+            <span class="vig-foot">Lire la tribune →</span>
+          </div>
+        </div>
+
+        <!-- CARTOGRAPHIE -->
+        <div class="vig" role="button" tabindex="0" onclick="openModal('modal-carto')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openModal('modal-carto');}">
+          <span class="vig-tag">Informer</span>
+          <div class="vig-media is-carto"><img src="insta-carto.jpg" alt="Cartographie du deuil périnatal sur Instagram"></div>
+          <div class="vig-body">
+            <span class="vig-title">Cartographie du deuil périnatal</span>
+            <span class="vig-foot">Découvrir le compte Instagram →</span>
+          </div>
+        </div>
+
+        <!-- NOTE -->
+        <div class="vig" role="button" tabindex="0" onclick="openModal('modal-note')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openModal('modal-note');}">
+          <span class="vig-tag">Comprendre</span>
+          <div class="vig-media is-doc is-report">
+            <span class="report-brand">In<span class="slash">/</span><span class="visibles">Visibles</span></span>
+            <div>
+              <span class="report-title">Le deuil périnatal,<br>angle mort de<br>l'édition jeunesse</span>
+              <span class="report-desc">Anatomie d'une asymétrie,<br>et leviers pour la corriger.</span>
+            </div>
+          </div>
+          <div class="vig-body">
+            <span class="vig-title">Note d'analyse</span>
+            <span class="vig-foot">Lire la note →</span>
+          </div>
+        </div>
+
+        <!-- TRIBUNE LES ÉCHOS -->
+        <div class="vig" role="button" tabindex="0" onclick="openModal('modal-trib-echos')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openModal('modal-trib-echos');}">
+          <span class="vig-tag">Faire évoluer</span>
+          <div class="vig-media is-doc is-press">
+            <div class="doc-masthead">
+              <img class="doc-logo doc-logo--echos" src="logo-echos.png" alt="Les Échos" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+              <span class="doc-head" style="display:none;">Les Échos</span>
+            </div>
+            <span class="doc-quote">« Un marché que tous les autres ont mal évalué. »</span>
+          </div>
+          <div class="vig-body">
+            <span class="vig-title">Tribune de presse</span>
+            <span class="vig-foot">Lire la tribune →</span>
+          </div>
+        </div>
+
+        <!-- CONTACT -->
+        <a href="#contact" class="vig">
+          <span class="vig-tag">Soutenir</span>
+          <div class="vig-media is-doc is-contact"><div class="doc-spacer"></div><span class="doc-name"><span class="rendre">Rendre</span><span class="mark"><span class="slash">/</span><span class="visibles">Visibles</span></span></span></div>
+          <div class="vig-body">
+            <span class="vig-title">Contacter l'association</span>
+            <span class="vig-foot">Nous écrire →</span>
+          </div>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== BANDEAU DON ========== -->
+  <section class="don">
+    <div class="container">
+      <div class="don-inner">
+        <div class="don-text">
+          <h3>Soutenir In/Visibles</h3>
+          <p>L'association vit de dons. Chaque soutien permet d'éditer, de sensibiliser et de faire exister ce deuil au grand jour.</p>
+        </div>
+        <a href="https://www.helloasso.com/associations/in-visibles/evenements/mon-grand-frere-etoile" target="_blank" class="don-btn">Faire un don →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== FOOTER ========== -->
+  <footer id="contact">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <div class="footer-brand">In<span class="slash">/</span><span class="visibles">Visibles</span></div>
+          <p class="footer-legal">Association régie par la loi du 1<sup>er</sup> juillet 1901. But non lucratif, gestion désintéressée.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Contact</h4>
+          <a href="mailto:in-visibles.asso@gmail.com">in-visibles.asso(a)gmail.com</a>
+        </div>
+        <div class="footer-col">
+          <h4>Suivre</h4>
+          <a href="https://www.instagram.com/mon.grand.frere.etoile/" target="_blank">Instagram</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 In/Visibles — Lauriane Mouysset</span>
+        <span>Rendre visible l'invisible.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ========== MODALE LIVRE ========== -->
+  <div class="modal-overlay" id="modal-livre" onclick="if(event.target===this)closeModal('modal-livre')">
+    <div class="modal" role="dialog" aria-modal="true" aria-label="Mon grand frère étoile">
+      <button class="modal-close" onclick="closeModal('modal-livre')" aria-label="Fermer">&times;</button>
+      <div class="modal-head">
+        <img class="modal-photo" src="modale-livre.jpg" alt="Double page de Mon grand frère étoile illustrée par Harmonie Dauphin">
+        <div class="modal-kicker">Le livre</div>
+        <div class="modal-title">Mon grand frère étoile</div>
+      </div>
+      <div class="modal-body">
+        <p><em>Mon grand frère étoile</em> est un album jeunesse sur le deuil périnatal. Sa particularité&nbsp;: il ne s'adresse pas aux enfants témoins de la perte, mais à ceux qui naissent <strong>après</strong>. Ces enfants grandissent avec l'histoire d'un frère ou d'une sœur qu'ils n'ont pas connu, mais qui fait partie de leur famille. Aucun livre ne leur parlait&nbsp;: celui-ci comble ce vide.</p>
+        <p>Chaque livre acheté finance les actions de l'association. Projet à but non lucratif, imprimé en France chez Chirat, entreprise labellisée Patrimoine Vivant.</p>
+        <ul class="modal-facts">
+          <li><b>Texte</b> Lauriane Mouysset</li>
+          <li><b>Illustrations</b> Harmonie Dauphin</li>
+          <li><b>Impression</b> Chirat — labellisé Patrimoine Vivant</li>
+          <li><b>Prix</b> 12&nbsp;€</li>
+        </ul>
+        <a href="https://www.helloasso.com/associations/in-visibles/evenements/mon-grand-frere-etoile" target="_blank" class="modal-cta">Commander le livre →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== MODALE TABLE RONDE (+ captation) ========== -->
+  <div class="modal-overlay" id="modal-event" onclick="if(event.target===this)closeModal('modal-event')">
+    <div class="modal" role="dialog" aria-modal="true" aria-label="Table ronde — L'édition et le silence">
+      <button class="modal-close" onclick="closeModal('modal-event')" aria-label="Fermer">&times;</button>
+      <div class="modal-head">
+        <!-- Photo de la table ronde. Quand la captation sera montée, remplacer ce bloc par :
+             <div class="modal-video"><iframe src="EMBED_YOUTUBE_OU_VIMEO" allow="fullscreen" allowfullscreen></iframe></div> -->
+        <img class="modal-photo modal-photo--crop" src="table-ronde.jpg" alt="Les intervenants de la table ronde à la Mairie de Paris Centre">
+
+        <div class="modal-kicker">Table ronde n°1 · 1 juillet 2026 · Mairie de Paris Centre</div>
+        <div class="modal-title">L'édition et le silence</div>
+      </div>
+      <div class="modal-body">
+        <p class="modal-lead">Quand un sujet n'a pas de livres, la société manque d'un langage partagé.</p>
+        <p>Presque rien n'existe pour parler du deuil périnatal, ni aux enfants qui le vivent, ni à tous ceux qui ne le vivent pas. En plus de priver les familles concernées d'une ressource essentielle, un tel silence laisse la société sans repères et fabrique un isolement social autour de certains enfants. Loin d'être une niche, le sujet relève pourtant du répertoire commun qui forme tous les enfants à la diversité des familles.</p>
+
+        <div class="modal-sub">Les intervenants</div>
+        <ul class="modal-facts">
+          <li><b>Modération</b> Lauriane Mouysset, fondatrice d'In/Visibles</li>
+          <li><b>Médecine</b> Mathilde Barrois, gynécologue-obstétricienne à la maternité de Port-Royal</li>
+          <li><b>Psychologie</b> Bénédicte Le Drogo, psychologue clinicienne spécialisée en périnatalité, co-animatrice du groupe de parole des mères endeuillées</li>
+          <li><b>Psychiatrie</b> Romain Dugravier, pédopsychiatre, chef de service du Centre de psychopathologie périnatale</li>
+          <li><b>Soutien</b> Mairie de Paris Centre</li>
+        </ul>
+        <p class="modal-note">La captation complète sera intégrée ici dès qu'elle sera montée.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== MODALE NOTE ========== -->
+  <div class="modal-overlay" id="modal-note" onclick="if(event.target===this)closeModal('modal-note')">
+    <div class="modal" role="dialog" aria-modal="true" aria-label="Note d'analyse n°1">
+      <button class="modal-close" onclick="closeModal('modal-note')" aria-label="Fermer">&times;</button>
+      <div class="modal-head">
+        <div class="modal-kicker">Note d'analyse n°1 · Juillet 2026</div>
+        <div class="modal-title">Le silence de l'édition jeunesse</div>
+      </div>
+      <div class="modal-body">
+        <p>Le deuil périnatal est un angle mort de l'édition jeunesse. Ce vide résulte d'un mécanisme économique et culturel qu'on peut nommer, et donc corriger. La note mesure l'ampleur réelle du public concerné, analyse l'asymétrie éditoriale et propose trois leviers d'action concrets.</p>
+        <a href="note-analyse-1.html" target="_blank" class="modal-cta">Lire la note complète ↗</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== MODALES TRIBUNES ========== -->
+  <div class="modal-overlay" id="modal-trib-obs" onclick="if(event.target===this)closeModal('modal-trib-obs')">
+    <div class="modal" role="dialog" aria-modal="true" aria-label="Tribune dans Le Nouvel Obs">
+      <button class="modal-close" onclick="closeModal('modal-trib-obs')" aria-label="Fermer">&times;</button>
+      <div class="modal-head">
+        <div class="modal-kicker">Tribune de presse</div>
+        <div class="modal-title">Deuil périnatal : l'école est démunie pour recevoir les enfants qui ont perdu un frère ou une sœur</div>
+      </div>
+      <div class="modal-body">
+        <p>À l'école, dessiner sa famille est un exercice banal, sauf pour l'enfant né après un frère ou une sœur mort avant la naissance. L'école a su accueillir la diversité des familles longtemps passées sous silence&nbsp;; cette tribune plaide pour qu'elle sache aussi reconnaître la diversité des fratries.</p>
+        <p class="modal-source">Tribune parue dans Le Nouvel Obs le 19 juin 2026.</p>
+        <div class="modal-cta-row">
+          <a href="https://www.nouvelobs.com/societe/20260619.OBS115935/deuil-perinatal-l-ecole-est-demunie-pour-recevoir-les-enfants-qui-ont-perdu-un-frere-ou-une-s-ur.html" target="_blank" class="modal-cta">Lire en ligne ↗</a>
+          <a href="tribune-nouvelobs-INVISIBLES-2026.pdf" target="_blank" class="modal-cta secondary">Lire en PDF ↓</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modal-trib-croix" onclick="if(event.target===this)closeModal('modal-trib-croix')">
+    <div class="modal" role="dialog" aria-modal="true" aria-label="Tribune dans La Croix">
+      <button class="modal-close" onclick="closeModal('modal-trib-croix')" aria-label="Fermer">&times;</button>
+      <div class="modal-head">
+        <div class="modal-kicker">Tribune de presse</div>
+        <div class="modal-title">Deuil périnatal : il faut offrir le temps de dire adieu</div>
+      </div>
+      <div class="modal-body">
+        <p>Depuis le 1<sup>er</sup> juillet 2026, chaque parent peut allonger son congé pour accueillir un enfant. Mais ce droit suppose un enfant à accueillir. Cette tribune demande un geste symétrique&nbsp;: reconnaître ce deuil, sans rien retirer aux naissances.</p>
+        <p class="modal-source">Tribune parue dans La Croix le 29 juin 2026.</p>
+        <div class="modal-cta-row">
+          <a href="https://www.la-croix.com/a-vif/deuil-perinatal-il-faut-offrir-le-temps-de-dire-adieu-20260629" target="_blank" class="modal-cta">Lire en ligne ↗</a>
+          <a href="tribune-lacroix-INVISIBLES-2026.pdf" target="_blank" class="modal-cta secondary">Lire en PDF ↓</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modal-trib-echos" onclick="if(event.target===this)closeModal('modal-trib-echos')">
+    <div class="modal" role="dialog" aria-modal="true" aria-label="Tribune dans Les Échos">
+      <button class="modal-close" onclick="closeModal('modal-trib-echos')" aria-label="Fermer">&times;</button>
+      <div class="modal-head">
+        <div class="modal-kicker">Tribune de presse</div>
+        <div class="modal-title">Quand un tabou fausse le calcul du marché</div>
+      </div>
+      <div class="modal-body">
+        <p>L'édition jeunesse ne publie presque rien sur le deuil périnatal, jugeant le public trop restreint pour être rentable. Mais ce calcul est faussé par le tabou lui-même. Cette tribune montre qu'un marché existe et comment une défaillance de marché a masqué l'ampleur réelle de la demande.</p>
+        <p class="modal-source">À paraître dans Les Échos le 16 juillet 2026.</p>
+        <!-- PDF déjà prêt (tribune-lesechos-INVISIBLES-2026.pdf). À ACTIVER LE 16 JUILLET : décommenter ce bloc et coller l'URL de l'article.
+        <div class="modal-cta-row">
+          <a href="URL_ARTICLE_ECHOS" target="_blank" class="modal-cta">Lire en ligne ↗</a>
+          <a href="tribune-lesechos-INVISIBLES-2026.pdf" target="_blank" class="modal-cta secondary">Lire en PDF ↓</a>
+        </div>
+        -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== MODALE CARTOGRAPHIE ========== -->
+  <div class="modal-overlay" id="modal-carto" onclick="if(event.target===this)closeModal('modal-carto')">
+    <div class="modal" role="dialog" aria-modal="true" aria-label="Cartographier le deuil périnatal">
+      <button class="modal-close" onclick="closeModal('modal-carto')" aria-label="Fermer">&times;</button>
+      <div class="modal-head">
+        <img class="modal-photo" src="modale-carto.jpg" alt="Cartes de la cartographie du deuil périnatal sur Instagram">
+        <div class="modal-kicker">Réseaux sociaux</div>
+        <div class="modal-title">Cartographier le deuil périnatal</div>
+      </div>
+      <div class="modal-body">
+        <p>Sur Instagram, In/Visibles dresse une cartographie du deuil périnatal&nbsp;: un relevé méthodique de ce qu'on préfère ne pas regarder. Le compte avance selon trois gestes&nbsp;: <strong>rendre visible</strong> ce qui existe (les chiffres, l'ampleur réelle), <strong>comprendre</strong> ce qui manque (les mots absents, les phrases qui ne consolent pas, les rituels d'ailleurs), et <strong>construire</strong> ce qui devrait exister (les droits, les ressources, le livret qu'on devrait remettre à chaque parent).</p>
+        <p>Une manière de sortir ce deuil de l'intime et de le porter, post après post, sous le regard de tous.</p>
+        <a href="https://www.instagram.com/mon.grand.frere.etoile/" target="_blank" class="modal-cta">Suivre le compte sur Instagram ↗</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== MODALE PORTRAIT ========== -->
+  <div class="modal-overlay" id="modal-portrait" onclick="if(event.target===this)closeModal('modal-portrait')">
+    <div class="modal" role="dialog" aria-modal="true" aria-label="Lauriane Mouysset, fondatrice">
+      <button class="modal-close" onclick="closeModal('modal-portrait')" aria-label="Fermer">&times;</button>
+      <div class="modal-head">
+        <div class="modal-kicker">Fondatrice & présidente</div>
+        <div class="modal-title">Lauriane Mouysset</div>
+      </div>
+      <div class="modal-body">
+        <p>En 2019, j'ai perdu mon fils aîné à l'accouchement. Malgré une famille impliquée et un personnel médical de qualité, j'ai découvert à quel point ce deuil reste très mal appréhendé par notre société&nbsp;: peu de mots, peu de repères, peu de connaissances, des proches démunis qui ne savent ni quoi dire ni comment faire. C'est un abîme dangereusement vertigineux qui s'est ouvert devant moi.</p>
+        <p>J'ai fondé In/Visibles pour que la société avance sur ce sujet et qu'il cesse d'être un angle mort.</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function openModal(id) {
+      document.getElementById(id).classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        document.querySelectorAll('.modal-overlay.open').forEach(function(m){ m.classList.remove('open'); });
+        document.body.style.overflow = '';
+      }
+    });
+  </script>
+
+</body>
+</html>
